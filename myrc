@@ -1,0 +1,115 @@
+#!/bin/bash
+#script: my functions
+
+# up dir aliases
+alias 2.='cd ../../'
+alias 3.='cd ../../../'
+alias 4.='cd ../../../..'
+
+#todo: write gerneral cd to switch between source and build
+#echo ${PWD%build*} delete all from left of match
+#echo ${PWD#*build} delete all from right of match
+alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
+
+
+#ranger (exit but stay in ranger currDir)
+alias ranger='ranger --choosedir=$HOME/rangerdir; LASTDIR=`cat $HOME/rangerdir`; cd "$LASTDIR"'
+
+
+#ctags aliases
+alias tags='ctags -R --languages=C++ --exclude=build* --exclude=.svn --exclude=*.png -f ./.tags .'
+
+
+#disable legacy feature of terminal emulator Software Flow Control
+#prevent accidentally pressing c-s/c-q
+stty -ixon
+
+
+##getting tmux works with 256 colours terminal
+## if Konsole supports 256color
+#if [ -n $DISPLAY ] &&  [ $TERM == "xterm" ] && [ -e /lib/terminfo/x/xterm-256color ]; then
+#    export TERM=xterm-256color
+#elif [[ $TERM != *"256color"* ]]; then
+#    echo "TERM=$TERM, colorschema of tmux & vim may not work properly"
+#fi
+
+#start tmux with colourful xterm and force it assuming term supported 256colour
+alias tmux='TERM=xterm-256color tmux -2'
+
+
+#mc colorscheme:asterisk, blue, bluemoon, dark, darkened, gotar, nicedark, solarized,...
+case "$KONSOLE_PROFILE_NAME" in
+    Solarized)      mc_color=solarized;;
+    DarkPastels)    mc_color=gotar;;
+    *)
+        mc_color=default
+        if [ -x /usr/bin/dircolors ]; then
+            test -r ~/.dircolors && eval "$(dircolors -b)"
+        fi
+        ;;
+#todo default case
+esac
+
+
+alias mc='mc -S $mc_color'
+mc-color() {
+    if [ ! $# -eq 1 ]
+    then
+        echo "Usage:mc-color param"
+        echo "param: gotar, nicedark, blue, bluemoon, dark, modarin256, solarized, asterisk"
+    else
+        mc_color=$1
+        mc
+    fi
+}
+
+
+# switch term colorscheme
+term-color() {
+    if [ ! $# -eq 1 ]
+    then
+        echo "Usage: term-color param"
+        echo "param: Linux, BlackOnWhite, WhiteOnBlack, BlueOnBlack, GreenOnBlack, DarkPastels, Solarized, SolarizedLight..."
+    else
+        # fix problem with konsoleprofile in tmux
+        if [[ -z "$TMUX" ]]
+        then
+            konsoleprofile "colors=$1"
+        else
+            printf '\033Ptmux;\033\033]50;%s\007\033\\' "colors=$1"
+        fi
+        export KONSOLE_PROFILE_NAME=$1
+    fi
+}
+
+
+# grep_options
+GREP_OPTIONS=
+for pattern in .cvs .git .svn build HMI-Display; do
+    GREP_OPTIONS="$GREP_OPTIONS --exclude-dir=$pattern"
+done
+for pattern in .tags .png; do
+    GREP_OPTIONS="$GREP_OPTIONS --exclude=$pattern"
+done
+unset pattern
+export GREP_OPTIONS
+
+
+# some rvm functions
+if [ -f ~/.rvm_functions ]; then
+    . ~/.rvm_functions
+fi
+
+if [ -f ~/.apparix_bash ]; then
+    . ~/.apparix_bash
+fi
+
+# load svn colored prompt
+if [ -f ~/.svn-colored-prompt ]; then
+    . ~/.svn-colored-prompt
+fi
+
+
+# Default editor
+export EDITOR=vim
+export SVN_EDITOR=vim
