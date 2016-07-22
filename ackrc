@@ -9,6 +9,9 @@
 # Sort the files
 --sort-files
 
+# ignore folder
+--ignore-dir=build
+
 # ignore tags file
 --ignore-file=ext:tag
 --ignore-file=ext:tags
