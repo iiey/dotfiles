@@ -231,12 +231,20 @@ endfunction
 " close nerdtree if there is no file left
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
+"NERDTREE_TABS
+let g:nerdtree_tabs_autofind = 1
+let g:nerdtree_tabs_open_on_gui_startup = 0
+
+"NERDTREE_HIGHLIGHT
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
+
 "NETRW
 let g:NERDTreeHijackNetrw = 0   "do not deactivate netrw (for opening directory)
 let g:netrw_liststyle = 3       "tree style
 
-"NERDTREE_TABS
-let g:nerdtree_tabs_autofind = 1
+" }}}
 
 " other plugins {{{
 "CPP-ENHANCED-HIGHLIGHT
