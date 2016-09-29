@@ -12,7 +12,7 @@ silent highlight default CursorLine
 " Enable += | Disable -=
 " Scrolll bar right and left
 set guioptions-=r
-"set guioptions-=l
+set guioptions-=L
 " Menu bar
 set guioptions-=m
 " Toolbar
