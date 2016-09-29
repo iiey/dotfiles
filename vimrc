@@ -59,15 +59,15 @@ endif
 "CHANGE CURSOR SHAPE (block->doppelT) in insert-mode (work with iTerm, Konsole)
 "Fix: for Tmux b/c of not forwarding correctly Esc)
 "Problem: Cause changing font size when entering InsertMode
-if exists('$TMUX')
-    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
+"if exists('$TMUX')
+"    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+"    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+"    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+"else
     let &t_SR = "\<Esc>]50;CursorShape=2\x7"
     let &t_SI = "\<Esc>]50;CursorShape=1\x7"
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
+"endif
 
 "FIX ARROWS
 "vim not recognize arrow characters
@@ -130,7 +130,7 @@ let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme
 "Startify (modified) {{{
 if !empty(glob("$HOME/.vim/bundle/startify"))
     "set bookmark with shortcut
-    let g:startify_bookmarks = [{'v': '$HOME/.vimrc'}, {'m': '$HOME/.myrc'}, {'r': '$HOME/.bashrc'}, {'t': '$HOME/.tmux.conf'}]
+    let g:startify_bookmarks = [{'v': '$HOME/.vimrc'}, {'g': '$HOME/.gvimrc'}, {'m': '$HOME/.myrc'}, {'r': '$HOME/.bashrc'}, {'t': '$HOME/.tmux.conf'}]
     "set vimtip as footer
     let g:startify_custom_footer =
                                 \ map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') +
@@ -209,16 +209,24 @@ let g:ctrlp_custom_ignore = {
 
 "nerd_tree {{{
 function! ToggleNERDTreeFind()
-    if g:NERDTree.IsOpen()
-        execute ':NERDTreeClose'
-        echo "NERDTreeClose"
-    else
-        execute ':NERDTreeFind'
-        echo "NERDTreeFind"
+    "check if nerdtree is available
+    if !exists('g:loaded_nerd_tree') | return | endif
+
+    "use nerdtreetabs if it's available
+    if exists('g:nerdtree_tabs_loaded')
+        if g:NERDTree.IsOpen()
+            execute ':NERDTreeTabsClose'
+        else
+            NERDTreeTabsOpen
+            NERDTreeFocusToggle
+            NERDTreeTabsFind
+        endif
+        return
     endif
+
+    "use nerdtree otherwise
+    if g:NERDTree.IsOpen() | NERDTreeClose | else | NERDTreeFind | endif
 endfunction
-"this is one line short version
-"map <silent> #2 :if g:NERDTree.IsOpen()<bar>NERDTreeClose<bar>else<bar>NERDTreeFind<bar>endif<cr>
 
 " close nerdtree if there is no file left
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -226,7 +234,9 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 "NETRW
 let g:NERDTreeHijackNetrw = 0   "do not deactivate netrw (for opening directory)
 let g:netrw_liststyle = 3       "tree style
-" }}}
+
+"NERDTREE_TABS
+let g:nerdtree_tabs_autofind = 1
 
 " other plugins {{{
 "CPP-ENHANCED-HIGHLIGHT
@@ -251,7 +261,10 @@ let g:better_whitespace_filetypes_blacklist=['txt', 'csv', 'ppm']
 let b:bad_whitespace_show=0
 " }}}
 
-
+"easymotion {{{
+"Deactivate using <Leader> instead of <Leader><Leader> for trigger
+"map <Leader> <Plug>(easymotion-prefix)
+"}}}
 
 "utils functions {{{
 
@@ -329,7 +342,7 @@ nnoremap <silent> <leader>m :marks<bar>:let nr = input("Enter mark: ")<bar>if nr
 "turn off highlighting searched pattern
 nnoremap <silent> <leader>n :nohlsearch<cr>
 "refresh vimrc
-nnoremap <silent> <leader>r :if &mod <bar>:write<bar>:source $MYVIMRC<bar>:redraw<bar>:echo ".vimrc reloaded!"<bar>endif<cr>
+nnoremap <silent> <leader>r :if &mod <bar>:write<bar>endif<bar>:source $MYVIMRC<bar>:redraw<bar>:echo ".vimrc reloaded!"<cr>
 "change tab
 nnoremap <silent> <leader>t :tabs<cr>:let nr = input("Enter tab: ")<bar>if nr!= ''<bar>exe "normal" . nr . "gt"<bar>endif<cr>
 
