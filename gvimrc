@@ -3,8 +3,8 @@
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
 let g:airline_powerline_fonts=1
 
-colorscheme wombat
-let g:airline_theme='wombat'
+colorscheme codeschool
+let g:airline_theme='cobalt2'
 silent highlight default CursorLine
 "highlight Pmenu guibg=lightblue guifg=black
 
