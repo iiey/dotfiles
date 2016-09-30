@@ -3,7 +3,6 @@
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
 let g:airline_powerline_fonts=1
 
-"color desert
 colorscheme wombat
 let g:airline_theme='wombat'
 silent highlight default CursorLine
