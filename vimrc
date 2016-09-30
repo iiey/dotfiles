@@ -337,14 +337,18 @@ endfunction
 
 "Change colorscheme and airlinetheme
 function! ChangeTheme(color)
-    echom a:color
+    "Using execute to evaluate value of argument
+    execute ':colorscheme' a:color
+
     if a:color == 'solarized'
         set background=dark
     endif
 
-    "Using execute to evaluate value of argument
-    execute ':colorscheme' a:color
-    "Using shellescape to not parse argument but value of it
+    if a:color == 'codeschool'
+        execute ':AirlineTheme' cobalt2
+        return
+    endif
+
     execute ':AirlineTheme' a:color
 endfunction
 command! -nargs=* ChangeTheme call ChangeTheme('<args>')
