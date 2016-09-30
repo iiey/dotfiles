@@ -128,9 +128,9 @@ let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme
 
 
 "Startify (modified) {{{
-if !empty(glob("$HOME/.vim/bundle/startify"))
+if !empty(glob("~/.vim/bundle/startify"))
     "set bookmark with shortcut
-    let g:startify_bookmarks = [{'v': '$HOME/.vimrc'}, {'g': '$HOME/.gvimrc'}, {'m': '$HOME/.myrc'}, {'r': '$HOME/.bashrc'}, {'t': '$HOME/.tmux.conf'}]
+    let g:startify_bookmarks = [{'v': '~/.vimrc'}, {'g': '~/.gvimrc'}, {'m': '~/.myrc'}, {'r': '~/.bashrc'}, {'t': '~/.tmux.conf'}]
     "set vimtip as footer
     let g:startify_custom_footer =
                                 \ map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') +
@@ -228,23 +228,45 @@ function! ToggleNERDTreeFind()
     if g:NERDTree.IsOpen() | NERDTreeClose | else | NERDTreeFind | endif
 endfunction
 
-" close nerdtree if there is no file left
+"close nerdtree if there is no file left
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+"ignore files and folder
+let NERDTreeIgnore=['build', '\~$']
 
 "NERDTREE_TABS
 let g:nerdtree_tabs_autofind = 1
 let g:nerdtree_tabs_open_on_gui_startup = 0
 
-"NERDTREE_HIGHLIGHT
-let g:NERDTreeFileExtensionHighlightFullName = 1
-let g:NERDTreeExactMatchHighlightFullName = 1
-let g:NERDTreePatternMatchHighlightFullName = 1
-
 "NETRW
 let g:NERDTreeHijackNetrw = 0   "do not deactivate netrw (for opening directory)
 let g:netrw_liststyle = 3       "tree style
-
 " }}}
+
+
+"Devicon for nerdtree {{{
+"DEVICON
+"loading devicon
+let g:webdevicons_enable = 1
+
+" Force extra padding in NERDTree so that the filetype icons line up vertically
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+
+"padding between symbol and text
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+
+
+"NERDTREE_HIGHLIGHT
+"disable highlight, lag with big tree
+let g:NERDTreeSyntaxDisableDefaultExtensions = 1
+
+"Disable uncommon file extensions highlighting, reduce lag when scrolling
+let g:NERDTreeLimitedSyntax = 1
+"highlight files
+let g:NERDTreeFileExtensionHighlightFullName = 1
+" }}}
+
+
 
 " other plugins {{{
 "CPP-ENHANCED-HIGHLIGHT
@@ -284,6 +306,7 @@ if projBuildDir !=""
 endif
 "Note: Using "-- -jN" to pass jobs config to make command
 
+
 "TOGGLE HYDRID/ABSOLUTE LINE NUMBER
 function! ToggleLineNumber()
     "check absolute
@@ -298,6 +321,7 @@ function! ToggleLineNumber()
     endif
 endfunc
 
+
 "Toggle solarized/wombat colorscheme
 function! ToggleColor()
     if g:colors_name!='solarized'
@@ -309,6 +333,22 @@ function! ToggleColor()
         AirlineTheme wombat
     endif
 endfunction
+
+
+"Change colorscheme and airlinetheme
+function! ChangeTheme(color)
+    echom a:color
+    if a:color == 'solarized'
+        set background=dark
+    endif
+
+    "Using execute to evaluate value of argument
+    execute ':colorscheme' a:color
+    "Using shellescape to not parse argument but value of it
+    execute ':AirlineTheme' a:color
+endfunction
+command! -nargs=* ChangeTheme call ChangeTheme('<args>')
+
 
 "ON_EXIT
 function! OnQuit()
