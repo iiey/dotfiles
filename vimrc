@@ -15,7 +15,8 @@ set ignorecase      "search with case-insensitive
 set hlsearch        "highlight matching search string
 set number          "show line number
 set relativenumber  "show relative line number
-set mouse=a         "activate mouse all
+set mouse=a         "activate mouse in all modes 'a'/ normal mode 'n'
+"set ttymouse=xterm2 "xterm-like mouse handling (support drag to resize split windows)
 set t_Co=256        "enable term color 256
 set encoding=utf-8
 syntax on                               "enable syntax highlighting
@@ -31,7 +32,7 @@ set autoindent              "same indent in newline
 "set smartindent             "increase indent in newblock
 
 "COLORSCHEME
-"check konsole profile (if exists) for autoloading theme when file opened
+
 set background=dark
 if $KONSOLE_PROFILE_NAME == "Solarized"
     colorscheme solarized
@@ -199,11 +200,13 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 
 
 "ctrlp {{{
+"ctrlp auto. file projectRoot based on .svn/.git...
 let g:ctrlp_working_path_mode = 'ra'                "working dir is nearest acestor of current file
 let g:ctrlp_custom_ignore = {
     \ 'dir':  '\v[\/](.git|.svn|.tags|build|tmp)$',
     \ 'file': '\v\.(exe|so|dll|swp|zip)$'}          "exclude file and directories
 "set wildignore+=*/tmp/*,*/build/*,*.so,*.swp,*.zip
+let g:ctrlp_by_filename = 1                         "default searching by filename instead of full path
 " }}}
 
 
@@ -337,7 +340,7 @@ endfunction
 
 "Change colorscheme and airlinetheme
 function! ChangeTheme(color)
-    "Using execute to evaluate value of argument
+    "Using 'execute' to evaluate value of argument not the argument
     execute ':colorscheme' a:color
 
     if a:color == 'solarized'
@@ -345,13 +348,13 @@ function! ChangeTheme(color)
     endif
 
     if a:color == 'codeschool'
-        execute ':AirlineTheme' cobalt2
+        execute ':AirlineTheme cobalt2'
         return
     endif
 
     execute ':AirlineTheme' a:color
 endfunction
-command! -nargs=* ChangeTheme call ChangeTheme('<args>')
+command! -nargs=* -complete=color ChangeTheme call ChangeTheme('<args>')
 
 
 "ON_EXIT
@@ -372,6 +375,7 @@ function! OnQuit()
     endif
 endfunction
 " }}}
+
 
 
 " Mapping {{{
