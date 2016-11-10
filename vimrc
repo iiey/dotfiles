@@ -379,8 +379,8 @@ endfunction
 
 
 " Mapping {{{
-"LEADER KEY (by default is backslash)
-let mapleader = "["
+"LEADER KEY (by default is backslash "\")
+"let mapleader = "["
 
 
 "buffers
