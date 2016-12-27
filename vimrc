@@ -165,17 +165,31 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 
 "exuberant ctags {{{
-set tags=./.tags;$HOME/sources              "searching for .tags from current to ~/sources
+set tags=./.tags;$HOME/sources              "searching for .tags from current upwards to ~/sources (stop-dir)
 "set tags+=$HOME/sources/tags_headers/qt55
 "set tags+=$HOME/sources/tags_headers/gcc48
 
-"identify projDir by searching "upwards" for ".svn" from "." to "~/sources" (stop-dir is appended with ";")
-"TODO seperate fnamemodify and findir to check for existance of result
-let projRootDir = fnamemodify(finddir('.svn', '.;$HOME/sources'), ':h')
+"guess projRootDir by checking version control system
+for vcs in ['.git', '.svn', '.hg']
+    "searching from current "." upwards ";" to "~/sources"
+    let projRootDir = fnamemodify(finddir(vcs, '.;$HOME/sources'), ':h')
+    if isdirectory(projRootDir.'/'.vcs)
+        break
+    else
+        let projRootDir = ''
+    endif
+endfor
+
 
 function! UpdateCtags(proDir)
+    "generate ctags only for projects
+    if empty(a:proDir)
+        echom "project directory not found"
+        return
+    endif
+
     "execute 'ctags' at projDir to take advantage of --tag-relative=yes
-    let cmd = 'cd ' . a:proDir . ';' . 'ctags -R --languages=C++ --exclude=build* --exclude=.svn --exclude=*.png -f ./.tags . &'
+    let cmd = 'cd ' . a:proDir . '&&' . 'ctags -R --languages=C++ --exclude=build* --exclude=.git --exclude=.svn --exclude=*.png -f ./.tags . &'
     call system(cmd)
     echom "write:" . a:proDir . "/.tags"
 endfunction
@@ -200,7 +214,7 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 
 
 "ctrlp {{{
-"ctrlp auto. file projectRoot based on .svn/.git...
+"ctrlp auto. finds projectRoot based on .svn/.git...
 let g:ctrlp_working_path_mode = 'ra'                "working dir is nearest acestor of current file
 let g:ctrlp_custom_ignore = {
     \ 'dir':  '\v[\/](.git|.svn|.tags|build|tmp)$',

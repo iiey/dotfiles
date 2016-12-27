@@ -1,6 +1,12 @@
 #!/bin/bash
 #script: my functions
 
+#ignoreboth(space and consecutive duplicates), remove duplicates
+HISTCONTROL=ignoreboth:erasedups
+# save and reload the history after each command finishes
+# this could change index of commands in .bash_history
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+
 # up dir aliases
 alias 2.='cd ../../'
 alias 3.='cd ../../../'
@@ -17,7 +23,7 @@ alias ranger='ranger --choosedir=$HOME/rangerdir; LASTDIR=`cat $HOME/rangerdir`;
 
 
 #ctags aliases
-alias tags='ctags -R --languages=C++ --exclude=build* --exclude=.svn --exclude=*.png -f ./.tags .'
+alias tags='ctags -R --languages=C++ --exclude=build* --exclude=.git --exclude=.svn --exclude=*.png -f ./.tags .'
 
 
 #disable legacy feature of terminal emulator Software Flow Control
