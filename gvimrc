@@ -19,5 +19,5 @@ set guioptions-=T
 
 " Toggle bars with F6
 let g:menubar=0
-map <silent> <F6> :if g:menubar == 1<cr>:set guioptions-=mT<cr>:let g:menubar = 0<cr>
+map <silent> <F11> :if g:menubar == 1<cr>:set guioptions-=mT<cr>:let g:menubar = 0<cr>
   \ :else<cr>:set guioptions+=mT<cr>:let g:menubar = 1<cr>:endif<cr>
