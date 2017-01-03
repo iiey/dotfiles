@@ -100,22 +100,12 @@ done
 unset pattern
 export GREP_OPTIONS
 
-
-# some rvm functions
-if [ -f ~/.rvm_functions ]; then
-    . ~/.rvm_functions
-fi
-
-if [ -f ~/.apparix_bash ]; then
-    . ~/.apparix_bash
-fi
-
-# load svn colored prompt
-if [ -f ~/.svn-colored-prompt ]; then
-    . ~/.svn-colored-prompt
-fi
-
+#enable some extra features
+[ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
+[ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
+[ -f ~/.svn-colored-prompt ] && source ~/.svn-colored-prompt    #svn/git colored-prompt
+[ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #more completions
+[ -f ~/.git-prompt.sh ] && source ~/.git-prompt.sh              #customized prompt for git
 
 # Default editor
 export EDITOR=vim
-export SVN_EDITOR=vim
