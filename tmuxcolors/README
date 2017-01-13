@@ -1,0 +1,7 @@
+DESCRIPTION:
+Themes are generated from vim plugin "tmuxline". See also section tmuxline section in "vimrc"
+
+INSTALL:
+1. Copy these themes to $HOME/.config/tmux/
+2. Add command in .tmux.conf for sourcing it:
+if-shell "test -f $HOME/.config/tmux/zenburn" "source $HOME/.config/tmux/theme_name"
