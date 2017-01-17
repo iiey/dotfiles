@@ -31,6 +31,7 @@ git-ctags() {
     #return if not found (in .git or outside cvs)
     [ -z $dir ] && return
     #execute 'git init' if hooks was not copied (from local template)
+    #note: directory changing and init are done in subshell (...)
     [ -f "${dir}/.git/hooks/ctags" ] || ( cd $dir && git init )
     #call ctags
     eval "${dir}/.git/hooks/ctags"
