@@ -7,7 +7,8 @@ HISTCONTROL=ignoreboth:erasedups
 # this could change index of commands in .bash_history
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
-# up dir aliases
+#ALIASES
+# up dir
 alias 2.='cd ../../'
 alias 3.='cd ../../../'
 alias 4.='cd ../../../..'
@@ -17,30 +18,50 @@ alias 4.='cd ../../../..'
 #echo ${PWD#*build} delete all from right of match
 alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 
-
 #ranger (exit but stay in ranger currDir)
 alias ranger='ranger --choosedir=$HOME/rangerdir; LASTDIR=`cat $HOME/rangerdir`; cd "$LASTDIR"'
 
-
-#ctags aliases
+#ctags
+#see $HOME/.ctags for default parameter configuration
 alias tags='ctags -R --languages=C++ --exclude=build* --exclude=.git --exclude=.svn --exclude=*.png -f ./.tags .'
+
+git-ctags() {
+    #read project root dir from git
+    local dir=$(git rev-parse --show-toplevel)
+    #return if not found (in .git or outside cvs)
+    [ -z $dir ] && return
+    #execute 'git init' if hooks was not copied (from local template)
+    [ -f "${dir}/.git/hooks/ctags" ] || ( cd $dir && git init )
+    #call ctags
+    eval "${dir}/.git/hooks/ctags"
+}
+
+#tree
+alias tree="tree -CAFa -I 'CVS|.git|.svn' --dirsfirst"
+
+#start tmux with colourful xterm and force it assuming term supported 256colour
+alias tmux='TERM=xterm-256color tmux -2'
+
+#create tmux default working session
+#note: double quote to correctly expand var $HOME with tmux
+tmux-session() {
+    #check existance of tmux
+    [ -z "$(type -t tmux)" ] && return
+    #create default session "dev" with some windows if no parameters are given
+    [ $# -eq 0 ] && set -- "dev" "field" "labor" "vm" "rvm"
+    #note: arg1: session name, arg2: first window, arg3: second window,..
+    local cmd="tmux new -s "$1" -n "$2""
+    for i in "${@:3}"; do cmd="${cmd} \; new-window -n $i"; done
+    #as default switch to working dir at last window
+    [ -d $HOME/sources/git/rvm ] && cmd="${cmd} -c "$HOME/sources/git/rvm""
+    eval $cmd
+}
 
 
 #disable legacy feature of terminal emulator Software Flow Control
 #prevent accidentally pressing c-s/c-q
-stty -ixon
-
-
-##getting tmux works with 256 colours terminal
-## if Konsole supports 256color
-#if [ -n $DISPLAY ] &&  [ $TERM == "xterm" ] && [ -e /lib/terminfo/x/xterm-256color ]; then
-#    export TERM=xterm-256color
-#elif [[ $TERM != *"256color"* ]]; then
-#    echo "TERM=$TERM, colorschema of tmux & vim may not work properly"
-#fi
-
-#start tmux with colourful xterm and force it assuming term supported 256colour
-alias tmux='TERM=xterm-256color tmux -2'
+#check interactive shell before enable foreward-search
+[[ $- == *i*  ]] && stty -ixon
 
 
 #mc colorscheme:asterisk, blue, bluemoon, dark, darkened, gotar, nicedark, solarized,...
@@ -57,14 +78,15 @@ case "$KONSOLE_PROFILE_NAME" in
 esac
 
 
+#mc colorscheme located unter ~/.local/share/mc/skins
 alias mc='mc -S $mc_color'
 mc-color() {
-    if [ ! $# -eq 1 ]
+    if [ ! "$#" -eq 1 ]
     then
         echo "Usage:mc-color param"
         echo "param: gotar, nicedark, blue, bluemoon, dark, modarin256, solarized, asterisk"
     else
-        mc_color=$1
+        mc_color="$1"
         mc
     fi
 }
@@ -72,7 +94,7 @@ mc-color() {
 
 # switch term colorscheme
 term-color() {
-    if [ ! $# -eq 1 ]
+    if [ ! "$#" -eq 1 ]
     then
         echo "Usage: term-color param"
         echo "param: Linux, BlackOnWhite, WhiteOnBlack, BlueOnBlack, GreenOnBlack, DarkPastels, Solarized, SolarizedLight..."
@@ -100,12 +122,15 @@ done
 unset pattern
 export GREP_OPTIONS
 
+# using ccache instead of gcc
+[[ $PATH != *"/usr/lib/ccache"* ]] && [[ -d /usr/lib/ccache ]] && export PATH=/usr/lib/ccache/:${PATH}
+
 #enable some extra features
-[ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
+[ -s ~/.autojump/etc/profile.d/autojump.sh  ] && source ~/.autojump/etc/profile.d/autojump.sh
 [ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
-[ -f ~/.svn-colored-prompt ] && source ~/.svn-colored-prompt    #svn/git colored-prompt
 [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #more completions
-[ -f ~/.git-prompt.sh ] && source ~/.git-prompt.sh              #customized prompt for git
+[ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
+#[ -f ~/.svn-colored-prompt ] && source ~/.svn-colored-prompt    #svn/git colored-prompt
 
 # Default editor
 export EDITOR=vim
