@@ -1,0 +1,8 @@
+--recurse=yes
+--exclude=build*
+--exclude=.git
+--exclude=.svn
+--exclude=log
+--exclude=*.png
+--languages=+C,C++,-Javascript,HTML,SQL,Python
+--append
