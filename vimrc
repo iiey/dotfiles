@@ -29,6 +29,7 @@ set softtabstop=4           "using <BS> like <Tab>
 set shiftwidth=4
 set expandtab
 set autoindent              "same indent in newline
+set backspace=2             "solve some hw vs system conflict, make it work like other apps. See also :help backspace
 "set smartindent             "increase indent in newblock
 
 "COLORSCHEME
