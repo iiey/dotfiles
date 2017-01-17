@@ -15,10 +15,12 @@ fi
 
 #Remove lock after finished
 #Note: trap [cmds] [sigs] => cmds are executed if sigs are catched
+#Note: using current process id for temporary filename $$.tags and remove it by exit
 trap 'rm -f "$dir/lock.tags"; rm -f "$dir/$$.tags"' EXIT
 
 #Create tags
-#Note: other default parameters are in $HOME/.ctags
-#Note: $$ is current process id. Using $$.tags as temporary file
-git ls-files | ctags --tag-relative -L - -f "$dir/$$.tags"
+#Note: other default ctags configuration stored in $HOME/.ctags
+( cd $dir && git ls-files | ctags --tag-relative -L - -f "$dir/$$.tags" )
+#Note: if tags generated in a subfolder, all other tags get lost after tags replacement
+#for safety reason execute ctags in project root
 mv "$dir/$$.tags" "$dir/.tags"
