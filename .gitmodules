@@ -34,3 +34,27 @@
 [submodule "vimplugins/vim-ack"]
 	path = vimplugins/vim-ack
 	url = https://github.com/mileszs/ack.vim.git
+[submodule "vimplugins/tmuxline"]
+	path = vimplugins/tmuxline
+	url = https://github.com/edkolev/tmuxline.vim.git
+[submodule "vimplugins/nerdtree"]
+	path = vimplugins/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule "vimplugins/nerdtabs"]
+	path = vimplugins/nerdtabs
+	url = https://github.com/jistr/vim-nerdtree-tabs.git
+[submodule "vimplugins/tagbar"]
+	path = vimplugins/tagbar
+	url = https://github.com/majutsushi/tagbar.git
+[submodule "vimplugins/undotree"]
+	path = vimplugins/undotree
+	url = https://github.com/mbbill/undotree.git
+[submodule "vimplugins/devicons"]
+	path = vimplugins/devicons
+	url = https://github.com/ryanoasis/vim-devicons.git
+[submodule "vimplugins/startify"]
+	path = vimplugins/startify
+	url = https://github.com/mhinz/vim-startify.git
+[submodule "vimplugins/nerdtree-highlight"]
+	path = vimplugins/nerdtree-highlight
+	url = https://github.com/tiagofumo/vim-nerdtree-syntax-highlight.git
