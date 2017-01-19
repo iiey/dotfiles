@@ -1,3 +1,21 @@
 [submodule "vimplugins/vim-cpp"]
 	path = vimplugins/vim-cpp
 	url = https://github.com/vim-jp/vim-cpp.git
+[submodule "vimplugins/bad-whitespace"]
+	path = vimplugins/bad-whitespace
+	url = https://github.com/bitc/vim-bad-whitespace.git
+[submodule "vimplugins/airline"]
+	path = vimplugins/airline
+	url = https://github.com/bling/vim-airline
+[submodule "vimplugins/file-line"]
+	path = vimplugins/file-line
+	url = https://github.com/bogado/file-line.git
+[submodule "vimplugins/ctrlp"]
+	path = vimplugins/ctrlp
+	url = https://github.com/ctrlpvim/ctrlp.vim.git
+[submodule "vimplugins/cpp-enhanced-highlight"]
+	path = vimplugins/cpp-enhanced-highlight
+	url = https://github.com/octol/vim-cpp-enhanced-highlight.git
+[submodule "vimplugins/airline-themes"]
+	path = vimplugins/airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes.git
