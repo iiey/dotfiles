@@ -19,3 +19,18 @@
 [submodule "vimplugins/airline-themes"]
 	path = vimplugins/airline-themes
 	url = https://github.com/vim-airline/vim-airline-themes.git
+[submodule "vimplugins/easymotion"]
+	path = vimplugins/easymotion
+	url = https://github.com/easymotion/vim-easymotion.git
+[submodule "vimplugins/vim-snippets"]
+	path = vimplugins/vim-snippets
+	url = https://github.com/honza/vim-snippets.git
+[submodule "vimplugins/terminus"]
+	path = vimplugins/terminus
+	url = https://github.com/wincent/terminus.git
+[submodule "vimplugins/asyncrun"]
+	path = vimplugins/asyncrun
+	url = https://github.com/skywind3000/asyncrun.vim.git
+[submodule "vimplugins/vim-ack"]
+	path = vimplugins/vim-ack
+	url = https://github.com/mileszs/ack.vim.git
