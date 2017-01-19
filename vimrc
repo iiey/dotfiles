@@ -1,10 +1,15 @@
-"Basic Setting {{{
+"BASIC sETTING {{{
 "Folding option for this file
 setlocal foldmethod=marker  "use marker curved bracket for folding
 setlocal foldlevel=2        "over level 1 will be closed
 
-"LANGUAGEA INTERFACE
-set langmenu=en_US
+"LANGUAGE INTERFACE
+set langmenu=en_US          "set language menu (gvim)
+if has('unix')              "set language messages (vim)
+    language messages C
+else
+    language messages en
+endif
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
@@ -33,7 +38,6 @@ set backspace=2             "solve some hw vs system conflict, make it work like
 "set smartindent             "increase indent in newblock
 
 "COLORSCHEME
-
 set background=dark
 if $KONSOLE_PROFILE_NAME == "Solarized"
     colorscheme solarized
@@ -57,7 +61,7 @@ endif
 " }}}
 
 
-"tmux+vim: handle some issues {{{
+"TMUX+VIM: handle some issues {{{
 "CHANGE CURSOR SHAPE (block->doppelT) in insert-mode (work with iTerm, Konsole)
 "Fix: for Tmux b/c of not forwarding correctly Esc)
 "Problem: Cause changing font size when entering InsertMode
@@ -86,14 +90,14 @@ endif
 
 
 
-
-"vim-pathogen bundle management {{{
+"PATHOGEN {{{
+"bundle management
 execute pathogen#infect()
 execute pathogen#helptags()
 " }}}
 
 
-"vim-airline {{{
+"VIM-AIRLINE {{{
 let g:airline_powerline_fonts=1                     "enable powerline font
 set laststatus=2                                    "always show airline status
 
@@ -129,7 +133,7 @@ let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme
 " }}}
 
 
-"Startify (modified) {{{
+"STARTIFY (modified) {{{
 if !empty(glob("~/.vim/bundle/startify"))
     "set bookmark with shortcut
     let g:startify_bookmarks = [{'v': '~/.vimrc'}, {'g': '~/.gvimrc'}, {'m': '~/.myrc'}, {'r': '~/.bashrc'}, {'t': '~/.tmux.conf'}]
@@ -155,7 +159,7 @@ endif
 "}}}
 
 
-"ultiSnips {{{
+"ULTISNIPS {{{
 "using snippets template from: https://github.com/honza/vim-snippets.git
 let g:UltiSnipsSnippetDirectories=["$HOME/.vim/bundle/snippets/UltiSnips"]
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -165,7 +169,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 " }}}
 
 
-"exuberant ctags {{{
+"EXUBERANT CTAGS {{{
 set tags=./.tags;$HOME/sources              "searching for .tags from current upwards to ~/sources (stop-dir)
 "set tags+=$HOME/sources/tags_headers/qt55
 "set tags+=$HOME/sources/tags_headers/gcc48
@@ -199,7 +203,7 @@ endfunction
 " }}}
 
 
-"omni completion (builtin) {{{
+"OMNI COMPLETION (builtin) {{{
 set omnifunc=syntaxcomplete#Complete    "open in I-Mode <c-x><c-o>, navigate <c-n/p>, close <c-e>
 
 "Custom behaviour of completion menu
@@ -214,7 +218,7 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 "}}}
 
 
-"ctrlp {{{
+"CTRLP {{{
 "ctrlp auto. finds projectRoot based on .svn/.git...
 let g:ctrlp_working_path_mode = 'ra'                "working dir is nearest acestor of current file
 let g:ctrlp_custom_ignore = {
@@ -225,7 +229,7 @@ let g:ctrlp_by_filename = 1                         "default searching by filena
 " }}}
 
 
-"nerd_tree {{{
+"NERD_TREE {{{
 function! ToggleNERDTreeFind()
     "check if nerdtree is available
     if !exists('g:loaded_nerd_tree') | return | endif
@@ -262,8 +266,9 @@ let g:netrw_liststyle = 3       "tree style
 " }}}
 
 
-"Devicon for nerdtree {{{
-"DEVICON
+"DEVICON {{{
+"Devicon for nerdtree
+
 "loading devicon
 let g:webdevicons_enable = 1
 
@@ -285,8 +290,13 @@ let g:NERDTreeFileExtensionHighlightFullName = 1
 " }}}
 
 
+"EASYMOTION {{{
+"Deactivate using <Leader> instead of <Leader><Leader> for trigger
+"map <Leader> <Plug>(easymotion-prefix)
+"}}}
 
-" other plugins {{{
+
+"OTHER PLUGINS {{{
 "CPP-ENHANCED-HIGHLIGHT
 let g:cpp_class_scope_highlight = 1
 "python-syntax
@@ -308,11 +318,6 @@ let g:tagbar_autofocus=1                "focus on actual function
 let g:better_whitespace_filetypes_blacklist=['txt', 'csv', 'ppm']
 let b:bad_whitespace_show=0
 " }}}
-
-"easymotion {{{
-"Deactivate using <Leader> instead of <Leader><Leader> for trigger
-"map <Leader> <Plug>(easymotion-prefix)
-"}}}
 
 
 "ASYNCRUN {{{
@@ -343,7 +348,7 @@ endfunc
 "}}}
 
 
-"utils functions {{{
+"UTILS FUNCTIONS {{{
 
 "CMAKE+VIM
 "identify build-folder by searching "upwards" for "build" from "." to "~/sources"
@@ -371,7 +376,7 @@ endfunc
 
 "Toggle solarized/wombat colorscheme
 function! ToggleColor()
-    if g:colors_name!='solarized'
+    if g:colors_name != 'solarized'
         set background=dark
         colorscheme solarized
         AirlineTheme solarized
