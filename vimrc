@@ -314,6 +314,35 @@ let b:bad_whitespace_show=0
 "map <Leader> <Plug>(easymotion-prefix)
 "}}}
 
+
+"ASYNCRUN {{{
+"run shell commands on background and read output in quickfix window (vim8)
+"
+"use new command :Make to run :make in background
+command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
+
+"automate opening quickfix when asyncrun starts
+"and close on successful exit
+augroup vimrc
+    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
+    autocmd User AsyncRunStop call OnAsyncExit()
+augroup END
+
+"helper function for closing quickfix after finishing job
+function! OnAsyncExit()
+    "check status of asyncrun after job finished
+    if g:asyncrun_status == 'success'
+        "fire a time with lambda as it's function callback
+        "lambda body handles only an expression expr1
+        "using execute() to have expr1 from an Ex command
+        let timer = timer_start(1000, {-> execute(":call asyncrun#quickfix_toggle(8, 0)")})
+    endif
+endfunc
+"online statement
+"autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
+"}}}
+
+
 "utils functions {{{
 
 "CMAKE+VIM
@@ -416,7 +445,8 @@ nnoremap <silent> <leader>n :nohlsearch<cr>
 nnoremap <silent> <leader>r :if &mod <bar>:write<bar>endif<bar>:source $MYVIMRC<bar>:redraw<bar>:echo ".vimrc reloaded!"<cr>
 "change tab
 nnoremap <silent> <leader>t :tabs<cr>:let nr = input("Enter tab: ")<bar>if nr!= ''<bar>exe "normal" . nr . "gt"<bar>endif<cr>
-
+"quickfix
+:noremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
 "quit without saving
 nnoremap <C-q> :q!<cr>
 "save file with Ctrl-S
