@@ -1,0 +1,3 @@
+[submodule "vimplugins/vim-cpp"]
+	path = vimplugins/vim-cpp
+	url = https://github.com/vim-jp/vim-cpp.git
