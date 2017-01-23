@@ -191,8 +191,11 @@ function! UpdateCtags(proDir)
     if empty(a:proDir) | echom "project directory empty!" | return | endif
     "execute 'ctags' at projDir to take advantage of --tag-relative=yes
     let cmd = 'cd ' . a:proDir . '&&' . 'ctags -f ./.tags .'
-    call system(cmd)
-    echom "write:" . a:proDir . "/.tags"
+    if exists(":AsyncRun")
+        execute "AsyncRun " . cmd
+    else
+        call system(cmd) | echom "write:" . a:proDir . "/.tags"
+    endif
 endfunction
 "Auto call function if file is saved
 "autocmd BufWritePost *.cpp,*.h,*.c silent! call UpdateCtags(projRootDir)
