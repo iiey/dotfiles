@@ -55,3 +55,6 @@
 [submodule "vimplugins/nerdtree-highlight"]
 	path = vimplugins/nerdtree-highlight
 	url = https://github.com/tiagofumo/vim-nerdtree-syntax-highlight.git
+[submodule "vimplugins/fugitive"]
+	path = vimplugins/fugitive
+	url = https://github.com/tpope/vim-fugitive.git
