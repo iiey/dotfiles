@@ -188,13 +188,9 @@ endfor
 
 function! UpdateCtags(proDir)
     "generate ctags only for projects
-    if empty(a:proDir)
-        echom "project directory not found"
-        return
-    endif
-
+    if empty(a:proDir) | echom "project directory empty!" | return | endif
     "execute 'ctags' at projDir to take advantage of --tag-relative=yes
-    let cmd = 'cd ' . a:proDir . '&&' . 'ctags -R --languages=C++ --exclude=build* --exclude=.git --exclude=.svn --exclude=*.png -f ./.tags . &'
+    let cmd = 'cd ' . a:proDir . '&&' . 'ctags -f ./.tags .'
     call system(cmd)
     echom "write:" . a:proDir . "/.tags"
 endfunction
@@ -322,8 +318,8 @@ let b:bad_whitespace_show=0
 
 "ASYNCRUN {{{
 "run shell commands on background and read output in quickfix window (vim8)
-"
-"use new command :Make to run :make in background
+
+":MAKE runs :make in background with asyncrun
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 
 "automate opening quickfix when asyncrun starts
@@ -343,8 +339,11 @@ function! OnAsyncExit()
         let timer = timer_start(1000, {-> execute(":call asyncrun#quickfix_toggle(8, 0)")})
     endif
 endfunc
-"online statement
+"one line statement without timer
 "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
+
+"display progress in statusline of airline
+"let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
 "}}}
 
 
