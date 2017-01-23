@@ -62,19 +62,6 @@ endif
 
 
 "TMUX+VIM: handle some issues {{{
-"CHANGE CURSOR SHAPE (block->doppelT) in insert-mode (work with iTerm, Konsole)
-"Fix: for Tmux b/c of not forwarding correctly Esc)
-"Problem: Cause changing font size when entering InsertMode
-"if exists('$TMUX')
-"    let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
-"    let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-"    let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-"else
-    let &t_SR = "\<Esc>]50;CursorShape=2\x7"
-    let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-    let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-"endif
-
 "FIX ARROWS
 "vim not recognize arrow characters
 "vim handles keywords correctly if it 'TERM=xterm-...' but tmux using screen-256color
