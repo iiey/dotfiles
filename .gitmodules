@@ -58,3 +58,6 @@
 [submodule "vimplugins/fugitive"]
 	path = vimplugins/fugitive
 	url = https://github.com/tpope/vim-fugitive.git
+[submodule "vimplugins/ultisnips"]
+	path = vimplugins/ultisnips
+	url = https://github.com/SirVer/ultisnips.git
