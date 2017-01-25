@@ -148,7 +148,7 @@ endif
 
 "ULTISNIPS {{{
 "using snippets template from: https://github.com/honza/vim-snippets.git
-let g:UltiSnipsSnippetDirectories=["$HOME/.vim/bundle/snippets/UltiSnips"]
+let g:UltiSnipsSnippetDirectories=["$HOME/.vim/bundle/vim-snippets/UltiSnips"]
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsListSnippets="<c-l>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
@@ -440,7 +440,7 @@ nnoremap <silent> <leader>r :if &mod <bar>:write<bar>endif<bar>:source $MYVIMRC<
 "change tab
 nnoremap <silent> <leader>t :tabs<cr>:let nr = input("Enter tab: ")<bar>if nr!= ''<bar>exe "normal" . nr . "gt"<bar>endif<cr>
 "quickfix
-:noremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
+noremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
 "quit without saving
 nnoremap <C-q> :q!<cr>
 "save file with Ctrl-S
@@ -454,7 +454,7 @@ nnoremap J <NOP>
 "show manual
 nnoremap K <NOP>
 "Ex mode
-nnoremap Q <nop>
+nnoremap Q <NOP>
 
 "MOVEMENT
 nnoremap <C-j> 5<C-e>
@@ -482,7 +482,7 @@ nnoremap            <F3> :TagbarToggle<cr>
 nnoremap <silent>   <F4> :call UpdateCtags(projRootDir)<cr>
 nnoremap            <F5> :UndotreeToggle<cr>
 
-nnoremap            <F10> :call OnQuit()<cr>
+nnoremap <silent>   <F10> :call OnQuit()<cr>
 imap                <F10> <c-o><F10>                        "if in Insert-Mode switch to Insert-Normal-Mode to execute F10
 
 " cppman
