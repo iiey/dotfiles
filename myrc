@@ -13,6 +13,11 @@ alias 2.='cd ../../'
 alias 3.='cd ../../../'
 alias 4.='cd ../../../..'
 
+# custom ls
+alias l='ls -aCF'
+alias la='ls -laAh'     #long list all
+alias ll='ls -lFh'      #long list without .
+
 #todo: write gerneral cd to switch between source and build
 #echo ${PWD%build*} delete all from left of match
 #echo ${PWD#*build} delete all from right of match
