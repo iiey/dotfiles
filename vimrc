@@ -125,13 +125,18 @@ if !empty(glob("~/.vim/bundle/startify"))
     "set bookmark with shortcut
     let g:startify_bookmarks = [{'v': '~/.vimrc'}, {'g': '~/.gvimrc'}, {'m': '~/.myrc'}, {'r': '~/.bashrc'}, {'t': '~/.tmux.conf'}]
     "set vimtip as footer
+    let vimtip = ['']
+    if exists('*startify#fortune#cowtip')
+        let vimtip = ['   Hey ' . $USER . '! This cow has a vimtip for you:'] +
+                                \ map(startify#fortune#cowtip(), 'v:val')
+    endif
     let g:startify_custom_footer =
                                 \ map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') +
                                 \ [''] + [''] + [''] +
-                                \ map(split(system('date -R'), '\n'), '"   ". v:val') +
-                                \ ['   Hey ' . $USER . '! This cow has a vimtip for you:'] +
-                                \ map(startify#fortune#cowtip(), 'v:val')
+                                \ map(split(system('date -R'), '\n'), '"   ". v:val') + vimtip
 
+    "limit list of mru files
+    let g:startify_files_number = 7
     "set empty. Do not auto. remove commands from file
     let g:startify_session_remove_lines = []
     "set color
