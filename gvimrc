@@ -16,6 +16,8 @@ set guioptions-=L
 set guioptions-=m
 " Toolbar
 set guioptions-=T
+" see also :h mouseshape
+"set mouseshape=n:pencil
 
 " Toggle bars with F6
 let g:menubar=0
