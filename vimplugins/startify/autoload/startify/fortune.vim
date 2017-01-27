@@ -10,6 +10,19 @@ let s:cow = [
       \ '                ||     ||',
       \ ]
 
+let s:tux = [
+    \ '            \',
+    \ '             \',
+    \ '                 .--.',
+    \ '                |o_o |',
+    \ '                |:_/ |',
+    \ '               //   \ \',
+    \ '              (|     | )',
+    \ '             / \_   _/ \',
+    \ '             \___)=(___/',
+    \ ]
+
+    
 let s:unicode = &encoding == 'utf-8' && get(g:, 'startify_fortune_use_unicode')
 
 let s:char_top_bottom   = ['-', '─'][s:unicode]
@@ -18,6 +31,7 @@ let s:char_top_left     = ['*', '╭'][s:unicode]
 let s:char_top_right    = ['*', '╮'][s:unicode]
 let s:char_bottom_right = ['*', '╯'][s:unicode]
 let s:char_bottom_left  = ['*', '╰'][s:unicode]
+
 
 let s:quotes = exists('g:startify_custom_header_quotes')
       \ ? g:startify_custom_header_quotes
@@ -131,6 +145,169 @@ let s:quotes = exists('g:startify_custom_header_quotes')
       \ ['Sign your work.', '', 'Craftsmen of an earlier age were proud to sign their work. You should be, too.'],
       \ ]
 
+let s:tips = exists('g:startify_custom_header_tips')
+    \ ? g:startify_custom_header_tips
+    \ : [
+    \ ["zz to center the cursor vertically on your screen. useful when you 250gzz, for instance."],
+    \ ["CTRL-w | and CTRL-W _ maximize your current split vertically and horizontally, respectively. CTRL-W = equalizes 'em."],
+    \ [":g/_pattern_/s/^/#/g will comment out lines containing _pattern_ (if '#' is your comment character/sequence)"],
+    \ ["vim -c [command] will launch vim and run a : command at launch, e.g. \"vim -c NERDTree.\""],
+    \ ["CTRL-w s CTRL-w T will open current buffer in new tab"],
+    \ ["CTRL-w K will switch vertical split into horizontal, CTRL-w H will switch a horizontal into a vertical."],
+    \ ["K runs a program to lookup the keyword under the cursor. If writing C, it runs man. In Ruby, it (should) run ri, Python (perhaps) pydoc."],
+    \ ["Edit and encrypt a file: vim -x filename"],
+    \ ["/fred\_s*joe/ will search for fred AND joe with whitespace (including newline) in between."],
+    \ ["From a command-line, vim scp://username@host//path/to/file to edit a remote file locally."],
+    \ ["/fred|joe/ will search for either fred OR joe."],
+    \ ["/.*fred&.*joe/ will search for fred AND joe, in any order."],
+    \ ["/<fred>/ will search for fred, but not alfred or frederick."],
+    \ ["/joe/e will search for joe and place the cursor at the end of the match."],
+    \ ["/joe/e+1 will search for joe and place the cursor at the end of the match, plus on character."],
+    \ ["/joe/s-2 will search for joe and place the cursor at the start of the match, minus two characters."],
+    \ ["/joe/+3 will search for joe and place the cursor three lines below the match."],
+    \ ["/joe.*fred.*bill/ will search for joe AND fred AND bill, in that order."],
+    \ ["/begin\_.*end will search for begin AND end over multiple lines."],
+    \ ["Edit a command output in Vim as a file: $ command | vim -"],
+    \ ["ggVG= will auto-format the entire document"],
+    \ ["'0 opens the last modified file ('1 '2 '3 works too)"],
+    \ ["In insert mode do Ctrl+r=53+17<Enter>. This way you can do some calcs with vim."],
+    \ ["\"_d will delete the selection without adding it to the yanked stack (sending it to the black hole register)."],
+    \ ["Basic commands 'f' and 't' (like first and 'til) are very powerful. See :help t or :help f."],
+    \ [":40,50m30 will move lines 40 through 50 to line 30. Most visual mode commands can be used with line numbers."],
+    \ ["To search for a URL without backslashing, search backwards! Example: ?http://somestuff.com"],
+    \ ["g; will cycle through your recent changes (or g, to go in reverse)."],
+    \ ["\"2p will put the second to last thing yanked, \"3p will put the third to last, etc."],
+    \ [":wa will save all buffers. :xa will save all buffers and exit Vim."],
+    \ ["After performing an undo, you can navigate through the changes using g- and g+. Also, try :undolist to list the changes."],
+    \ ["You probably know that 'u' is undo. Do you know that Ctrl-r is redo?"],
+    \ ["ci{  change text inside {} block. Also see di{, yi{, ci( etc."],
+    \ [":read [filename] will insert the contents of [filename] at the current cursor position "],
+    \ ["to use gvim to edit your git messages set git's core editor as follows:"],
+    \ ["git config --global core.editor \"gvim --nofork\""],
+    \ ["ci\" inside a \" \" will erase everything between \"\" and place you in insertion mode."],
+    \ [":set guifont=* in gvim or MacVim to get a font selection dialog. Useful while giving presentations."],
+    \ [":h slash<CTRL-d> to get a list of all help topics containing the word 'slash'."],
+    \ ["guu converts entire line to lowercase. gUU converts entire line to uppercase. ~ inverts case of current character."],
+    \ ["'. jumps to last modified line. `. jumps to exact position of last modification."],
+    \ ["<CTRL-o> : trace your movements backwards in a file. <CTRL-i> trace your movements forwards in a file."],
+    \ [":ju(mps) : list your movements {{help|jump-motions}}"],
+    \ [":history lists the history of your recent commands, sans duplicates."],
+    \ ["\"+y to copy to the X11 (or Windows) clipboard. \"+p to paste from it."],
+    \ ["noremap ' ` and noremap ` ' to make marks easier to navigate. Now ` is easier to reach!"],
+    \ ["2f/ would find the second occurrence of '/' in a line."],
+    \ [":tab sball will re-tab all files in the buffers list."],
+    \ ["* # g* g# each searches for the word under the cursor (forwards/backwards)"],
+    \ [":vimgrep pattern **/*.txt will search all *.txt files in the current directory and its subdirectories for the pattern."],
+    \ ["== will auto-indent the current line.  Select text in visual mode, then = to auto-indent the selected lines."],
+    \ [":set foldmethod=syntax to make editing long files of code much easier.  zo to open a fold.  zc to close it.  See more http://is.gd/9clX"],
+    \ ["Need to edit and run a previous command?  q: then find the command, edit it, and Enter to execute the line."],
+    \ ["@: to repeat the last executed command."],
+    \ [":e $MYVIMRC to directly edit your vimrc.  :source $MYVIMRC to reload.  Mappings may make it even easier."],
+    \ ["g<CTRL-G> to see technical information about the file, such as how many words are in it, or how many bytes it is."],
+    \ ["gq{movement} to wrap text, or just gq while in visual mode. gqap will format the current paragraph."],
+    \ [":E to see a simple file explorer.  (:Ex will too, if that's easier to remember.)"],
+    \ [":vimgrep pattern *.txt will search all .txt files in the current directory for the pattern."],
+    \ ["<CTRL-n><CTRL-p> offers word-completion while in insert mode."],
+    \ ["<CTRL-x><CTRL-l> offers line completion in insert mode."],
+    \ ["/<CTRL-r><CTRL-w> will pull the word under the cursor into search."],
+    \ ["gf will open the file under the cursor.  (Killer feature.)"],
+    \ ["Ctrl-a, Ctrl-x will increment and decrement, respectively, the number under the cursor. May be precede by a count."],
+    \ [":scriptnames will list all plugins and _vimrcs loaded."],
+    \ [":tabdo [some command] will execute the command in all tabs.  Also see windo, bufdo, argdo."],
+    \ [":vsplit filename will split the window vertically and open the file in the left-hand pane.  Great when writing unit tests!"],
+    \ ["qa starts a recording in register 'a'. q stops it. @a repeats the recording. 5@a repeats it 5 times."],
+    \ ["Ctrl-c to quickly get out of command-line mode.  (Faster than hitting ESC a couple times.)"],
+    \ ["Use '\v' in your regex to set the mode to 'very magic', and avoid confusion. (:h \v for more info.)"],
+    \ ["; is a motion to repeat last find with f. f' would find next quote. c; would change up to the next '"],
+    \ ["ga will display the ASCII, hex, and octal value of the character under the cursor."],
+    \ [":r !date will insert the current date/time stamp (from the 'date' command -- a bit OS-specific)."],
+    \ ["ggguG will lower case the entire file (also known as the Jerry Yang treatment)."],
+    \ [":Sex will open a file explorer in a split window. I bet you'll remember that one."],
+    \ [":g/search_term/# display each line containing 'search_term' with line numbers."],
+    \ ["'. jumps to the last modified line. `. jumps to the exact position of last modification"],
+    \ ["[I (that's bracket open, capital i) show lines containing the word under the cursor."],
+    \ [":vimgrep /stext/ **/*.txt | :copen searches for stext recursively in *.txt files and show results in separate window"],
+    \ ["ysiw' to surround current word with ',cs' {changes word to {word}} using the surround plugin: http://t.co/7QnLiwP3"],
+    \ ["use \v in your regex to set the mode to 'very magic' and avoid confusion (:h \v for more info) http://t.co/KWtRFNPI"],
+    \ ["in gvim, change the cursor depending on what mode you are (normal, insert, etc...) http://is.gd/9dq0"],
+    \ ["In visual mode, use \" to surround the selected text with \" using the surround plugin http://is.gd/fpwJQ"],
+    \ [":tabo closes all tabs execpt the current one."],
+    \ ["<C-U> / <C-D> move the cursor up/down half a page (also handy :set nosol)"],
+    \ ["p / P paste after/before the cursor. Handy when inserting lines."],
+    \ ["daw/caw deletes/changes the word under the cursor."],
+    \ ["vim -d file1 file2 shows the differences between two files."],
+    \ [":set smartcase case sensitive if search contains an uppercase character and ignorecase is on."],
+    \ [":sh or :shell to open a console (then exit to come back to vim)."],
+    \ ["= : re-indent (e.g. == to re-indent the current line)."],
+    \ ["ctrl-v blockwise visual mode (rectangular selection)."],
+    \ ["I/A switch to insert mode before/after the current line."],
+    \ ["o/O insert a new line after/before the current line and switch to insert mode."],
+    \ ["I/A in visual blockwise mode (ctrl-v) insert some text at the star/end of each line of the block text."],
+    \ ["Need to edit a file in hex ? :help hex-editing gives you the manual."],
+    \ ["Ctrl + o : Execute a command while in insert mode, then go back to insert mode. e.g. ctrl+o, p; paste without exiting insert mode"],
+    \ ["ctrl-r x (insert mode): insert the contents of buffer x. For example: \"ctrl-r +\" would insert the contents of the clipboard."],
+    \ ["ctrl-r ctrl-w: Pull the word under the cursor in a : command. eg. :s/ctrl-r ctrl-w/foo/g"],
+    \ ["a/A : append at the cursor position / at the end of the line (enters insert mode)"],
+    \ ["ctrl-x ctrl-f (insert mode): complete with the file names in the current directory (ctrl-p/n to navigate through the candidates)"],
+    \ ["set mouse=a - enable mouse in terminal (selection, scroll, window resizing, ...)."],
+    \ ["J: join two lines"],
+    \ ["gg/G: go to start/end of file."],
+    \ ["Ctrl-y (insert mode): insert character which is on the line above cursor. example: handy to initialize a structure."],
+    \ [":set nowrap - disable line wrapping"],
+    \ ["vim -p <files> - load all files listed in separate tabs. e.g. vim -p *.c"],
+    \ ["vmap out \"zdmzO#if 0<ESC>\"zp'zi#endif<CR><ESC> - macro to comment out a block of code using #if 0"],
+    \ ["<CTRT-W>v == :vsplit like <CTRL-w>s == :split"],
+    \ ["If gvim is started from a terminal it opens at the same width as the terminal. To prevent this, add \"set columns=80\" to ~/.vimrc"],
+    \ ["Prefixing G or gg (command mode) with a number will cause vim to jump to that line number."],
+    \ ["set showbreak - set characters to prefix wrapped lines with. e.g. \":set showbreak=+++\ \" (white space must be escaped)"],
+    \ ["When editing multiple files (e.g. vim *.c), use :n to move to the next file and :N to move to the previous file. :ar shows the list of files"],
+    \ [":split - split the current window in two"],
+    \ ["vim --remote <file> - open a file in an existing vim session"],
+    \ ["A - enter insert mode at the end of the line (Append); I - insert before the first non-blank of the line"],
+    \ [":set softtabstop <n> - set the number of spaces to insert when using the tab key (converted to tabs and spaces if expandtab is off)."],
+    \ [":set expandtab - use spaces rather than the tab character to insert a tab."],
+    \ [":set guioptions - set various GUI vim options. e.g. to remove the menubar and toolbar, :set guioptions-=Tm"],
+    \ ["\"vim - \" - start vim and read from standard input. e.g. with syntax enabled, get a coloured diff from git: git diff | vim -"],
+    \ ["set mousemodel=popup - enable a popup menu on right click in GUI vim"],
+    \ ["r!cat - reads into the buffer from stdin and avoids using :set paste (use ctrl-d to finish)"],
+    \ [":set title - display info in terminal title. Add let &titleold=getcwd() to .vimrc to set it to something useful on quit"],
+    \ [":set pastetoggle=key - specify a key sequence that toggles the paste option, e.g. set pastetoggle=<F2>"],
+    \ [":set paste - allows you to paste from the clipboard correctly, especially when vim is running in a terminal"],
+    \ ["substitute flag 'n' - count how many substitutions would be made, but don't actually make any "],
+    \ ["set wildmenu - enhanced filename completion. left and right navigates matches; up and down navigates directories"],
+    \ ["zt, zz, zb: scroll so that the current position of the cursor is moved to the top, middle or bottom of the screen"],
+    \ ["[range]sort - sort the lines in the [range], or all lines if [range] is not given. e.g. :'<,'>sort - sort the current visual selection"],
+    \ ["noh - stop highlighting the current search (if 'hlsearch' is enabled). Highlighting is automatically restored for the next search."],
+    \ ["when substituting, \u makes just first character upper (like \l for lower) and \U is upper equivalent for \L"],
+    \ [":retab <ts> - convert strings of white-space containing <Tab> with new strings using the <ts> value if given or current value of 'tabstop'"],
+    \ ["ctrl-v u <hex code> - enter a unicode character in insert mode"],
+    \ [":set laststatus=2 - always show the status line (0 = never, 1 = (default) only if there are two or more windows, 2 = always)"],
+    \ ["b - go back a word (opposite of w)"],
+    \ ["} - move to the next blank line ( { - move to previous blank line)"],
+    \ ["s - delete characters and start insert mode (s stands for Substitute). e.g. 3s - delete three characters and start insert mode."],
+    \ ["0 - Move to the first character of the line"],
+    \ [":set columns=X - set the width of the window to X columns. For GUI vim, this is limited to the size of the screen"],
+    \ [":only - close all windows except the current one (alternatives: ctrl-w ctrl-o or :on)"],
+    \ ["ctrl-<pagedown> / ctrl-<pageup> - switch to next/previous tab. (alternatives: gt/gT, :tabn/:tabp, etc)"],
+    \ [":tabe <filename> - open <filename> in a new tab (same as :tabedit and :tabnew)"],
+    \ ["Ctrl-T and Ctrl-D - indent and un-indent the current line in insert mode"],
+    \ ["vim +<num> - start vim and place the cursor on line <lnum>. If lnum is not specified, start at the end of the file"],
+    \ ["gj, gk (or g<Up> g<Down>) - move up or down a display line (makes a difference for wrapped lines)"],
+    \ [">{motion} and <{motion} - (normal mode) increase/decrease the current indent. e.g. << - decrease the indent of the current line"],
+    \ ["\"+ and \"* - clipboard and current selection registers under X. e.g. \"+p to paste from the clipboard and \"+y to copy to the clipboard"],
+    \ [":r!<cmd> - insert the result of <cmd> into the current buffer at the cursor. e.g. :r!ls *.h"],
+    \ ["& - re-run last :s command (&& to remember flags)"],
+    \ ["set wildignore - ignore matching files when using tab complete on filenames. e.g. :set wildignore=*.o,*.lo"],
+    \ ["CTRL-V <tab> - in insert mode, enters a real tab character, disregarding tab and indent options"],
+    \ ["CTRL-U/CTRL-D - scroll up/down, moving the cursor the same number of lines if possible (unlike <PageUp>/<PageDown>)"],
+    \ [":set cursorline - Highlight the current line under the cursor"],
+    \ [":set showcmd - show the number of lines/chacters in a visual selection"],
+    \ [":x is like \":wq\", but write only when changes have been made"],
+    \ ["ctrl-b / ctrl-f : page up / page down"],
+    \ ["ctrl-clic / ctrl-t : go to symbol definition (= ctrl-]) (using tags) and back. You can use \"make tags\" autotooled projects to create tag"],
+    \ ]
+
+
 " Function: s:get_random_offset {{{1
 function! s:get_random_offset(max) abort
   return str2nr(matchstr(reltimestr(reltime()), '\.\zs\d\+')[1:]) % a:max
@@ -156,6 +333,11 @@ function! startify#fortune#quote() abort
   return s:quotes[s:get_random_offset(len(s:quotes))]
 endfunction
 
+" Function: #tip {{{1
+function! startify#fortune#tip() abort
+  return s:tips[s:get_random_offset(len(s:tips))]
+endfunction
+
 " Function: #boxed {{{1
 function! startify#fortune#boxed() abort
   let wrapped_quote = []
@@ -178,6 +360,18 @@ function! startify#fortune#cowsay(...) abort
     let s:char_bottom_left  = get(a:000, 5, s:char_bottom_left)
   endif
   let boxed_quote = startify#fortune#boxed()
-  let boxed_quote += s:cow
+  let boxed_quote += s:tux
   return map(boxed_quote, '"   ". v:val')
+endfunction
+
+" Function: #cowtip {{{1
+function! startify#fortune#cowtip() abort
+  let wrapped_tip = []
+  let tip = startify#fortune#tip()
+  for line in tip
+    let wrapped_tip += split(line, '\%50c.\{-}\zs\s', 1)
+  endfor
+  let wrapped_tip = s:draw_box(wrapped_tip)
+  let wrapped_tip += s:cow
+  return map(wrapped_tip, '"   ". v:val')
 endfunction
