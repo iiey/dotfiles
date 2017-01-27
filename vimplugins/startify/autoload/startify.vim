@@ -18,6 +18,7 @@ let s:relative_path  = get(g:, 'startify_relative_path') ? ':.:~' : ':p:~'
 let s:session_dir    = resolve(expand(get(g:, 'startify_session_dir',
       \ has('win32') ? '$HOME\vimfiles\session' : '~/.vim/session')))
 let s:tf             = exists('g:startify_transformations')
+let s:vimtip         = get(g:, 'startify_enable_vimtip', 0)
 
 let s:skiplist = get(g:, 'startify_skiplist', [
       \ 'COMMIT_EDITMSG',
@@ -143,6 +144,9 @@ function! startify#insane_in_the_membrane() abort
 
   if exists('g:startify_custom_footer')
     call append('$', g:startify_custom_footer)
+  endif
+  if s:vimtip
+    call append('$', startify#fortune#cowtip())
   endif
 
   setlocal nomodifiable nomodified
