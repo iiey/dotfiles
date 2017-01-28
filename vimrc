@@ -183,8 +183,6 @@ function! UpdateCtags(proDir)
         call system(cmd) | echom "write:" . a:proDir . "/.tags"
     endif
 endfunction
-"Auto call function if file is saved
-"autocmd BufWritePost *.cpp,*.h,*.c silent! call UpdateCtags(projRootDir)
 " }}}
 
 
@@ -234,9 +232,6 @@ function! ToggleNERDTreeFind()
     "use nerdtree otherwise
     if g:NERDTree.IsOpen() | NERDTreeClose | else | NERDTreeFind | endif
 endfunction
-
-"close nerdtree if there is no file left
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 "ignore files and folder
 let NERDTreeIgnore=['build', '\~$']
@@ -311,13 +306,6 @@ let b:bad_whitespace_show=0
 ":MAKE runs :make in background with asyncrun
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 
-"automate opening quickfix when asyncrun starts
-"and close on successful exit
-augroup vimrc
-    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
-    autocmd User AsyncRunStop call OnAsyncExit()
-augroup END
-
 "helper function for closing quickfix after finishing job
 function! OnAsyncExit()
     "check status of asyncrun after job finished
@@ -328,8 +316,6 @@ function! OnAsyncExit()
         let timer = timer_start(1000, {-> execute(":call asyncrun#quickfix_toggle(8, 0)")})
     endif
 endfunc
-"one line statement without timer
-"autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 
 "display progress in statusline of airline
 "let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
@@ -414,8 +400,27 @@ endfunction
 " }}}
 
 
+" AUTOCMD {{{
+augroup vimrc
+    "prevent calling multiple times by sourcing
+    autocmd!
+    "update tags on saving
+    "autocmd BufWritePost *.cpp,*.h,*.c silent! call UpdateCtags(projRootDir)
 
-" Mapping {{{
+    "close nerdtree if there is no file left
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+    "open quickfix when asyncrun starts
+    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
+    "and close on success
+    autocmd User AsyncRunStop call OnAsyncExit()
+    "one line statement without timer function
+    "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
+augroup END
+" }}}
+
+
+" MAPPING {{{
 "LEADER KEY (by default is backslash "\")
 "let mapleader = "["
 
