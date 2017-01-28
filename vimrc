@@ -128,7 +128,6 @@ if !empty(glob("~/.vim/bundle/startify"))
     let g:startify_custom_footer = map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') + [''] +
                                  \ map(split(system('date -R'), '\n'), '"   ". v:val') +
                                  \ ['   Hey ' . $USER . '! This cow has a vimtip for you:']
-    let g:startify_header_figure = 1
     let g:startify_enable_vimtip = 1
     "limit list of mru files
     let g:startify_files_number = 7
