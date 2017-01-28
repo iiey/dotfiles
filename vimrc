@@ -39,11 +39,12 @@ set backspace=2             "solve some hw vs system conflict, make it work like
 
 "COLORSCHEME
 set background=dark
-if $KONSOLE_PROFILE_NAME == "Solarized"
-    colorscheme solarized
+"TODO fix this
+if $KONSOLE_PROFILE_NAME ==? "solarized" || $TERM_PROGRAM ==? "iterm.app"
+    silent! colorscheme solarized
     let g:airline_theme='solarized'
 else
-    colorscheme wombat256mod
+    silent! colorscheme wombat256mod
     let g:airline_theme='wombat'
 endif
 
