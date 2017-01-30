@@ -1,5 +1,5 @@
 DESCRIPTION:
-Themes are generated from vim plugin "tmuxline". See also section tmuxline section in "vimrc"
+Themes are generated from vim plugin "tmuxline". See also section tmuxline in "vimrc"
 
 INSTALL:
 1. Copy these themes to $HOME/.config/tmux/
