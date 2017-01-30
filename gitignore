@@ -1,0 +1,15 @@
+###################
+# Generated files/folders
+.DS_Store
+.kdev4/
+.svn
+*.tags
+build/
+doc/tags
+rvm.kdev4
+
+###################
+# # Temporary files
+*.swp
+*.swo
+*~
