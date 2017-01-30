@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 
+#Declare variables
+CURRENT=$(pwd -P)
+TMUXCOLORS="$HOME/.config/tmux"
+VIMCOLORS="$HOME/.vim/colors"
+DOTFILES=("ackrc" "apparix_bash" "ctags" "inputrc" "gitignore_global" "git_template" "gvimrc" "vimrc" "myrc" "tmux.conf")
+case $OSTYPE in
+  darwin*)
+    BASH_FILE=$HOME/.bash_profile
+    ;;
+  *)
+    BASH_FILE=$HOME/.bashrc
+    ;;
+esac
+
 #Helper functions
 #Show how to use this installer
 function show_usage() {
@@ -13,14 +27,23 @@ function show_usage() {
 
 #Back up existing configuration and link new one to dotfiles
 function link_file() {
-    if [ -w "$HOME/.$1" ]; then
-        #TODO unlink if symlink
-        #TODO source .myrc in bash_file
-        cp -aL "$HOME/.$1" "$HOME/.$1.bak" && echo "Moved original: .$1 --> .$1.bak"
-        ln -sfn "$CURRENT/$1" "$HOME/.$1" && echo "Created symlink: ~/.$1@ --> $CURRENT/$S1"
-    else
-        echo "$HOME/.$1 is not writeable" && exit 1;
-    fi 
+    SOURCE=$1
+    TARGET=$2
+    [ -f "$HOME/$TARGET" ] && cp -avL "$HOME/$TARGET" $CURRENT/backup/$SOURCE.bak
+    ln -sfn "$CURRENT/$SOURCE" "$HOME/$TARGET" && echo "Created symlink: ~/$TARGET@ --> $CURRENT/$SOURCE"
+    #TODO source .myrc in bash_file
+}
+
+#copy vim colorschemes and tmux themes
+function sync_themes() {
+    echo -e "Copying colorschemes to $VIMCOLORS...\n"
+    [ ! -d "$VIMCOLORS" ] && mkdir -p "$VIMCOLORS"
+    rsync -aiu $CURRENT/vimcolors/ $VIMCOLORS
+
+    if [ -n "$(type -t tmux)" ] && [ -d "$TMUXCOLORS" ]; then
+        echo -e "Copying themes to $TMUXCOLORS...\n"
+        rsync -aiu $CURRENT/tmuxcolors/ $TMUXCOLORS
+    fi
 }
 
 
@@ -41,66 +64,65 @@ while getopts "hiu" opt; do
   h) show_usage; exit 0 ;;
   i) install=true ;;
   u) update=true ;;
-  ?) show_usage >&2; exit 1 ;;
+  ?) show_usage; exit 1 ;;
   esac
 done
 shift $(expr $OPTIND - 1)
 
 
-#Init Info
-CURRENT=$(pwd -P)
-DOTFILES=("ackrc" "apparix_bash" "bashrc" "ctags" "gvimrc" "inputrc" "myrc" "tmux.conf" "vimrc")
-case $OSTYPE in
-  darwin*)
-    BASH_FILE=$HOME/.bash_profile
-    ;;
-  *)
-    BASH_FILE=$HOME/.bashrc
-    ;;
-esac
-
-
 #Install
-if $install; then
-    echo "Installing dotfiles..."
-    for dotfile in DOTFILES; do
-        read -e -n 1 -r -p "Would you like to setup $dotfile? [y/N]" resp
+if [ $install ]; then
+    echo "*** Installing dotfiles..."
+    for dotfile in ${DOTFILES[@]}; do
+        read -e -n 1 -p "Would you like to setup $dotfile? [y/N/q]: " resp
         case $resp in
             [yY])
-                link_file $dotfile;;
+                link_file $dotfile .$dotfile;;
             [nN]|"")
+                continue;;
+            [qQ])
                 break;;
         esac
     done
+    unset resp
 
     #TODO interate through basic, extended and enhanced modules
-    echo "Installing vim plugins..."
-    read -e -n 1 -r -p "Would you like to get vimplugins submodules? [y/N]" resp
+    #TODO specify plugin to download
+    echo "*** Installing vim plugins..."
+    read -e -n 1 -p "Would you like to get vimplugins submodules? [y/N]: " resp
+    case $resp in
+        [yY])
+            git submodule init && git submodule update --remote;;
+            #TODO check vim version, link to bundle or pack
+        [nN]|"")
+            ;;
+    esac
+
+    echo "*** Installing themes..."
+    sync_themes
+
+    #TODO add conky, dircolors
+    echo "*** Installation finished!"
+fi
+
+#Update
+if [ $update ]; then
+    read -e -n 1 -p "Update dotfiles? [Y/n]: " resp
+    case $resp in
+        [yY]|"")
+            git pull;;
+        [nN])
+            ;;
+    esac
+
+    #TODO update only previously installed submodules
+    read -e -n 1 -p "Update submodules? [y/N]: " resp
     case $resp in
         [yY])
             git submodule init && git submodule update --remote;;
         [nN]|"")
-            break;;
+            ;;
     esac
-
-    echo "Installing vim colorschemes..."
-    vimcolors="$HOME/.vim/colors"
-    [ ! -d "$vimcolors" ] && mkdir -p "$vimcolors"
-    rsync -avz $CURRENT/vimcolors/ $vimcolors
-
-    echo "Installing tmux colorschemes..."
-    [ -n "$(type -t tmux)" ] && rsync -avz $CURRENT/tmuxcolors/ $HOME/.config/tmux
-
-    #TODO add conky, dircolors, git-hooks
-fi
-
-#Update
-if $update; then
-    echo "Updating dotfiles..."
-    git pull
-    #TODO update only previously installed submodules
-    echo "Updating submodules..."
-    git submodule init && git submodule update --remote
 fi
 
 #TODO uninstall
