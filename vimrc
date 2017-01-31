@@ -300,12 +300,42 @@ let g:better_whitespace_filetypes_blacklist=['txt', 'csv', 'ppm']
 let b:bad_whitespace_show=0
 " }}}
 
+"MAKE {{{
+"identify build-folder by searching "upwards" for "build" from "." to "~/sources"
+let projBuildDir = finddir('build', '.;$HOME/sources')
+if projBuildDir !=""
+    let &makeprg='cmake --build ' . shellescape(projBuildDir) . ' --target '
+endif
+"Note: Using "-- -jN" to pass jobs config to make command
+"}}}
+
+
+"GREP: SILVER SEARCH {{{
+if executable('ag')
+  "use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  "use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag -Q -l --nocolor --hidden -g "" %s'
+
+  "ag is fast that ctrlp doesn't need to cache
+  let g:ctrlp_use_caching = 0
+
+  "Use this if asyncrun not exists
+  if !exists(":Ag")
+    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+  endif
+endif
+"}}}
 
 "ASYNCRUN {{{
 "run shell commands on background and read output in quickfix window (vim8)
 
-":MAKE runs :make in background with asyncrun
+"TODO create commands if only asyncrun available => vim/after
+":Make runs :make in background with asyncrun
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
+":Ag runs :grep in background with asyncrun
+command! -bang -nargs=* -complete=file Ag AsyncRun -program=grep @ <args>
 
 "helper function for closing quickfix after finishing job
 function! OnAsyncExit()
@@ -324,15 +354,6 @@ endfunc
 
 
 "UTILS FUNCTIONS {{{
-
-"CMAKE+VIM
-"identify build-folder by searching "upwards" for "build" from "." to "~/sources"
-let projBuildDir = finddir('build', '.;$HOME/sources')
-if projBuildDir !=""
-    let &makeprg='cmake --build ' . shellescape(projBuildDir) . ' --target '
-endif
-"Note: Using "-- -jN" to pass jobs config to make command
-
 
 "TOGGLE HYDRID/ABSOLUTE LINE NUMBER
 function! ToggleLineNumber()
@@ -414,7 +435,7 @@ augroup vimrc
     "open quickfix when asyncrun starts
     autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
     "and close on success
-    autocmd User AsyncRunStop call OnAsyncExit()
+    "autocmd User AsyncRunStop call OnAsyncExit()
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 augroup END
@@ -452,6 +473,8 @@ noremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
 nnoremap <C-q> :q!<cr>
 "save file with Ctrl-S
 nnoremap <C-s> :w<cr>
+"ag-search
+nnoremap <S-s> :Ag<Space>
 
 "DEACTIVATION
 "backtick as tmux keybind, disable in vim
