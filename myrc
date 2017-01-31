@@ -26,6 +26,13 @@ alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 #ranger (exit but stay in ranger currDir)
 alias ranger='ranger --choosedir=$HOME/rangerdir; LASTDIR=`cat $HOME/rangerdir`; cd "$LASTDIR"'
 
+#silver search
+alias ag="ag --noheading --smart-case --skip-vcs-ignores \
+            --path-to-ignore $HOME/.agignore \
+            --color-match '01;31' \
+            --color-path '36' \
+            --color-line-number '32'"
+
 #ctags
 #see $HOME/.ctags for default parameter configuration
 alias tags='ctags -R --languages=C++ --exclude=build* --exclude=.git --exclude=.svn --exclude=*.png -f ./.tags .'
