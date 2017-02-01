@@ -18,6 +18,13 @@ alias l='ls -aCF'
 alias la='ls -laAh'     #long list all
 alias ll='ls -lFh'      #long list without .
 
+# some vim abbreviations
+alias v='vim'
+alias vi='vim'
+alias g='gvim'
+alias gv='gvim'
+alias gvi='gvim'
+
 #todo: write gerneral cd to switch between source and build
 #echo ${PWD%build*} delete all from left of match
 #echo ${PWD#*build} delete all from right of match
