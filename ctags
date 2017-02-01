@@ -5,4 +5,6 @@
 --exclude=log
 --exclude=*.png
 --languages=+C,C++,-Javascript,HTML,SQL,Python
+--C++-kinds=+p
+--fields=+iaS
 --append

@@ -35,7 +35,7 @@ alias ag="ag --noheading --smart-case --skip-vcs-ignores \
 
 #ctags
 #see $HOME/.ctags for default parameter configuration
-alias tags='ctags -R --languages=C++ --exclude=build* --exclude=.git --exclude=.svn --exclude=*.png -f ./.tags .'
+alias tags='ctags -R -f ./.tags .'
 
 git-ctags() {
     #read project root dir from git
