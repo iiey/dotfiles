@@ -1,4 +1,4 @@
-"BASIC sETTING {{{
+"BASIC SETTING {{{
 "Folding option for this file
 setlocal foldmethod=marker  "use marker curved bracket for folding
 setlocal foldlevel=2        "over level 1 will be closed
@@ -320,10 +320,10 @@ endif
 "}}}
 
 
-"GREP: SILVER SEARCH {{{
+"GREP - SILVER SEARCH {{{
 if executable('ag')
   "use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
+  set grepprg=ag\ -Q\ --nogroup\ --nocolor
 
   "use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag -Q -l --nocolor --hidden -g "" %s'
@@ -489,8 +489,14 @@ nnoremap <C-q> :q!<cr>
 nnoremap <C-s> :w<cr>
 "ag-search
 nnoremap <S-s> :Ag<Space>
+"smarttag: to declaration
+nnoremap td :call SmartTag#SmartTag("goto")<cr>
+"map vertical help
+cnoremap h\ :vertical botright help
 
 "DEACTIVATION
+"useless substitution
+nnoremap s <NOP>
 "backtick as tmux keybind, disable in vim
 nnoremap ` <NOP>
 "join line
