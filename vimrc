@@ -62,7 +62,31 @@ endif
 " }}}
 
 
-"TMUX+VIM: handle some issues {{{
+"COMPLETION (builtin) {{{
+"DICTIONARY
+"Add default file if on FreeBSD
+if filereadable("/usr/share/dict/words")
+    set dictionary+=/usr/share/dict/words
+    "Enable completion from defined dictionary
+    set complete+=k                     "<c-x><c-k> to trigger this list
+endif
+
+"OMNI COMPLETION
+set omnifunc=syntaxcomplete#Complete    "open in I-Mode <c-x><c-o>, navigate <c-n/p>, close <c-e>
+
+"Custom behaviour of completion menu
+"longest: don't select first macht but the longest common text of all matches
+"menuone: menu will come up even if there's one match
+set completeopt=longest,menuone
+
+"improve c-n: keep popup menu on while typing to narrow the matches
+"pumvisible: return non-zero if PopUpMenu visible otherwise false
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+            \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+"}}}
+
+
+"TMUX - Handle some issues {{{
 "FIX ARROWS
 "vim not recognize arrow characters
 "vim handles keywords correctly if it 'TERM=xterm-...' but tmux using screen-256color
@@ -187,21 +211,6 @@ endfunction
 " }}}
 
 
-"OMNI COMPLETION (builtin) {{{
-set omnifunc=syntaxcomplete#Complete    "open in I-Mode <c-x><c-o>, navigate <c-n/p>, close <c-e>
-
-"Custom behaviour of completion menu
-"longest: don't select first macht but the longest common text of all matches
-"menuone: menu will come up even if there's one match
-set completeopt=longest,menuone
-
-"improve c-n: keep popup menu on while typing to narrow the matches
-"pumvisible: return non-zero if PopUpMenu visible otherwise false
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-            \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-"}}}
-
-
 "CTRLP {{{
 "ctrlp auto. finds projectRoot based on .svn/.git...
 let g:ctrlp_working_path_mode = 'ra'                "working dir is nearest acestor of current file
@@ -300,6 +309,7 @@ let g:better_whitespace_filetypes_blacklist=['txt', 'csv', 'ppm']
 let b:bad_whitespace_show=0
 " }}}
 
+
 "MAKE {{{
 "identify build-folder by searching "upwards" for "build" from "." to "~/sources"
 let projBuildDir = finddir('build', '.;$HOME/sources')
@@ -327,6 +337,7 @@ if executable('ag')
   endif
 endif
 "}}}
+
 
 "ASYNCRUN {{{
 "run shell commands on background and read output in quickfix window (vim8)
