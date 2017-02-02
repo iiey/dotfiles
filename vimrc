@@ -351,12 +351,17 @@ command! -bang -nargs=* -complete=file Ag AsyncRun -program=grep @ <args>
 
 "helper function for closing quickfix after finishing job
 function! OnAsyncExit()
-    "check status of asyncrun after job finished
-    if g:asyncrun_status == 'success'
-        "fire a time with lambda as it's function callback
+    "user can close quickfix manually if it displays grep results
+    let l:grep_job = 0
+    for cmd in ['^ag', '^ack', '^grep']
+        if @: =~ cmd | let l:grep_job += 1 | endif
+    endfor
+    "create a timer if only job other than grep succeeded
+    if g:asyncrun_status == 'success' && grep_job == 0
+        "fire a timer with lambda as it's function callback
         "lambda body handles only an expression expr1
         "using execute() to have expr1 from an Ex command
-        let timer = timer_start(1000, {-> execute(":call asyncrun#quickfix_toggle(8, 0)")})
+        let timer = timer_start(500, {-> execute(":call asyncrun#quickfix_toggle(8, 0)")})
     endif
 endfunc
 
@@ -450,7 +455,7 @@ augroup vimrc
     "open quickfix when asyncrun starts
     autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
     "and close on success
-    "autocmd User AsyncRunStop call OnAsyncExit()
+    autocmd User AsyncRunStop call OnAsyncExit()
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 augroup END
