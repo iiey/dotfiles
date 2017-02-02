@@ -215,10 +215,11 @@ endfunction
 "ctrlp auto. finds projectRoot based on .svn/.git...
 let g:ctrlp_working_path_mode = 'ra'                "working dir is nearest acestor of current file
 let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/](.git|.svn|.tags|build|tmp)$',
-    \ 'file': '\v\.(exe|so|dll|swp|zip)$'}          "exclude file and directories
+    \ 'dir':  '\v[\/](.git|.svn|build|tmp)$',
+    \ 'file': '\v\.(exe|so|dll|swp|tags|zip)$'}          "exclude file and directories
 "set wildignore+=*/tmp/*,*/build/*,*.so,*.swp,*.zip
 let g:ctrlp_by_filename = 1                         "default searching by filename instead of full path
+"let g:ctrlp_cmd = 'CtrlPMixed'                      "invoke default command to find in file, buffer and mru
 " }}}
 
 
