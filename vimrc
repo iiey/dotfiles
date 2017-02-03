@@ -495,8 +495,6 @@ nnoremap <C-q> :q!<cr>
 nnoremap <C-s> :w<cr>
 "ag-search
 nnoremap <S-s> :Ag<Space>
-"smarttag: to declaration
-nnoremap td :call SmartTag#SmartTag("goto")<cr>
 "map vertical help
 cnoremap h\ :vertical botright help
 
