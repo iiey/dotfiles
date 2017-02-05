@@ -1,3 +1,8 @@
+" Set language menu, mostly gvim we don't see often :menu in vim
+source $VIMRUNTIME/delmenu.vim
+set langmenu=en_US
+source $VIMRUNTIME/menu.vim
+
 " Font selection
 "set guifont=Monospace\ 10
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9

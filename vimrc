@@ -10,11 +10,6 @@ if has('unix')
 else
     language messages en
 endif
-"loading time 16ms
-"set language menu, mostly gvim we don't see often :menu in vim
-source $VIMRUNTIME/delmenu.vim
-set langmenu=en_US
-source $VIMRUNTIME/menu.vim
 
 "INTERACTION
 set cursorline
