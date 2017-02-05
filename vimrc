@@ -4,13 +4,16 @@ setlocal foldmethod=marker  "use marker curved bracket for folding
 setlocal foldlevel=2        "over level 1 will be closed
 
 "LANGUAGE INTERFACE
-set langmenu=en_US          "set language menu (gvim)
-if has('unix')              "set language messages (vim)
+"set language for output :messages
+if has('unix')
     language messages C
 else
     language messages en
 endif
+"loading time 16ms
+"set language menu, mostly gvim we don't see often :menu in vim
 source $VIMRUNTIME/delmenu.vim
+set langmenu=en_US
 source $VIMRUNTIME/menu.vim
 
 "INTERACTION
@@ -24,6 +27,7 @@ set mouse=a         "activate mouse in all modes 'a'/ normal mode 'n'
 "set ttymouse=xterm2 "xterm-like mouse handling (support drag to resize split windows)
 set t_Co=256        "enable term color 256
 set encoding=utf-8
+"loading time 20ms
 syntax on                               "enable syntax highlighting
 filetype on                             "enable filetype detecting
 filetype plugin indent on               "smartindent based filetype, set cindent for c/c++
@@ -41,6 +45,7 @@ set backspace=2             "solve some hw vs system conflict, make it work like
 set background=dark
 "TODO fix this
 if $KONSOLE_PROFILE_NAME ==? "solarized" || $TERM_PROGRAM ==? "iterm.app"
+    "loading time 5ms
     silent! colorscheme solarized
     let g:airline_theme='solarized'
 else
@@ -105,6 +110,7 @@ endif
 
 
 "PATHOGEN {{{
+"loading time all plugins 40ms
 "bundle management
 execute pathogen#infect()
 execute pathogen#helptags()
@@ -149,10 +155,11 @@ let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme
 if !empty(glob("~/.vim/bundle/startify"))
     "set bookmark with shortcut
     let g:startify_bookmarks = [{'v': '~/.vimrc'}, {'g': '~/.gvimrc'}, {'m': '~/.myrc'}, {'r': '~/.bashrc'}, {'t': '~/.tmux.conf'}]
+    "FIXME loading time 27ms
     "set vimtip as footer
-    let g:startify_custom_footer = map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') + [''] +
-                                 \ map(split(system('date -R'), '\n'), '"   ". v:val') +
-                                 \ ['   Hey ' . $USER . '! This cow has a vimtip for you:']
+"    let g:startify_custom_footer = map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') + [''] +
+"                                 \ map(split(system('date -R'), '\n'), '"   ". v:val') +
+"                                 \ ['   Hey ' . $USER . '! This cow has a vimtip for you:']
     let g:startify_enable_vimtip = 1
     "limit list of mru files
     let g:startify_files_number = 7
