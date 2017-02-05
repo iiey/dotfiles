@@ -98,6 +98,8 @@ if &term =~ '^screen'
     execute "set <xRight>=\e[1;*C"
     execute "set <xLeft>=\e[1;*D"
 endif
+"TODO Alt not work, not tmux but general problem of terminals by redirect
+"keystroke to vim
 "}}}
 
 
@@ -140,8 +142,6 @@ let g:airline#extensions#whitespace#enabled = 0
 "2. create a snapshot file with :TmuxlineSnapshot [file]
 "3. add it to .tmux.conf: if-shell "test -f [file]" "source [file]"
 let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme as vim when starts vim
-
-"let g:clang_library_path="/home/ly/lib/"
 " }}}
 
 
@@ -173,10 +173,6 @@ endif
 "ULTISNIPS {{{
 "using snippets template from: https://github.com/honza/vim-snippets.git
 let g:UltiSnipsSnippetDirectories=["$HOME/.vim/bundle/vim-snippets/UltiSnips"]
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsListSnippets="<c-l>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 " }}}
 
 
@@ -493,14 +489,15 @@ noremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
 nnoremap <C-q> :q!<cr>
 "save file with Ctrl-S
 nnoremap <C-s> :w<cr>
-"ag-search
-nnoremap <S-s> :Ag<Space>
+"ag or S for Search (disable line substitute)
+nnoremap S :Ag<Space>
 "map vertical help
 cnoremap h\ :vertical botright help
 
 "DEACTIVATION
-"useless substitution
-nnoremap s <NOP>
+"useless substitutions
+"nnoremap s <NOP>
+"nnoremap S <NOP>
 "backtick as tmux keybind, disable in vim
 nnoremap ` <NOP>
 "join line
@@ -511,24 +508,21 @@ nnoremap K <NOP>
 nnoremap Q <NOP>
 
 "MOVEMENT
+"increase steps of basic moves
+nnoremap <C-e> 5<C-e>
+nnoremap <C-y> 5<C-y>
+"this is convenient and more comfortable
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
 
-nnoremap <C-e> 5<C-e>
-nnoremap <C-y> 5<C-y>
+"WINDOWS or s for slits (disable character substitute)
+noremap s <c-w>
 
 "TABS JUMP
-map <C-S><left> :tabl<cr>
-map <C-S><right> :tabr<cr>
-map <C-S><up> :tabn<cr>
-map <C-S><down> :tabp<cr>
-
-"WINDOWS
-"TODO mapping Alt not work
-nmap <silent> <C-left> :wincmd h<cr>
-nmap <silent> <C-down> :wincmd j<cr>
-nmap <silent> <C-up> :wincmd k<cr>
-nmap <silent> <C-right> :wincmd l<cr>
+noremap <C-S><left> :tabl<cr>
+noremap <C-S><right> :tabr<cr>
+noremap <C-S><up> :tabn<cr>
+noremap <C-S><down> :tabp<cr>
 
 "F-n
 nnoremap <silent>   <F2> :call ToggleNERDTreeFind()<cr>
