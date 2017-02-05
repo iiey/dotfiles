@@ -153,7 +153,7 @@ if !empty(glob("~/.vim/bundle/startify"))
     "FIXME loading time 27ms
     "set vimtip as footer
 "    let g:startify_custom_footer = map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') + [''] +
-"                                 \ map(split(system('date -R'), '\n'), '"   ". v:val') +
+"                                 \ map(split(strftime("%c"), '\n'), '"   ". v:val') +
 "                                 \ ['   Hey ' . $USER . '! This cow has a vimtip for you:']
     let g:startify_enable_vimtip = 1
     "limit list of mru files
@@ -492,9 +492,9 @@ nnoremap <C-q> :q!<cr>
 "save file with Ctrl-S
 nnoremap <C-s> :w<cr>
 "ag or S for Search (disable line substitute)
-nnoremap S :Ag<Space>
+nnoremap S :Ag<space>
 "map vertical help
-cnoremap h\ :vertical botright help
+cnoremap h\ :vertical botright help<space>
 
 "DEACTIVATION
 "useless substitutions
