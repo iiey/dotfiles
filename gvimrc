@@ -24,7 +24,11 @@ set guioptions-=T
 " see also :h mouseshape
 "set mouseshape=n:pencil
 
-" Toggle bars with F6
-let g:menubar=0
-map <silent> <F11> :if g:menubar == 1<cr>:set guioptions-=mT<cr>:let g:menubar = 0<cr>
-  \ :else<cr>:set guioptions+=mT<cr>:let g:menubar = 1<cr>:endif<cr>
+function! ToggleToolbar()
+    if &go =~# '[mT]'
+        set guioptions -=mT
+    else
+        set guioptions +=mT
+    endif
+endfunction
+noremap <silent> <Leader>t :call ToggleToolbar()<cr>
