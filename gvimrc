@@ -4,12 +4,17 @@ set langmenu=en_US
 source $VIMRUNTIME/menu.vim
 
 " Font selection
-"set guifont=Monospace\ 10
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
-let g:airline_powerline_fonts=1
+if has('gui_gtk') || has('gui_gnome')
+    "set guifont=Monospace\ 10
+    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
+    colorscheme codeschool
+    let g:airline_theme='cobalt2'
+elseif has('gui_macvim')
+    set guifont=Sauce\ Code\ Powerline\ Light:h13
+    colorscheme tomorrow-night
+    let g:airline_theme='tomorrow'
+endif
 
-colorscheme codeschool
-let g:airline_theme='cobalt2'
 silent highlight default CursorLine
 "highlight Pmenu guibg=lightblue guifg=black
 
