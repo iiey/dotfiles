@@ -5,8 +5,11 @@
 HISTCONTROL=ignoreboth:erasedups
 # save and reload the history after each command finishes
 # this could change index of commands in .bash_history
-#FIXME
-#export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+if [ -z PROMPT_COMMAND ]; then
+    PROMPT_COMMAND="history -a; history -c; history -r;"
+else
+    PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+fi
 
 #ALIASES
 # up dir
