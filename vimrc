@@ -88,7 +88,7 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 "Improve tab completion in command mode
 "if searching for file, tell vim to look downwards recursive (two asterisks)
 "See also help path, file-searching and cpt
-set path +=**
+"set path +=**
 "show candidates in a menu line, iterate with tab and shift-tab
 "set wildmenu
 "or list all matches with tab (same as ctrl-d)
