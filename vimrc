@@ -531,10 +531,12 @@ nnoremap <C-k> 5<C-y>
 noremap s <c-w>
 
 "TABS JUMP
-noremap <C-S><left> :tabl<cr>
-noremap <C-S><right> :tabr<cr>
-noremap <C-S><up> :tabn<cr>
-noremap <C-S><down> :tabp<cr>
+"tabprevious (gT) and tapnext (gt)
+"or ngt for jumping to n.te tab
+noremap <C-S><left> :tabp<cr>
+noremap <C-S><right> :tabn<cr>
+noremap < :tabp<cr>
+noremap > :tabn<cr>
 
 "F-n
 nnoremap <silent>   <F2> :call ToggleNERDTreeFind()<cr>
