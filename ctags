@@ -7,4 +7,5 @@
 --languages=+C,C++,-Javascript,HTML,SQL,Python
 --C++-kinds=+p
 --fields=+iaS
+--extra=+f
 --append
