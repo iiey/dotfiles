@@ -407,6 +407,16 @@ function! ToggleColor()
     endif
 endfunction
 
+"Toggle cpp header
+"@see :h filename-modifiers
+function! ToggleSourceHeader()
+  if (expand ("%:e") == "cpp")
+    find %:t:r.h
+  else
+    find %:t:r.cpp
+  endif
+endfunction
+nnoremap 's :call ToggleSourceHeader()<cr>
 
 "Change colorscheme and airlinetheme
 function! ChangeTheme(color)
