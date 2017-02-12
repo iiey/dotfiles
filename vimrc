@@ -480,7 +480,7 @@ nnoremap : ;
 "buffers
 nnoremap <silent> <leader>b :buffers<cr>:buffer<space>
 "toggle colortheme
-nnoremap <silent> <leader>ct :call ToggleColor()<cr>
+nnoremap <silent> <leader>c :call ToggleColor()<cr>
 "relative line number
 nnoremap <silent> <leader>l :call ToggleLineNumber()<cr>
 "toggle highlight cursor
