@@ -319,7 +319,17 @@ let g:NERDTreeFileExtensionHighlightFullName = 1
 
 
 "EASYMOTION {{{
-"using <Leader> instead of <Leader>²
+"uncomment for using <leader> instead of <leader>²
+"map <leader> <Plug>(easymotion-prefix)
+
+"remap only one feature
+nmap <leader>f <Plug>(easymotion-f)
+
+"v matches [v|V] and V matches only [V]
+let g:EasyMotion_smartcase = 1
+"}}}
+
+
 "OTHER PLUGINS {{{
 "CPP-ENHANCED-HIGHLIGHT
 let g:cpp_class_scope_highlight = 1
