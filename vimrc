@@ -19,6 +19,7 @@ set hlsearch        "highlight matching search string
 set number          "show line number
 set relativenumber  "show relative line number
 set mouse=a         "activate mouse in all modes 'a'/ normal mode 'n'
+set scrolloff=3     "screen lines offset above and below cursor
 "set ttymouse=xterm2 "xterm-like mouse handling (support drag to resize split windows)
 set t_Co=256        "enable term color 256
 set encoding=utf-8
@@ -564,6 +565,15 @@ nnoremap <C-y> 5<C-y>
 "this is convenient and more comfortable
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
+
+"SEARCHING
+"make matches appear in the middle of screen (add zz)
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
 
 "WINDOWS or s for slits (disable character substitute)
 noremap s <c-w>
