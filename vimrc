@@ -49,13 +49,17 @@ else
     let g:airline_theme='wombat'
 endif
 
-"CHANGE SOME COLORS WHEN DIFFING WITHOUT SOLARIZED THEME
+"DIFFING
 if &diff && g:colors_name != 'solarized'
     highlight DiffAdd    cterm=bold ctermfg=white ctermbg=DarkGreen
     highlight DiffDelete cterm=bold ctermfg=white ctermbg=DarkGrey
     highlight DiffChange cterm=bold ctermfg=white ctermbg=DarkBlue
     highlight DiffText   cterm=bold ctermfg=white ctermbg=DarkRed
 endif
+
+"SESSION
+"prevent annoying if vimrc changed after session saved
+set ssop-=options    " do not store global and local values in a session
 
 "file format linux
 "set ff=unix
@@ -220,6 +224,8 @@ for vcs in ['.git', '.svn', '.hg']
     "searching from current "." upwards ";" to "~/sources"
     let projRootDir = fnamemodify(finddir(vcs, '.;$HOME/sources'), ':h')
     if isdirectory(projRootDir.'/'.vcs)
+        "init env-var for later uses
+        let $proj = projRootDir
         break
     else
         let projRootDir = ''
@@ -249,6 +255,7 @@ let g:ctrlp_custom_ignore = {
     \ 'file': '\v\.(exe|so|dll|swp|tags|zip)$'}          "exclude file and directories
 "set wildignore+=*/tmp/*,*/build/*,*.so,*.swp,*.zip
 let g:ctrlp_by_filename = 1                         "default searching by filename instead of full path
+let g:ctrlp_map = '<leader>p'
 "let g:ctrlp_cmd = 'CtrlPMixed'                      "invoke default command to find in file, buffer and mru
 " }}}
 
@@ -312,11 +319,7 @@ let g:NERDTreeFileExtensionHighlightFullName = 1
 
 
 "EASYMOTION {{{
-"Deactivate using <Leader> instead of <Leader><Leader> for trigger
-"map <Leader> <Plug>(easymotion-prefix)
-"}}}
-
-
+"using <Leader> instead of <Leader>²
 "OTHER PLUGINS {{{
 "CPP-ENHANCED-HIGHLIGHT
 let g:cpp_class_scope_highlight = 1
@@ -354,7 +357,7 @@ endif
 "GREP - SILVER SEARCH {{{
 if executable('ag')
   "use Ag over Grep
-  set grepprg=ag\ -Q\ --nogroup\ --nocolor
+  set grepprg=ag\ --nogroup\ --nocolor
 
   "use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag -Q -l --nocolor --hidden -g "" %s'
@@ -431,6 +434,7 @@ endfunction
 
 "Toggle cpp header
 "@see :h filename-modifiers
+"TODO expand file extension with tab
 function! ToggleSourceHeader()
   if (expand ("%:e") == "cpp")
     find %:t:r.h
@@ -438,7 +442,7 @@ function! ToggleSourceHeader()
     find %:t:r.cpp
   endif
 endfunction
-nnoremap 's :call ToggleSourceHeader()<cr>
+nnoremap ,s :call ToggleSourceHeader()<cr>
 
 "Change colorscheme and airlinetheme
 function! ChangeTheme(color)
@@ -469,18 +473,23 @@ inoremap <expr> <leader>j HUDigraphs()
 "ON_EXIT
 function! OnQuit()
     if &mod
-        echo "Save & Quit [y]es/[n]o]/[c]ancle: "
+        echo "Save & Quit [Y|y]es/[N|n]o/[c]ancle: "
         let l:saved = getchar()
         let l:saved = nr2char(l:saved)
-        if l:saved ==? 'n'  "case-insensive comparision
+
+        if l:saved ==# 'Y'
+            execute ':xa'
+        elseif l:saved ==# 'y'
+            execute ':x'
+        elseif l:saved ==# 'N'
+            execute ':qa!'
+        elseif l:saved ==# 'n'  "case-insensive comparision
             execute ':q!'
         elseif l:saved ==? 'c'
             redraw | echo "File not saved"
-        else
-            execute ':x'
         endif
     else
-        execute ':q'
+        execute ':qa'
     endif
 endfunction
 " }}}
@@ -492,6 +501,8 @@ augroup vimrc
     autocmd!
     "update tags on saving
     "autocmd BufWritePost *.cpp,*.h,*.c silent! call UpdateCtags(projRootDir)
+    "change directory of current local window
+    "autocmd bufenter * silent! lcd %:p:h
 
     "TODO write function in case more than one left behind windows of these kinds
     "close vim if one left behind window is nerdtree, quickfix or help
@@ -499,7 +510,7 @@ augroup vimrc
     autocmd bufenter * if (winnr("$") == 1 && getbufvar(winbufnr(1), '&buftype') == 'quickfix') | q | endif
     autocmd bufenter * if (winnr("$") == 1 && getbufvar(winbufnr(1), '&buftype') == 'help') | q | endif
 
-    "open quickfix when asyncrun starts
+    "open when asyncrun starts
     autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
     "and close on success
     autocmd User AsyncRunStop call OnAsyncExit()
@@ -534,29 +545,25 @@ nnoremap <silent> <leader>n :nohlsearch<cr>
 nnoremap <silent> <leader>r :if &mod <bar>:write<bar>endif<bar>:source $MYVIMRC<bar>:redraw<bar>:echo ".vimrc reloaded!"<cr>
 "change tab
 nnoremap <silent> <leader>t :tabs<cr>:let nr = input("Enter tab: ")<bar>if nr!= ''<bar>exe "normal" . nr . "gt"<bar>endif<cr>
-"quickfix
-noremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
-"quit without saving
-nnoremap <C-q> :q!<cr>
-"save file with Ctrl-S
-nnoremap <C-s> :w<cr>
+
+"QUICKFIX
+nnoremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
+nnoremap <C-n> :cnext<cr>zz
+nnoremap <C-p> :cprevious<cr>zz
+
+"quit all not save
+nnoremap <C-q> :qa!<cr>
+"save all & quit
+nnoremap <C-s> :xa<cr>
+
 "ag or S for Search (disable line substitute)
 nnoremap S :Ag<space>
+"change working directory
+nnoremap ,cd :cd %:p:h<cr>
 "map vertical help
-cnoremap h\ :vertical botright help<space>
-
-"DEACTIVATION
-"useless substitutions
-"nnoremap s <NOP>
-"nnoremap S <NOP>
-"backtick as tmux keybind, disable in vim
-nnoremap ` <NOP>
-"join line
-nnoremap J <NOP>
-"show manual
-nnoremap K <NOP>
-"Ex mode
-nnoremap Q <NOP>
+cnoremap vh vert botright help<space>
+"map vertical splitfind
+cnoremap vf vert sf<space>
 
 "MOVEMENT
 "increase steps of basic moves
@@ -583,8 +590,12 @@ noremap s <c-w>
 "or ngt for jumping to n.te tab
 noremap <C-S><left> :tabp<cr>
 noremap <C-S><right> :tabn<cr>
+"these interfere shift lines left and right
 noremap < :tabp<cr>
 noremap > :tabn<cr>
+"using (s-)tab and and repeat with dot command to shift instead
+vnoremap <tab> >
+vnoremap <s-tab> <
 
 "F-n
 nnoremap <silent>   <F2> :call ToggleNERDTreeFind()<cr>
@@ -594,6 +605,19 @@ nnoremap            <F5> :UndotreeToggle<cr>
 
 nnoremap <silent>   <F10> :call OnQuit()<cr>
 imap                <F10> <c-o><F10>                        "if in Insert-Mode switch to Insert-Normal-Mode to execute F10
+
+"DEACTIVATION
+"useless substitutions
+"nnoremap s <NOP>
+"nnoremap S <NOP>
+"backtick as tmux keybind, disable in vim
+nnoremap ` <NOP>
+"join line
+nnoremap J <NOP>
+"show manual
+nnoremap K <NOP>
+"Ex mode
+nnoremap Q <NOP>
 
 " cppman
 "command! -nargs=+ Cppman silent! call system("tmux split-window cppman " . expand(<q-args>))
