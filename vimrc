@@ -457,6 +457,13 @@ function! ChangeTheme(color)
 endfunction
 command! -nargs=* -complete=color ChangeTheme call ChangeTheme('<args>')
 
+"Head-up digraphs
+function! HUDigraphs()
+    digraphs
+    call getchar()
+    return "\<c-k>"
+endfunction
+inoremap <expr> <leader>j HUDigraphs()
 
 "ON_EXIT
 function! OnQuit()
