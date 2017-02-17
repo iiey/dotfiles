@@ -160,18 +160,37 @@ let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme
 
 "STARTIFY (modified) {{{
 if !empty(glob("~/.vim/bundle/startify"))
-    "set bookmark with shortcut
-    let g:startify_bookmarks = [{'v': '~/.vimrc'}, {'g': '~/.gvimrc'}, {'m': '~/.myrc'}, {'r': '~/.bashrc'}, {'t': '~/.tmux.conf'}]
+    "STARTUP limit lists to show
+    let g:startify_list_order = [['MRU:'], 'files',  ['Bookmark:'], 'bookmarks', ['Session:'], 'sessions']
+
+    "MRU limit list of mru files
+    let g:startify_files_number = 7
+    "ignore session in mru
+    let g:startify_session_ignore_files = 1
+
+    "BOOKMARK
+    let g:startify_bookmarks = [{'v': '~/.vimrc'}, {'g': '~/.gvimrc'}, {'m': '~/.myrc'}, {'b': '~/.bashrc'}, {'t': '~/.tmux.conf'}]
+
+    "SESSION
+    "where to store and load session
+    let g:startify_session_dir = '~/.vim/session'
+    "auto. update current session when leaving vim (:qa) or loading new one (:SLoad)
+    let g:startify_session_persistence = 1
+    "set empty. Do not auto. remove commands from session file
+    let g:startify_session_remove_lines = []
+
+    "FOOTER
+    "add vimtip to footer
+    let g:startify_enable_vimtip = 1
+
     "FIXME loading time 27ms
-    "set vimtip as footer
+    "custom footer
 "    let g:startify_custom_footer = map(split(system('vim --version | head -n1'), '\n'), '"   ". v:val') + [''] +
 "                                 \ map(split(strftime("%c"), '\n'), '"   ". v:val') +
 "                                 \ ['   Hey ' . $USER . '! This cow has a vimtip for you:']
-    let g:startify_enable_vimtip = 1
-    "limit list of mru files
-    let g:startify_files_number = 7
-    "set empty. Do not auto. remove commands from file
-    let g:startify_session_remove_lines = []
+
+    let g:startify_session_before_save = ['silent! NERDTreeTabsClose', 'silent! TagbarClose']
+
     "set color
     highlight StartifyBracket ctermfg=240
     highlight StartifyHeader  ctermfg=114
