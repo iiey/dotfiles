@@ -14,7 +14,7 @@ endif
 "INTERACTION
 set cursorline
 set incsearch       "show matching while searching
-set ignorecase      "search with case-insensitive
+set smartcase       "affect searching, matching, compare (expr4)
 set hlsearch        "highlight matching search string
 set number          "show line number
 set relativenumber  "show relative line number
@@ -105,7 +105,7 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 "FIX ARROWS
 "vim not recognize arrow characters
 "vim handles keywords correctly if it 'TERM=xterm-...' but tmux using screen-256color
-if &term =~ '^screen'
+if &term =~? '^screen'
     " tmux will send xterm-style keys when its xterm-keys option is on
     "need to be set in tmux.conf: set-window-option -g xterm-keys on
     execute "set <xUp>=\e[1;*A"
@@ -397,7 +397,7 @@ function! OnAsyncExit()
     "user can close quickfix manually if it displays grep results
     let l:grep_job = 0
     for cmd in ['^ag', '^ack', '^grep']
-        if @: =~ cmd | let l:grep_job += 1 | endif
+        if @: =~? cmd | let l:grep_job += 1 | endif
     endfor
     "create a timer if only job other than grep succeeded
     if g:asyncrun_status == 'success' && grep_job == 0
