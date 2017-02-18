@@ -493,7 +493,7 @@ function! OnQuit()
             execute ':x'
         elseif l:saved ==# 'N'
             execute ':qa!'
-        elseif l:saved ==# 'n'  "case-insensive comparision
+        elseif l:saved ==# 'n'
             execute ':q!'
         elseif l:saved ==? 'c'
             redraw | echo "File not saved"
@@ -556,7 +556,7 @@ nnoremap <silent> <leader>r :if &mod <bar>:write<bar>endif<bar>:source $MYVIMRC<
 "change tab
 nnoremap <silent> <leader>t :tabs<cr>:let nr = input("Enter tab: ")<bar>if nr!= ''<bar>exe "normal" . nr . "gt"<bar>endif<cr>
 
-"QUICKFIX
+"QUICKFIX:
 nnoremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
 nnoremap <C-n> :cnext<cr>zz
 nnoremap <C-p> :cprevious<cr>zz
@@ -569,13 +569,16 @@ nnoremap <C-s> :xa<cr>
 "ag or S for Search (disable line substitute)
 nnoremap S :Ag<space>
 "change working directory
-nnoremap ,cd :cd %:p:h<cr>
-"map vertical help
-cnoremap vh vert botright help<space>
-"map vertical splitfind
-cnoremap vf vert sf<space>
+nnoremap [cd :cd %:p:h<cr>:pwd<cr>
 
-"MOVEMENT
+"WINDOWS:
+noremap [ <c-w>
+noremap [a <c-w>h
+noremap [d <c-w>l
+noremap [w <c-w>k
+noremap [s <c-w>j
+
+"MOVEMENT:
 "increase steps of basic moves
 nnoremap <C-e> 5<C-e>
 nnoremap <C-y> 5<C-y>
@@ -583,7 +586,7 @@ nnoremap <C-y> 5<C-y>
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
 
-"SEARCHING
+"SEARCHING:
 "make matches appear in the middle of screen (add zz)
 nnoremap n nzz
 nnoremap N Nzz
@@ -592,10 +595,7 @@ nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
 
-"WINDOWS or s for slits (disable character substitute)
-noremap s <c-w>
-
-"TABS JUMP
+"TABS JUMP:
 "tabprevious (gT) and tapnext (gt)
 "or ngt for jumping to n.te tab
 noremap <C-S><left> :tabp<cr>
@@ -607,7 +607,12 @@ noremap > :tabn<cr>
 vnoremap <tab> >
 vnoremap <s-tab> <
 
-"F-n
+"map vertical help
+cnoremap vh vert botright help<space>
+"map vertical splitfind
+cnoremap vf vert sf<space>
+
+"FN:
 nnoremap <silent>   <F2> :call ToggleNERDTreeFind()<cr>
 nnoremap            <F3> :TagbarToggle<cr>
 nnoremap <silent>   <F4> :call UpdateCtags(projRootDir)<cr>
@@ -616,7 +621,7 @@ nnoremap            <F5> :UndotreeToggle<cr>
 nnoremap <silent>   <F10> :call OnQuit()<cr>
 imap                <F10> <c-o><F10>                        "if in Insert-Mode switch to Insert-Normal-Mode to execute F10
 
-"DEACTIVATION
+"DEACTIVATION:
 "useless substitutions
 "nnoremap s <NOP>
 "nnoremap S <NOP>
