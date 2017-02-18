@@ -573,12 +573,9 @@ nnoremap S :Ag<space><c-r>=expand("<cword>")<cr>
 "change working directory
 nnoremap [cd :cd %:p:h<cr>:pwd<cr>
 
-"WINDOWS:
-noremap [ <c-w>
-noremap [a <c-w>h
-noremap [d <c-w>l
-noremap [w <c-w>k
-noremap [s <c-w>j
+"WINDOW:
+"s for split and disable word substitude
+noremap s <c-w>
 
 "MOVEMENT:
 "increase steps of basic moves
