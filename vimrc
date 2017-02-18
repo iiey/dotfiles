@@ -566,8 +566,10 @@ nnoremap <C-q> :qa!<cr>
 "save all & quit
 nnoremap <C-s> :xa<cr>
 
-"ag or S for Search (disable line substitute)
-nnoremap S :Ag<space>
+"silver search (disable line substitute)
+"<c-r> inserts contain of named register, '=" register expr, <cword> expr of word under cursor
+"see :h c_ctrl-r
+nnoremap S :Ag<space><c-r>=expand("<cword>")<cr>
 "change working directory
 nnoremap [cd :cd %:p:h<cr>:pwd<cr>
 
