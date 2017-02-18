@@ -28,9 +28,6 @@
 [submodule "vimplugins/asyncrun"]
 	path = vimplugins/asyncrun
 	url = https://github.com/skywind3000/asyncrun.vim.git
-[submodule "vimplugins/vim-ack"]
-	path = vimplugins/vim-ack
-	url = https://github.com/mileszs/ack.vim.git
 [submodule "vimplugins/tmuxline"]
 	path = vimplugins/tmuxline
 	url = https://github.com/edkolev/tmuxline.vim.git
