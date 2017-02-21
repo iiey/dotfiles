@@ -67,56 +67,6 @@ set ssop-=options    " do not store global and local values in a session
 " }}}
 
 
-"COMPLETION (builtin) {{{
-"DICTIONARY
-"Add default file if on FreeBSD
-if filereadable("/usr/share/dict/words")
-    set dictionary+=/usr/share/dict/words
-    "Enable completion from defined dictionary
-    set complete+=k                     "<c-x><c-k> to trigger this list
-endif
-
-"OMNI COMPLETION
-set omnifunc=syntaxcomplete#Complete    "open in I-Mode <c-x><c-o>, navigate <c-n/p>, close <c-e>
-
-"Custom behaviour of completion menu
-"longest: don't select first macht but the longest common text of all matches
-"menuone: menu will come up even if there's one match
-set completeopt=longest,menuone
-
-"improve c-n: keep popup menu on while typing to narrow the matches
-"pumvisible: return non-zero if PopUpMenu visible otherwise false
-inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
-            \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
-
-"COMMAND-LINE
-"Improve tab completion in command mode
-"if searching for file, tell vim to look downwards recursive (two asterisks)
-"See also help path, file-searching and cpt
-"set path +=**
-"show candidates in a menu line, iterate with tab and shift-tab
-"set wildmenu
-"or list all matches with tab (same as ctrl-d)
-"set wildmode=longest,list
-"}}}
-
-
-"CLANG_COMPLETE {{{
-"Using omnifunc=ClangComplete because builtin ccomplete don't work correctly
-"<c-x><c-u> to trigger specific completefunc
-
-"path to directory which contains libclang.{dll|so|dylib} (win/linux/macos)
-"let g:clang_library_path='/usr/lib/'
-"or direct path to current actual libclang
-let g:clang_library_path=expand("$HOME")."/lib/libclang.so"
-
-"also complete parameters of function
-let g:clang_snippets = 1
-"alternative default engine 'clang_complete'
-let g:clang_snippets_engine = 'ultisnips'
-"}}}
-
-
 "TMUX - Handle some issues {{{
 "FIX ARROWS
 "vim not recognize arrow characters
@@ -221,6 +171,56 @@ if !empty(glob("~/.vim/bundle/startify"))
     highlight StartifySlash   ctermfg=240
     highlight StartifyVar     ctermfg=250
 endif
+"}}}
+
+
+"COMPLETION (builtin) {{{
+"DICTIONARY
+"Add default file if on FreeBSD
+if filereadable("/usr/share/dict/words")
+    set dictionary+=/usr/share/dict/words
+    "Enable completion from defined dictionary
+    set complete+=k                     "<c-x><c-k> to trigger this list
+endif
+
+"OMNI COMPLETION
+set omnifunc=syntaxcomplete#Complete    "open in I-Mode <c-x><c-o>, navigate <c-n/p>, close <c-e>
+
+"Custom behaviour of completion menu
+"longest: don't select first macht but the longest common text of all matches
+"menuone: menu will come up even if there's one match
+set completeopt=longest,menuone
+
+"improve c-n: keep popup menu on while typing to narrow the matches
+"pumvisible: return non-zero if PopUpMenu visible otherwise false
+inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+            \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+
+"COMMAND-LINE
+"Improve tab completion in command mode
+"if searching for file, tell vim to look downwards recursive (two asterisks)
+"See also help path, file-searching and cpt
+"set path +=**
+"show candidates in a menu line, iterate with tab and shift-tab
+"set wildmenu
+"or list all matches with tab (same as ctrl-d)
+"set wildmode=longest,list
+"}}}
+
+
+"CLANG_COMPLETE {{{
+"Using omnifunc=ClangComplete because builtin ccomplete don't work correctly
+"<c-x><c-u> to trigger specific completefunc
+
+"path to directory which contains libclang.{dll|so|dylib} (win/linux/macos)
+"let g:clang_library_path='/usr/lib/'
+"or direct path to current actual libclang
+let g:clang_library_path=expand("$HOME")."/lib/libclang.so"
+
+"also complete parameters of function
+let g:clang_snippets = 1
+"alternative default engine 'clang_complete'
+let g:clang_snippets_engine = 'ultisnips'
 "}}}
 
 
