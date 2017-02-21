@@ -101,6 +101,22 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 "}}}
 
 
+"CLANG_COMPLETE {{{
+"Using omnifunc=ClangComplete because builtin ccomplete don't work correctly
+"<c-x><c-u> to trigger specific completefunc
+
+"path to directory which contains libclang.{dll|so|dylib} (win/linux/macos)
+"let g:clang_library_path='/usr/lib/'
+"or direct path to current actual libclang
+let g:clang_library_path=expand("$HOME")."/lib/libclang.so"
+
+"also complete parameters of function
+let g:clang_snippets = 1
+"alternative default engine 'clang_complete'
+let g:clang_snippets_engine = 'ultisnips'
+"}}}
+
+
 "TMUX - Handle some issues {{{
 "FIX ARROWS
 "vim not recognize arrow characters
