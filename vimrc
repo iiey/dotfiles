@@ -14,7 +14,7 @@ endif
 "INTERACTION
 set cursorline
 set incsearch       "show matching while searching
-set smartcase       "affect searching, matching, compare (expr4)
+set ignorecase      "ignore case in search pattern
 set hlsearch        "highlight matching search string
 set number          "show line number
 set relativenumber  "show relative line number
@@ -216,8 +216,9 @@ let g:UltiSnipsSnippetDirectories=["$HOME/.vim/bundle/vim-snippets/UltiSnips"]
 
 "EXUBERANT CTAGS {{{
 set tags=./.tags;$HOME/sources              "searching for .tags from current upwards to ~/sources (stop-dir)
-"set tags+=$HOME/sources/tags_headers/qt55
-"set tags+=$HOME/sources/tags_headers/gcc48
+"set tags+=$HOME/.vim/tags/cpp
+"set tags+=$HOME/.vim/tags/opencv
+"set tags+=$HOME/.vim/tags/qt
 
 "guess projRootDir by checking version control system
 for vcs in ['.git', '.svn', '.hg']
@@ -569,7 +570,8 @@ nnoremap <C-s> :xa<cr>
 "silver search (disable line substitute)
 "<c-r> inserts contain of named register, '=" register expr, <cword> expr of word under cursor
 "see :h c_ctrl-r
-nnoremap S :Ag<space><c-r>=expand("<cword>")<cr>
+"use double quote to escape regex character
+nnoremap S :Ag<space>"<c-r>=expand("<cword>")<cr>"
 "change working directory
 nnoremap [cd :cd %:p:h<cr>:pwd<cr>
 
@@ -593,6 +595,9 @@ nnoremap * *zz
 nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
+"manual change cword forwards
+"repeat with: <c-[>(goto normal) n(ext match) .(repeat)
+nnoremap c* *<c-o>cgn
 
 "TABS JUMP:
 "tabprevious (gT) and tapnext (gt)
