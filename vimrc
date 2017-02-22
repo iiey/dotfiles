@@ -85,12 +85,46 @@ endif
 
 
 
-"PATHOGEN {{{
-"loading time all plugins 40ms
-"bundle management
-execute pathogen#infect()
-execute pathogen#helptags()
-" }}}
+""VIMPLUG {{{
+"the minimalist plugin manager
+
+"automatic install vimplug if not exists
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+"load plugins from specific directory
+call plug#begin('~/.vim/bundle')
+
+"basic
+Plug 'bling/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+Plug 'bitc/vim-bad-whitespace'
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'bogado/file-line'
+
+"extended
+Plug 'skywind3000/asyncrun.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-fugitive'
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+Plug 'mbbill/undotree'
+
+"enhanced
+Plug 'scrooloose/nerdtree'
+    Plug 'jistr/vim-nerdtree-tabs'
+    Plug 'ryanoasis/vim-devicons'
+Plug 'iiey/vim-startify'
+Plug 'majutsushi/tagbar'
+Plug 'wincent/terminus'
+Plug 'edkolev/tmuxline.vim'
+
+"initalize plugin system
+call plug#end()
+"}}}
+
 
 
 "VIM-AIRLINE {{{
@@ -130,7 +164,7 @@ let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme
 
 
 "STARTIFY (modified) {{{
-if !empty(glob("~/.vim/bundle/startify"))
+if !empty(glob("~/.vim/bundle/*startify"))
     "STARTUP limit lists to show
     let g:startify_list_order = [['MRU:'], 'files',  ['Bookmark:'], 'bookmarks', ['Session:'], 'sessions']
 
