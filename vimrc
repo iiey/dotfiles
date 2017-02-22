@@ -300,6 +300,8 @@ endfunction
 
 "ignore files and folder
 let NERDTreeIgnore=['build', '\~$']
+"hide first help line
+let NERDTreeMinimalUI = 1
 
 "NERDTREE_TABS
 let g:nerdtree_tabs_autofind = 1
@@ -594,6 +596,15 @@ nnoremap [cd :cd %:p:h<cr>:pwd<cr>
 "WINDOW:
 "s for split and disable word substitude
 noremap s <c-w>
+"simulate tmux key-z
+"not overwrite behaviour of ctrl-w_z, resize back ctrl-w_=
+noremap sz :wincmd _<bar>wincmd \|<cr>
+"win-resize vertical
+nnoremap s, 5<c-w><
+nnoremap s. 5<c-w>>
+"win-resize horizontal
+nnoremap s0 5<c-w>+
+nnoremap s- 5<c-w>-
 
 "MOVEMENT:
 "increase steps of basic moves
