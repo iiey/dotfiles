@@ -1,0 +1,28 @@
+[alias]
+    edit = config --global --edit
+    graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+	st = status -sb
+    vdiff = "!f() { git diff $@ | vi -; }; f"
+[core]
+	excludesfile = ~/.gitignore
+[init]
+    #.git/hook/ctags
+	templatedir = ~/.git_template
+[log]
+    #use short form of sha1
+	abbrevCommit = true
+	date = local
+[pull]
+    #pull if only all commits were pushed
+	ff = only
+[merge]
+	ff = false
+	tool = kdiff3
+[mergetool]
+    #do not store .orig after merge
+	keepBackup = false
+[difftool]
+	prompt = false
+[diff]
+    #remove a/ b/ prefix
+	noprefix = true
