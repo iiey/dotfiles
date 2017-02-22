@@ -495,7 +495,7 @@ function! HUDigraphs()
     call getchar()
     return "\<c-k>"
 endfunction
-inoremap <expr> <leader>j HUDigraphs()
+inoremap <expr> <c-d> HUDigraphs()
 
 "ON_EXIT
 function! OnQuit()
