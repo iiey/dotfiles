@@ -306,7 +306,7 @@ let g:ctrlp_custom_ignore = {
     \ 'file': '\v\.(exe|so|dll|swp|tags|zip)$'}          "exclude file and directories
 "set wildignore+=*/tmp/*,*/build/*,*.so,*.swp,*.zip
 let g:ctrlp_by_filename = 1                         "default searching by filename instead of full path
-let g:ctrlp_map = '<leader>p'
+let g:ctrlp_map = '[p'
 "let g:ctrlp_cmd = 'CtrlPMixed'                      "invoke default command to find in file, buffer and mru
 " }}}
 
@@ -322,7 +322,6 @@ function! ToggleNERDTreeFind()
             execute ':NERDTreeTabsClose'
         else
             NERDTreeTabsOpen
-            NERDTreeFocusToggle
             NERDTreeTabsFind
         endif
         return
