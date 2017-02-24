@@ -108,9 +108,9 @@ Plug 'bogado/file-line'
 "extended
 Plug 'skywind3000/asyncrun.vim'
 Plug 'tpope/vim-fugitive'
-Plug 'SirVer/ultisnips', {'on': []}
-Plug 'honza/vim-snippets', {'on': []}
-Plug 'Rip-Rip/clang_complete', {'on': []}
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'Rip-Rip/clang_complete'
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'easymotion/vim-easymotion', {'on': '<Plug>(easymotion-f)'}
 
@@ -120,7 +120,7 @@ Plug 'majutsushi/tagbar'
 Plug 'edkolev/tmuxline.vim'
 Plug 'scrooloose/nerdtree', {'on': []}
     Plug 'jistr/vim-nerdtree-tabs'
-    Plug 'ryanoasis/vim-devicons', {'on': []}
+    Plug 'ryanoasis/vim-devicons'
 Plug 'wincent/terminus', {'on': []}
 
 "initalize plugin system
@@ -128,15 +128,9 @@ call plug#end()
 
 "vimplug defers some plugins (lazzy loader)
 "do onetime loading based events
-augroup load_on_edit
-  autocmd!
-  autocmd InsertEnter * call plug#load('vim-snippets', 'ultisnips', 'clang_complete', 'terminus')
-                        \| autocmd! load_on_edit
-augroup END
-
 augroup load_on_move
   autocmd!
-  autocmd CursorMoved * call plug#load('nerdtree', 'vim-devicons')
+  autocmd CursorMoved * call plug#load('nerdtree', 'terminus')
                         \| autocmd! load_on_move
 augroup END
 
@@ -274,6 +268,8 @@ let g:clang_library_path=expand("$HOME")."/lib/libclang.so"
 let g:clang_snippets = 1
 "alternative default engine 'clang_complete'
 let g:clang_snippets_engine = 'ultisnips'
+"prevent default key from disable tagjump <c-]>
+let g:clang_jumpto_declaration_key = '<c-w>['
 "}}}
 
 
