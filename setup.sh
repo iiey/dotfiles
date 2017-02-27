@@ -31,6 +31,8 @@ function link_file() {
     TARGET=$2
     [ -f "$HOME/$TARGET" ] && cp -avL "$HOME/$TARGET" $CURRENT/backup/$SOURCE.bak
     ln -sfn "$CURRENT/$SOURCE" "$HOME/$TARGET" && echo "Created symlink: ~/$TARGET@ --> $CURRENT/$SOURCE"
+
+    [ "$1" == "gitignore_global" ] && mv $HOME/$2 $HOME/.gitignore
     #TODO source .myrc in bash_file
 }
 
@@ -46,8 +48,8 @@ function sync_themes() {
     fi
 }
 
-
 #Parse parameter
+#FIXME emtpy parameter not work
 for param in "$@"; do
   shift
   case "$param" in
@@ -86,17 +88,8 @@ if [ $install ]; then
     done
     unset resp
 
-    #TODO interate through basic, extended and enhanced modules
-    #TODO specify plugin to download
-    echo "*** Installing vim plugins..."
-    read -e -n 1 -p "Would you like to get vimplugins submodules? [y/N]: " resp
-    case $resp in
-        [yY])
-            git submodule init && git submodule update --remote;;
-            #TODO check vim version, link to bundle or pack
-        [nN]|"")
-            ;;
-    esac
+    #vim plugins will be installed through vimplug in vimrc
+    #echo "*** Installing vim plugins..."
 
     echo "*** Installing themes..."
     sync_themes
@@ -114,16 +107,15 @@ if [ $update ]; then
         [nN])
             ;;
     esac
+    unset resp
 
-    #TODO update only previously installed submodules
-    read -e -n 1 -p "Update submodules? [y/N]: " resp
+    read -e -n 1 -p "Update colorschemes? [y/N]: " resp
     case $resp in
         [yY])
-            git submodule init && git submodule update --remote;;
+            sync_themes;;
         [nN]|"")
             ;;
     esac
 fi
 
 #TODO uninstall
-#TODO option to remove certain vimplugin submodule
