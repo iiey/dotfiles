@@ -600,9 +600,6 @@ augroup END
 "LEADER KEY (by default is backslash "\")
 "let mapleader = "["
 
-"command mode
-nnoremap ; :
-nnoremap : ;
 "buffers
 nnoremap <silent> <leader>b :buffers<cr>:buffer<space>
 "toggle colortheme
@@ -621,6 +618,11 @@ nnoremap <silent> <leader>n :nohlsearch<cr>
 nnoremap <silent> <leader>r :if &mod <bar>:write<bar>endif<bar>:source $MYVIMRC<bar>:redraw<bar>:echo ".vimrc reloaded!"<cr>
 "change tab
 nnoremap <silent> <leader>t :tabs<cr>:let nr = input("Enter tab: ")<bar>if nr!= ''<bar>exe "normal" . nr . "gt"<bar>endif<cr>
+
+"enter Ex command
+nnoremap ; :
+"replacement for next match with focus f
+nnoremap <space> ;
 
 "QUICKFIX:
 nnoremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
@@ -669,6 +671,7 @@ nnoremap * *zz
 nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
+nnoremap <c-]> <c-]>zz
 "manual change cword forwards
 "repeat with: <c-[>(goto normal) n(ext match) .(repeat)
 nnoremap c* *<c-o>cgn
