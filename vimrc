@@ -121,7 +121,7 @@ Plug 'edkolev/tmuxline.vim'
 Plug 'scrooloose/nerdtree', {'on': []}
     Plug 'jistr/vim-nerdtree-tabs'
     Plug 'ryanoasis/vim-devicons'
-Plug 'wincent/terminus', {'on': []}
+Plug 'wincent/terminus'
 
 "initalize plugin system
 call plug#end()
@@ -130,8 +130,7 @@ call plug#end()
 "do onetime loading based events
 augroup load_on_move
   autocmd!
-  autocmd CursorMoved * call plug#load('nerdtree', 'terminus')
-                        \| autocmd! load_on_move
+  autocmd CursorMoved * call plug#load('nerdtree') | autocmd! load_on_move
 augroup END
 
 "more easy way: load plugins at startup
