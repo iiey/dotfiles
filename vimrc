@@ -122,6 +122,7 @@ Plug 'scrooloose/nerdtree', {'on': []}
     Plug 'jistr/vim-nerdtree-tabs'
     Plug 'ryanoasis/vim-devicons'
 Plug 'wincent/terminus'
+Plug 'iiey/vimcolors'
 
 "initalize plugin system
 call plug#end()

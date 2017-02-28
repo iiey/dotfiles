@@ -3,7 +3,6 @@
 #Declare variables
 CURRENT=$(pwd -P)
 TMUXCOLORS="$HOME/.config/tmux"
-VIMCOLORS="$HOME/.vim/colors"
 DOTFILES=("ackrc" "apparix_bash" "ctags" "inputrc" "gitignore_global" "git_template" "gvimrc" "vimrc" "myrc" "tmux.conf")
 case $OSTYPE in
   darwin*)
@@ -36,12 +35,8 @@ function link_file() {
     #TODO source .myrc in bash_file
 }
 
-#copy vim colorschemes and tmux themes
+#copy tmux themes
 function sync_themes() {
-    echo -e "Copying colorschemes to $VIMCOLORS...\n"
-    [ ! -d "$VIMCOLORS" ] && mkdir -p "$VIMCOLORS"
-    rsync -aiu $CURRENT/vimcolors/ $VIMCOLORS
-
     if [ -n "$(type -t tmux)" ] && [ -d "$TMUXCOLORS" ]; then
         echo -e "Copying themes to $TMUXCOLORS...\n"
         rsync -aiu $CURRENT/tmuxcolors/ $TMUXCOLORS
