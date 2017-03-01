@@ -37,18 +37,6 @@ set autoindent              "same indent in newline
 set backspace=2             "solve some hw vs system conflict, make it work like other apps. See also :help backspace
 "set smartindent             "increase indent in newblock
 
-"COLORSCHEME
-set background=dark
-"TODO fix this
-if $KONSOLE_PROFILE_NAME ==? "solarized" || $TERM_PROGRAM ==? "iterm.app"
-    "loading time 5ms
-    silent! colorscheme solarized
-    let g:airline_theme='solarized'
-else
-    silent! colorscheme wombat256mod
-    let g:airline_theme='wombat'
-endif
-
 "DIFFING
 if &diff && g:colors_name != 'solarized'
     highlight DiffAdd    cterm=bold ctermfg=white ctermbg=DarkGreen
@@ -138,6 +126,19 @@ augroup END
 "execute pathogen#infect()
 "}}}
 
+
+
+" COLORSCHEME {{{
+set background=dark
+if $KONSOLE_PROFILE_NAME ==? "solarized"
+    silent! colorscheme solarized
+    let g:airline_theme='solarized'
+else
+    silent! colorscheme codedark
+    let g:quantum_black=1
+    let g:airline_theme='codedark'
+endif
+"}}}
 
 
 "VIM-AIRLINE {{{
