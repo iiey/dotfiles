@@ -5,7 +5,7 @@
 HISTCONTROL=ignoreboth:erasedups
 # save and reload the history after each command finishes
 # this could change index of commands in .bash_history
-if [ -z ${PROMPT_COMMAND} ]; then
+if [ -z "${PROMPT_COMMAND}" ]; then
     PROMPT_COMMAND="history -a; history -c; history -r;"
 else
     PROMPT_COMMAND="history -a; history -c; history -r; ${PROMPT_COMMAND}"
@@ -25,20 +25,20 @@ alias l='ls -aCF'
 alias la='ls -laAh'     #long list all
 alias ll='ls -lFh'      #long list without .
 
-# some vim abbreviations
+# vim abbreviations
 alias v='vim'
 alias vi='vim'
 alias g='gvim'
 alias gv='gvim'
 alias gvi='gvim'
 
-#todo: write gerneral cd to switch between source and build
+#todo: gerneral cd to switch between source and build
 #echo ${PWD%build*} delete all from left of match
 #echo ${PWD#*build} delete all from right of match
 alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 
-#ranger (exit but stay in ranger currDir)
-alias ranger='ranger --choosedir=$HOME/rangerdir; LASTDIR=`cat $HOME/rangerdir`; cd "$LASTDIR"'
+#ranger (exit but stay in ranger current directory)
+alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
 
 #silver search
 alias ag="ag --noheading --smart-case --skip-vcs-ignores \
@@ -153,11 +153,10 @@ export GREP_OPTIONS
 [[ $PATH != *"/usr/lib/ccache"* ]] && [[ -d /usr/lib/ccache ]] && export PATH=/usr/lib/ccache/:${PATH}
 
 #enable some extra features
-[ -s ~/.autojump/etc/profile.d/autojump.sh  ] && source ~/.autojump/etc/profile.d/autojump.sh
+[ -f ~/.autojump/etc/profile.d/autojump.sh ] && source ~/.autojump/etc/profile.d/autojump.sh
 [ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
 [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #more completions
 [ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
-#[ -f ~/.svn-colored-prompt ] && source ~/.svn-colored-prompt    #svn/git colored-prompt
 
 # Default editor
 export EDITOR=vim
