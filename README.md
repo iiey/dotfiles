@@ -4,6 +4,6 @@ A set of unix configurations:
 * `.ag`
 * `.bashrc` (ubuntu 12.04) + `.myrc` (my configuration)
 * `.ctags`
-* `.gitconfig
+* `.gitconfig`
 * `.tmux.conf`
 * `.vimrc`
