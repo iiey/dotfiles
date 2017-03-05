@@ -443,10 +443,6 @@ if executable('ag')
   "ag is fast that ctrlp doesn't need to cache
   let g:ctrlp_use_caching = 0
 
-  "Use this if asyncrun not exists
-  if !exists(":Ag")
-    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-  endif
 endif
 "}}}
 
@@ -455,10 +451,16 @@ endif
 "run shell commands on background and read output in quickfix window (vim8)
 
 "TODO create commands if only asyncrun available => vim/after
+"Note plugins are not run, we cannot check if exists(':AsyncRun')
 ":Make runs :make in background with asyncrun
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 ":Ag runs :grep in background with asyncrun
 command! -bang -nargs=* -complete=file Ag AsyncRun -program=grep @ <args>
+
+"FIXME search pattern with double quotes not work
+if !exists(':Ag') && executable('ag')
+    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+endif
 
 "helper function for closing quickfix after finishing job
 function! OnAsyncExit()
@@ -589,9 +591,9 @@ augroup vimrc
     autocmd bufenter * if (winnr("$") == 1 && getbufvar(winbufnr(1), '&buftype') == 'help') | q | endif
 
     "open when asyncrun starts
-    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
+    autocmd User AsyncRunStart if exists(':AsyncRun') | call asyncrun#quickfix_toggle(8, 1)
     "and close on success
-    autocmd User AsyncRunStop call OnAsyncExit()
+    autocmd User AsyncRunStop if exists(':AsyncRun') | call OnAsyncExit()
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 augroup END
