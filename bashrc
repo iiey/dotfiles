@@ -118,11 +118,3 @@ fi
 
 # using ccache instead of gcc
 [[ $PATH != *"/usr/lib/ccache"* ]] && export PATH=/usr/lib/ccache/:${PATH}
-
-# Basler Pylon5
-export PYLON_ROOT=/opt/pylon5
-export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${PYLON_ROOT}/lib64"
-
-# enable typical ISA-style rubbish for qt5.5
-# needed by the horrible new service-tools
-[ -f /opt/sielaff/rvm/bin/qt55-env.sh ] && . /opt/sielaff/rvm/bin/qt55-env.sh
