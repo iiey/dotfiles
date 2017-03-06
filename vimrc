@@ -276,7 +276,12 @@ let g:clang_jumpto_declaration_key = '<c-w>['
 
 "ULTISNIPS {{{
 "using snippets template from: https://github.com/honza/vim-snippets.git
-let g:UltiSnipsSnippetDirectories=["$HOME/.vim/bundle/vim-snippets/UltiSnips"]
+"note: it will search in runtimepath for dir with names on the list below
+let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+"<c-tab> reserved by iterm for switching tab
+let g:UltiSnipsListSnippets='<c-h>'
+"<c-k> interferes with completion i_ctrl-x
+let g:UltiSnipsJumpBackwardTrigger='<c-l>'
 " }}}
 
 
@@ -338,6 +343,7 @@ function! ToggleNERDTreeFind()
             execute ':NERDTreeTabsClose'
         else
             NERDTreeTabsOpen
+            NERDTreeFocusToggle
             NERDTreeTabsFind
         endif
         return
@@ -485,17 +491,20 @@ endfunc
 
 "UTILS FUNCTIONS {{{
 
-"TOGGLE HYDRID/ABSOLUTE LINE NUMBER
+"Toggle line number: hydrid/absolute/none
 function! ToggleLineNumber()
-    "check absolute
+    "consider (nu/rnu)-pairs are states of line number => 00, 01, 10, 11
+    "ignore uninteresting state (01 - only relativenumber)
+    "circle transition is: 0[0|1] -(1)-> 11 -(2)-> 10 -(3)-> 00
     if &number == 0
         set number
-    endif
-    "toggle relative
-    if &relativenumber == 1
+        set relativenumber
+    elseif &relativenumber == 1
+        set number
         set norelativenumber
     else
-        set relativenumber
+        set nonumber
+        set norelativenumber
     endif
 endfunc
 
