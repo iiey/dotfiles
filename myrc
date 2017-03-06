@@ -39,6 +39,7 @@ alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 
 #ranger (exit but stay in ranger current directory)
 alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+alias rg='ranger'
 
 #silver search
 alias ag="ag --noheading --smart-case --skip-vcs-ignores \
