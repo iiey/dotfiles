@@ -494,10 +494,10 @@ endfunc
 "Toggle line number: hydrid/absolute/none
 function! ToggleLineNumber()
     "consider (nu/rnu)-pairs are states of line number => 00, 01, 10, 11
-    "ignore uninteresting state (01 - only relativenumber)
-    "circle transition is: 0[0|1] -(1)-> 11 -(2)-> 10 -(3)-> 00
-    if &number == 0
-        set number
+    "transition in 7.3: 00 -> 01 -> 10 -> 00 (11 only available up 7.4)
+    "transition in 7.4: 00 -> 11 -> 10 -> 00 (don't toggle trivial 01)
+    if &number == 0 && &relativenumber == 0
+        if v:version >= 704 | set number | endif
         set relativenumber
     elseif &relativenumber == 1
         set number
