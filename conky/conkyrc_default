@@ -18,7 +18,7 @@ border_width 0
 draw_borders no                     #outline borders
 gap_x 5                             #gap between right and left border of screen
 gap_y 30                            #gap between top and bottom border of screen
-minimum_size 90 500                  #need restart to take effect
+minimum_size 90 500                 #need restart to take effect
 
 use_xft yes                         #anti alias font
 xftfont DejaVu Sans Mono:size=9
@@ -56,8 +56,9 @@ ${color grey}Up:$color ${upspeed eth0} ${color grey} - Down:$color ${downspeed e
 
 #$hr
 ${color grey}File systems:
-${color grey}home   $color${fs_used /}/${fs_size /} ${fs_bar 5 /}
-${color grey}shared $color${fs_used /shared} /${fs_size /shared} ${fs_bar 5 /shared}
+${color grey}/       $color${fs_used /}/${fs_size /} ${alignr}${fs_bar 5,150 /}
+${color grey}/home   $color${fs_used /home} /${fs_size /home} ${alignr}${fs_bar 5,150 /home}
+${color grey}/shared $color${fs_used /shared} /${fs_size /shared} ${alignr}${fs_bar 5,150 /shared}
 
 #$hr
 ${color grey}System:
