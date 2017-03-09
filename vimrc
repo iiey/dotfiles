@@ -22,6 +22,7 @@ set mouse=a         "activate mouse in all modes 'a'/ normal mode 'n'
 set scrolloff=3     "screen lines offset above and below cursor
 "set ttymouse=xterm2 "xterm-like mouse handling (support drag to resize split windows)
 set t_Co=256        "enable term color 256
+set laststatus=2                                    "always show status line
 set encoding=utf-8
 "loading time 20ms
 syntax on                               "enable syntax highlighting
@@ -86,6 +87,7 @@ endif
 "load plugins from specific directory
 call plug#begin('~/.vim/bundle')
 
+"note: plugins are added to &runtimepath in the order they are defined with Plug commands
 "basic
 Plug 'bling/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 Plug 'bitc/vim-bad-whitespace'
@@ -142,7 +144,6 @@ endif
 
 
 "VIM-AIRLINE {{{
-set laststatus=2                                    "always show status line
 let g:airline_powerline_fonts=1                     "enable powerline font
 
 "TABLINE (upper bar)
@@ -161,7 +162,8 @@ let g:airline#extensions#tabline#close_symbol = 'x'
 
 "enable/disable detection of whitespace errors
 let g:airline#extensions#whitespace#enabled = 0
-
+"display progress in statusline of airline
+"let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
 
 "AIRLINE-THEMES EXTENSION
 "theme name must match one of files under airline-themes/autoload/airline/themes
@@ -300,10 +302,9 @@ for vcs in ['.git', '.svn', '.hg']
         let $proj = projRootDir
         break
     else
-        let projRootDir = ''
+        let $proj= ''
     endif
 endfor
-
 
 function! UpdateCtags(proDir)
     "generate ctags only for projects
@@ -316,12 +317,14 @@ function! UpdateCtags(proDir)
         call system(cmd) | echom "write:" . a:proDir . "/.tags"
     endif
 endfunction
+command! UpdateCtags call UpdateCtags($proj)
 " }}}
 
 
 "CTRLP {{{
 "ctrlp auto. finds projectRoot based on .svn/.git...
 let g:ctrlp_working_path_mode = 'ra'                "working dir is nearest acestor of current file
+"note: see ctrlp_user_command and use .agignore instead
 let g:ctrlp_custom_ignore = {
     \ 'dir':  '\v[\/](.git|.svn|build|tmp)$',
     \ 'file': '\v\.(exe|so|dll|swp|tags|zip)$'}          "exclude file and directories
@@ -333,7 +336,7 @@ let g:ctrlp_map = '[p'
 
 
 "NERD_TREE {{{
-function! ToggleNERDTreeFind()
+function! ToggleTree()
     "check if nerdtree is available
     if !exists('g:loaded_nerd_tree') | return | endif
 
@@ -483,16 +486,13 @@ function! OnAsyncExit()
         let timer = timer_start(500, {-> execute(":call asyncrun#quickfix_toggle(8, 0)")})
     endif
 endfunc
-
-"display progress in statusline of airline
-"let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
 "}}}
 
 
 "UTILS FUNCTIONS {{{
 
 "Toggle line number: hydrid/absolute/none
-function! ToggleLineNumber()
+function! ToggleLine()
     "consider (nu/rnu)-pairs are states of line number => 00, 01, 10, 11
     "transition in 7.3: 00 -> 01 -> 10 -> 00 (11 only available up 7.4)
     "transition in 7.4: 00 -> 11 -> 10 -> 00 (don't toggle trivial 01)
@@ -524,14 +524,14 @@ endfunction
 "Toggle cpp header
 "@see :h filename-modifiers
 "TODO expand file extension with tab
-function! ToggleSourceHeader()
+function! ToggleCode()
   if (expand ("%:e") == "cpp")
     find %:t:r.h
   else
     find %:t:r.cpp
   endif
 endfunction
-nnoremap ,s :call ToggleSourceHeader()<cr>
+nnoremap ,s :call ToggleCode()<cr>
 
 "Change colorscheme and airlinetheme
 function! ChangeTheme(color)
@@ -589,7 +589,7 @@ augroup vimrc
     "prevent calling multiple times by sourcing
     autocmd!
     "update tags on saving
-    "autocmd BufWritePost *.cpp,*.h,*.c silent! call UpdateCtags(projRootDir)
+    "autocmd BufWritePost *.cpp,*.h,*.c silent! UpdateCtags
     "change directory of current local window
     "autocmd bufenter * silent! lcd %:p:h
 
@@ -605,6 +605,8 @@ augroup vimrc
     autocmd User AsyncRunStop if exists(':AsyncRun') | call OnAsyncExit()
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
+
+    "TODO dim color on unfocused splits
 augroup END
 " }}}
 
@@ -618,7 +620,7 @@ nnoremap <silent> <leader>b :buffers<cr>:buffer<space>
 "toggle colortheme
 nnoremap <silent> <leader>c :call ToggleColor()<cr>
 "relative line number
-nnoremap <silent> <leader>l :call ToggleLineNumber()<cr>
+nnoremap <silent> <leader>l :call ToggleLine()<cr>
 "toggle highlight cursor
 nnoremap <silent> <leader>h :set cursorline!<cr>
 "find used keyword under cursor & ignore default [i
@@ -707,9 +709,9 @@ cnoremap vh vert botright help<space>
 cnoremap vf vert sf<space>
 
 "FN:
-nnoremap <silent>   <F2> :call ToggleNERDTreeFind()<cr>
+nnoremap <silent>   <F2> :call ToggleTree()<cr>
 nnoremap            <F3> :TagbarToggle<cr>
-nnoremap <silent>   <F4> :call UpdateCtags(projRootDir)<cr>
+nnoremap <silent>   <F4> :UpdateCtags<cr>
 nnoremap            <F5> :UndotreeToggle<cr>
 
 nnoremap <silent>   <F10> :call OnQuit()<cr>
