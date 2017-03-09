@@ -6,6 +6,8 @@
 /stylesheets/
 /tmp/
 /vendor/
+/.git/
+/.svn/
 *.sql
 *.tags*
 *.gemtags*
