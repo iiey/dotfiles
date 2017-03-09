@@ -618,7 +618,7 @@ nnoremap <silent> <leader>b :buffers<cr>:buffer<space>
 "toggle colortheme
 nnoremap <silent> <leader>c :call ToggleColor()<cr>
 "relative line number
-nnoremap <silent> <leader>n :call ToggleLineNumber()<cr>
+nnoremap <silent> <leader>l :call ToggleLineNumber()<cr>
 "toggle highlight cursor
 nnoremap <silent> <leader>h :set cursorline!<cr>
 "find used keyword under cursor & ignore default [i
