@@ -618,7 +618,7 @@ nnoremap <silent> <leader>b :buffers<cr>:buffer<space>
 "toggle colortheme
 nnoremap <silent> <leader>c :call ToggleColor()<cr>
 "relative line number
-nnoremap <silent> <leader>l :call ToggleLineNumber()<cr>
+nnoremap <silent> <leader>n :call ToggleLineNumber()<cr>
 "toggle highlight cursor
 nnoremap <silent> <leader>h :set cursorline!<cr>
 "find used keyword under cursor & ignore default [i
@@ -626,7 +626,7 @@ nnoremap <silent> <leader>i [I:let nr = input("Enter item: ")<bar>if nr != ''<ba
 "marks
 nnoremap <silent> <leader>m :marks<bar>:let nr = input("Enter mark: ")<bar>if nr != ''<bar>exe "\'" . nr<bar>endif<cr>
 "turn off highlighting searched pattern
-nnoremap <silent> <leader>n :nohlsearch<cr>
+nnoremap <silent> <leader>s :nohlsearch<cr>
 "refresh vimrc
 nnoremap <silent> <leader>r :if &mod <bar>:write<bar>endif<bar>:source $MYVIMRC<bar>:redraw<bar>:echo ".vimrc reloaded!"<cr>
 "change tab
