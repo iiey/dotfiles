@@ -13,18 +13,35 @@ endif
 
 "INTERACTION
 set cursorline
-set incsearch       "show matching while searching
-set ignorecase      "ignore case in search pattern
-set hlsearch        "highlight matching search string
-set number          "show line number
-set relativenumber  "show relative line number
-set mouse=a         "activate mouse in all modes 'a'/ normal mode 'n'
-set scrolloff=3     "screen lines offset above and below cursor
-"set ttymouse=xterm2 "xterm-like mouse handling (support drag to resize split windows)
-set t_Co=256        "enable term color 256
-set laststatus=2                                    "always show status line
+set incsearch               "show matching while searching
+set ignorecase              "ignore case in search pattern
+set hlsearch                "highlight matching search string
+set number                  "show line number
+set relativenumber          "show relative line number
+set mouse=a                 "activate mouse in all modes 'a'/ normal mode 'n'
+set scrolloff=3             "screen lines offset above and below cursor
+set t_Co=256                "enable term color 256
+set laststatus=2            "always show status line
 set encoding=utf-8
-"loading time 20ms
+
+if exists('&belloff')
+  set belloff=all           "never ring the bell
+endif
+
+if has('linebreak')         "show character when long line's wrapped to fit the screen
+    let &showbreak='↪ '     "downwards arrow with tip rightwards (U+21B3, UTF-8: E2 86 B3)
+endif
+
+if has('windows')
+  set splitbelow            "open horizontal splits below current window
+endif
+
+if has('vertsplit')
+  set splitright            "open vertical splits to the right of the current window
+endif
+
+"SYNTAX & FILETYPE
+"loading time 20ms(vim74), 35ms(vim80)
 syntax on                               "enable syntax highlighting
 filetype on                             "enable filetype detecting
 filetype plugin indent on               "smartindent based filetype, set cindent for c/c++
