@@ -1,6 +1,5 @@
 "BASIC SETTING {{{
 "Folding option for this file
-setlocal foldmethod=marker  "use marker curved bracket for folding
 setlocal foldlevel=2        "over level 1 will be closed
 
 "LANGUAGE INTERFACE
@@ -24,27 +23,37 @@ set t_Co=256                "enable term color 256
 set laststatus=2            "always show status line
 set encoding=utf-8
 
+if !&autoread               "default turn on autoread
+    set autoread            "notify changes outside vim and update file
+endif                       "note: 'checktime' needs to call for comparing timestamp of buffer
+
 if exists('&belloff')
-  set belloff=all           "never ring the bell
+    set belloff=all         "never ring the bell
 endif
 
 if has('linebreak')         "show character when long line's wrapped to fit the screen
     let &showbreak='↪ '     "downwards arrow with tip rightwards (U+21B3, UTF-8: E2 86 B3)
 endif
 
+if has('folding')           "folding option
+    set foldmethod=syntax   "global folding method
+    set foldlevel=3         "fold with higher level with be closed (0: always)
+    set foldnestmax=1       "close only outermost fold
+endif
+
 if has('windows')
-  set splitbelow            "open horizontal splits below current window
+    set splitbelow          "open horizontal splits below current window
 endif
 
 if has('vertsplit')
-  set splitright            "open vertical splits to the right of the current window
+    set splitright          "open vertical splits to the right of the current window
 endif
 
 "SYNTAX & FILETYPE
 "loading time 20ms(vim74), 35ms(vim80)
-syntax on                               "enable syntax highlighting
-filetype on                             "enable filetype detecting
-filetype plugin indent on               "smartindent based filetype, set cindent for c/c++
+syntax on                   "enable syntax highlighting
+filetype on                 "enable filetype detecting
+filetype plugin indent on   "smartindent based filetype, set cindent for c/c++
 
 "CODING STYLE
 set tabstop=4
@@ -88,32 +97,42 @@ endif
 
 "automatic install vimplug if not exists
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    let s:link='https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    if executable('curl')
+        execute 'silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs ' . shellescape(s:link)
+    elseif executable('wget')
+        execute 'silent !wget -nd -P ~/.vim/autoload/ ' . shellescape(s:link)
+    else
+        finish
+    endif
+    "flag --sync blocks execution until install is finish
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 "load plugins from specific directory
 call plug#begin('~/.vim/bundle')
 
 "note: plugins are added to &runtimepath in the order they are defined with Plug commands
-"basic
+"BASIC
 Plug 'bling/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 Plug 'bitc/vim-bad-whitespace'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'bogado/file-line'
 
-"extended
+"EXTENDED
 Plug 'skywind3000/asyncrun.vim'
 Plug 'tpope/vim-fugitive'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+
+"ultisnip requires vim 7.4
+Plug 'SirVer/ultisnips', v:version >= 704 ? {} : {'on' : []}
+Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
 Plug 'Rip-Rip/clang_complete'
+
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'easymotion/vim-easymotion', {'on': '<Plug>(easymotion-f)'}
 
-"enhanced
+"ENHANCED
 Plug 'iiey/vim-startify'
 Plug 'majutsushi/tagbar'
 Plug 'edkolev/tmuxline.vim'
@@ -122,6 +141,9 @@ Plug 'scrooloose/nerdtree', {'on': []}
     Plug 'ryanoasis/vim-devicons'
 Plug 'wincent/terminus'
 Plug 'iiey/vimcolors'
+
+"do not load if no colorscheme is set
+Plug 'blueyed/vim-diminactive', exists('g:colors_name') ? {} : {'on': []}
 
 "initalize plugin system
 call plug#end()
@@ -287,8 +309,11 @@ let g:clang_library_path=expand("$HOME")."/lib/libclang.so"
 
 "also complete parameters of function
 let g:clang_snippets = 1
-"alternative default engine 'clang_complete'
-let g:clang_snippets_engine = 'ultisnips'
+"default engine cannot jump between parameters
+"use ultisnip if it's available
+if v:version >= 704
+    let g:clang_snippets_engine = 'ultisnips'
+endif
 "prevent default key from disable tagjump <c-]>
 let g:clang_jumpto_declaration_key = '<c-w>['
 "}}}
@@ -297,11 +322,13 @@ let g:clang_jumpto_declaration_key = '<c-w>['
 "ULTISNIPS {{{
 "using snippets template from: https://github.com/honza/vim-snippets.git
 "note: it will search in runtimepath for dir with names on the list below
-let g:UltiSnipsSnippetDirectories=["UltiSnips"]
-"<c-tab> reserved by iterm for switching tab
-let g:UltiSnipsListSnippets='<c-h>'
-"<c-k> interferes with completion i_ctrl-x
-let g:UltiSnipsJumpBackwardTrigger='<c-l>'
+if v:version >= 704
+    let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+    "<c-tab> reserved by iterm for switching tab
+    let g:UltiSnipsListSnippets='<c-h>'
+    "<c-k> interferes with completion i_ctrl-x
+    let g:UltiSnipsJumpBackwardTrigger='<c-l>'
+endif
 " }}}
 
 
@@ -624,7 +651,8 @@ augroup vimrc
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 
-    "TODO dim color on unfocused splits
+    "set specific folding for vim files
+    autocmd FileType vim setlocal foldmethod=marker
 augroup END
 " }}}
 
