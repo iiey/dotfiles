@@ -94,15 +94,9 @@ tmux-session() {
 
 #mc colorscheme:asterisk, blue, bluemoon, dark, darkened, gotar, nicedark, solarized,...
 case "$KONSOLE_PROFILE_NAME" in
-    Solarized)      mc_color=solarized;;
     DarkPastels)    mc_color=gotar;;
-    *)
-        mc_color=default
-        if [ -x /usr/bin/dircolors ]; then
-            test -r ~/.dircolors && eval "$(dircolors -b)"
-        fi
-        ;;
-#todo default case
+    Solarized)      mc_color=solarized;;
+    *)              mc_color=default;;
 esac
 
 #colors for file and folder in terminal
