@@ -3,6 +3,8 @@
 own_window yes
 own_window_type normal
 #transparent background
+#note: this works if only desktop effects's active
+#kde5: check system setttings > hardware > display and monitor > compositor
 own_window_transparent no
 own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 own_window_argb_visual yes
