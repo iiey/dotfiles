@@ -105,6 +105,10 @@ case "$KONSOLE_PROFILE_NAME" in
 #todo default case
 esac
 
+#colors for file and folder in terminal
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+fi
 
 #mc colorscheme located unter ~/.local/share/mc/skins
 alias mc='mc -S $mc_color'
