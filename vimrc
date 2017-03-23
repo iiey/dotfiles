@@ -23,6 +23,10 @@ set t_Co=256                "enable term color 256
 set laststatus=2            "always show status line
 set encoding=utf-8
 
+if v:version > 703
+  set formatoptions+=j      "delete comment character when joining commented lines
+endif
+
 if !&autoread               "default turn on autoread
     set autoread            "notify changes outside vim and update file
 endif                       "note: 'checktime' needs to call for comparing timestamp of buffer
@@ -41,13 +45,21 @@ if has('folding')           "folding option
     set foldnestmax=1       "close only outermost fold
 endif
 
+if has('vertsplit')
+    set splitright          "open vertical splits to the right of the current window
+endif
+
 if has('windows')
     set splitbelow          "open horizontal splits below current window
 endif
 
-if has('vertsplit')
-    set splitright          "open vertical splits to the right of the current window
+"SYNTAX & FILETYPE
+"loading time 20ms(vim74), 35ms(vim80)
+if has('syntax') && !exists('g:syntax_on')
+    syntax enable           "enable syntax highlighting
 endif
+"loading time 1ms
+filetype plugin indent on   "smartindent based filetype, set cindent for c/c++
 
 "SYNTAX & FILETYPE
 "loading time 20ms(vim74), 35ms(vim80)
@@ -119,6 +131,7 @@ Plug 'bitc/vim-bad-whitespace'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'bogado/file-line'
+Plug 'tpope/vim-surround'
 
 "EXTENDED
 Plug 'skywind3000/asyncrun.vim'
@@ -127,7 +140,7 @@ Plug 'tpope/vim-fugitive'
 "ultisnip requires vim 7.4
 Plug 'SirVer/ultisnips', v:version >= 704 ? {} : {'on' : []}
 Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
-Plug 'Rip-Rip/clang_complete'
+Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
 
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'easymotion/vim-easymotion', {'on': '<Plug>(easymotion-f)'}
@@ -141,9 +154,7 @@ Plug 'scrooloose/nerdtree', {'on': []}
     Plug 'ryanoasis/vim-devicons'
 Plug 'wincent/terminus'
 Plug 'iiey/vimcolors'
-
-"do not load if no colorscheme is set
-Plug 'blueyed/vim-diminactive', exists('g:colors_name') ? {} : {'on': []}
+Plug 'blueyed/vim-diminactive'
 
 "initalize plugin system
 call plug#end()
@@ -604,6 +615,13 @@ function! HUDigraphs()
 endfunction
 inoremap <expr> <c-d> HUDigraphs()
 
+"search phrase with command :Search
+function! gsearch(phrase)
+    let url = "http://www.google.com/search?q=" . a:phrase
+    call netrw#BrowseX(url, 0)
+endfunction
+command! -nargs=* Search call gsearch('<args>')
+
 "ON_EXIT
 function! OnQuit()
     if &mod
@@ -653,6 +671,12 @@ augroup vimrc
 
     "set specific folding for vim files
     autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+augroup vimplug
+    "download new coming plugins
+    autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+                        \| PlugInstall --sync | q | endif
 augroup END
 " }}}
 
