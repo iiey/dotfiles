@@ -99,16 +99,6 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-if [ -f ~/.rvm_functions ]; then
-    . ~/.rvm_functions
-fi
-
-# Additional modifications of user
-if [ -f ~/.myrc ]; then
-    . ~/.myrc
-fi
-
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -116,5 +106,6 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-# using ccache instead of gcc
-[[ $PATH != *"/usr/lib/ccache"* ]] && export PATH=/usr/lib/ccache/:${PATH}
+# Additional user modifications
+[ -f ~/.myrc ] && source ~/.myrc
+
