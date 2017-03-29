@@ -151,15 +151,18 @@ alias egrep="egrep $GREP_OPTIONS --color=auto"
 unset pattern
 unset GREP_OPTIONS
 
+# correct previous console command with $fuck
+if type "thefuck" &> /dev/null; then
+    eval "$(thefuck --alias)"
+fi
+
+# default editor
+export EDITOR=vim
 
 # using ccache instead of gcc
 [[ $PATH != *"/usr/lib/ccache"* ]] && [[ -d /usr/lib/ccache ]] && export PATH=/usr/lib/ccache/:${PATH}
-
 #enable some extra features
 [ -f ~/.autojump/etc/profile.d/autojump.sh ] && source ~/.autojump/etc/profile.d/autojump.sh
 [ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
 [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #more completions
 [ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
-
-# Default editor
-export EDITOR=vim
