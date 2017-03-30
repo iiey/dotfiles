@@ -103,11 +103,8 @@ endif
 "}}}
 
 
-
-"VIMPLUG {{{
-"the minimalist plugin manager
-
-"automatic install vimplug if not exists
+"VIMPLUG {{{1
+"auto install plugin manager if not exists
 if empty(glob('~/.vim/autoload/plug.vim'))
     let s:link='https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     if executable('curl')
@@ -120,56 +117,55 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     "flag --sync blocks execution until install is finish
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+"}}}
 
-"load plugins from specific directory
+"Load Plugins {{{1
+"specific directory to load
 call plug#begin('~/.vim/bundle')
 
-"note: plugins are added to &runtimepath in the order they are defined with Plug commands
-"BASIC
-Plug 'bling/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+""note: plugins are added to &runtimepath in the order they are defined here
+""first load personal stuff: setting, command, mapping
+Plug 'iiey/vimconfig'
+
+"BASIC (essential) {{{2
 Plug 'bitc/vim-bad-whitespace'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'bogado/file-line'
+Plug 'kopischke/vim-fetch'
 Plug 'tpope/vim-surround'
+"}}}
 
-"EXTENDED
+"EXTENDED (productive) {{{2
 Plug 'skywind3000/asyncrun.vim'
 Plug 'tpope/vim-fugitive'
+    Plug 'junegunn/gv.vim'
+
+Plug 'vim-utils/vim-man'
+"no zeal support on mac os because of dash
+if ! has('mac') || ! has('osx')
+    Plug 'KabbAmine/zeavim.vim'
+endif
 
 "ultisnip requires vim 7.4
 Plug 'SirVer/ultisnips', v:version >= 704 ? {} : {'on' : []}
-Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
+    Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
 Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
 
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'easymotion/vim-easymotion', {'on': '<Plug>(easymotion-f)'}
+"}}}
 
-"ENHANCED
+"ENHANCED (optional) {{{2
+Plug 'bling/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 Plug 'iiey/vim-startify'
 Plug 'majutsushi/tagbar'
-Plug 'edkolev/tmuxline.vim'
 Plug 'scrooloose/nerdtree', {'on': []}
     Plug 'jistr/vim-nerdtree-tabs'
     Plug 'ryanoasis/vim-devicons'
 Plug 'wincent/terminus'
-Plug 'iiey/vimcolors'
+Plug 'edkolev/tmuxline.vim'
 Plug 'blueyed/vim-diminactive'
-
-"initalize plugin system
-call plug#end()
-
-"vimplug defers some plugins (lazzy loader)
-"do onetime loading based events
-augroup load_on_move
-  autocmd!
-  autocmd CursorMoved * call plug#load('nerdtree') | autocmd! load_on_move
-augroup END
-
-"more easy way: load plugins at startup
-"execute pathogen#infect()
 "}}}
-
 
 
 " COLORSCHEME {{{
@@ -528,7 +524,7 @@ if !exists(':Ag') && executable('ag')
 endif
 
 "helper function for closing quickfix after finishing job
-function! OnAsyncExit()
+function! AsyncOnExit()
     "user can close quickfix manually if it displays grep results
     let l:grep_job = 0
     for cmd in ['^ag', '^ack', '^grep']
@@ -591,20 +587,30 @@ nnoremap ,s :call ToggleCode()<cr>
 
 "Change colorscheme and airlinetheme
 function! ChangeTheme(color)
-    "Using 'execute' to evaluate value of argument not the argument
-    execute ':colorscheme' a:color
+    let l:color = a:color
+    let l:airline = a:color
 
-    if a:color == 'solarized'
-        set background=dark
-    endif
-
+    "specify configuration for some colors
     if a:color == 'codeschool'
-        execute ':AirlineTheme cobalt2'
-        return
+        let l:airline = 'cobalt2'
+    elseif a:color == 'pencil'
+        set background=dark
+    elseif a:color == 'solarized'
+        set background=dark
+    elseif a:color == 'tomorrow-night'
+        let l:airline = 'tomorrow'
+    elseif a:color == 'quantum'
+        let g:quantum_black = 1
+        if has('gui_running')
+            let g:quantum_italics = 0
+        endif
+    elseif a:color == 'wombat256mod'
+        let l:airline = 'wombat'
     endif
 
-    execute ':AirlineTheme' a:color
-endfunction
+    "Using 'execute' to evaluate value of argument not the argument
+    execute ':colorscheme' l:color
+    execute ':AirlineTheme' l:airline
 command! -nargs=* -complete=color ChangeTheme call ChangeTheme('<args>')
 
 "Head-up digraphs
@@ -648,8 +654,14 @@ endfunction
 
 
 " AUTOCMD {{{
-augroup vimrc
+augroup vimplug
     "prevent calling multiple times by sourcing
+    "download new coming plugins
+    autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+                        \| PlugInstall --sync | q | endif
+augroup END
+
+augroup vimrc
     autocmd!
     "update tags on saving
     "autocmd BufWritePost *.cpp,*.h,*.c silent! UpdateCtags
@@ -665,18 +677,12 @@ augroup vimrc
     "open when asyncrun starts
     autocmd User AsyncRunStart if exists(':AsyncRun') | call asyncrun#quickfix_toggle(8, 1)
     "and close on success
-    autocmd User AsyncRunStop if exists(':AsyncRun') | call OnAsyncExit()
+    autocmd User AsyncRunStop if exists(':AsyncRun') | call AsyncOnExit()
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 
     "set specific folding for vim files
     autocmd FileType vim setlocal foldmethod=marker
-augroup END
-
-augroup vimplug
-    "download new coming plugins
-    autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-                        \| PlugInstall --sync | q | endif
 augroup END
 " }}}
 
