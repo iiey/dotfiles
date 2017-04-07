@@ -24,7 +24,7 @@ set laststatus=2            "always show status line
 set encoding=utf-8
 
 if v:version > 703
-  set formatoptions+=j      "delete comment character when joining commented lines
+    set formatoptions+=j      "delete comment character when joining commented lines
 endif
 
 if !&autoread               "default turn on autoread
@@ -33,6 +33,10 @@ endif                       "note: 'checktime' needs to call for comparing times
 
 if exists('&belloff')
     set belloff=all         "never ring the bell
+endif
+
+if has('clipboard')
+    set clipboard=unnamed   "write system clipboard to unnamed register
 endif
 
 if has('linebreak')         "show character when long line's wrapped to fit the screen
