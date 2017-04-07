@@ -156,6 +156,11 @@ if type "thefuck" &> /dev/null; then
     eval "$(thefuck --alias)"
 fi
 
+# using zeal for docsets if dasht exists
+if type "dasht" &> /dev/null; then
+    export DASHT_DOCSETS_DIR="$HOME/.local/share/Zeal/Zeal/docsets"
+fi
+
 # default editor
 export EDITOR=vim
 
