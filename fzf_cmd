@@ -52,8 +52,8 @@ fcd() {
 
 #cd directory
 fd() {
-  local dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
+    local dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) &&
+        cd "$dir"
 }
 
 # fe [FUZZY PATTERN] - Open the selected file with the default editor (prefer vim)
@@ -61,10 +61,10 @@ fd() {
 #   --select-1: Bypass fuzzy finder if there's one match
 #   --exit-0:   Exit if there's no match
 fe() {
-  local files
-  IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 --preview="head -$LINES {}"))
-  #TODO ctrl-t:open files in tabs, ctrl-w: open files in windows
-  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+    local files
+    IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 --preview="head -$LINES {}"))
+    #TODO ctrl-t:open files in tabs, ctrl-w: open files in windows
+    [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
 #1}}}
 
@@ -94,10 +94,11 @@ gitshow() {
 
 # same as gitshow with preview window
 gitlog() {
-  local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {})\""
-  fzf --ansi -e --no-sort --tiebreak=index --bind="enter:execute($cmdshow | less -R)" \
-      --preview-window=up --preview="$cmdshow" \
-      < <(git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@")
+    local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {})\""
+    fzf --ansi -e --no-sort --tiebreak=index --bind="enter:execute($cmdshow | less -R)" \
+        --preview-window=up --preview="$cmdshow" \
+        < <(git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@")
+    return 0;
 }
 #1}}}
 
