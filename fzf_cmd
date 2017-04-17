@@ -16,10 +16,12 @@ export FZF_DEFAULT_OPTS="--reverse"
 ###############################################################################################
 #Files and Folders {{{1
 
-#search history
+#fuzzy history
+#   show bash_history w/o duplicates and order preserved
+#   overwrite default keybind c-r
 fh() {
-    #show hist | - trailingspace+num| + numline| sort 2. col | filt 2.col| sort num|show 2.col|
-    history | sed 's/^ *[0-9]* *//' | nl | sort -k2 -k 1,1nr | uniq -f 1 | sort -n | cut -f2 | fzf
+    awk '!x[$0]++' $HISTFILE |
+    fzf --prompt='history search: ' --cycle --exact --no-sort --height 40%
 }
 bind '"\er": redraw-current-line'
 bind '"\C-r": "$(fh)\e\C-e\er"'
