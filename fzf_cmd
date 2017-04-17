@@ -1,0 +1,104 @@
+#!/bin/bash
+
+# Global Setting {{{1
+#feed fzf with ag instead of find command
+#now fzf (w/o pipe) will use ag instead of find
+if type "ag" &> /dev/null;then
+    export FZF_DEFAULT_COMMAND='ag -g ""'
+fi
+
+#show matches in top-down order
+#cycle through when reaching top/bottom of list
+export FZF_DEFAULT_OPTS="--reverse"
+#1}}}
+
+
+###############################################################################################
+#Files and Folders {{{1
+
+#search history
+fh() {
+    #show hist | - trailingspace+num| + numline| sort 2. col | filt 2.col| sort num|show 2.col|
+    history | sed 's/^ *[0-9]* *//' | nl | sort -k2 -k 1,1nr | uniq -f 1 | sort -n | cut -f2 | fzf
+}
+bind '"\er": redraw-current-line'
+bind '"\C-r": "$(fh)\e\C-e\er"'
+
+#fzf locate and open it
+fl() {
+    local uncork knot
+    local knot="$(locate ${1:-"*"} | fzf -e)"
+    if [ -z "$knot" ]; then
+        return
+    elif [ -d "$knot" ]; then
+        if echo "$OSTYPE" | grep -q darwin; then
+            uncork="open"
+        else
+            uncork="xdg-open"
+        fi
+    else
+        uncork="rifle"
+    fi
+    eval "$uncork $knot"
+}
+
+#cd to bookmark of autojump
+fcd() {
+    local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 | fzf -e)
+    [ -d "$dir" ] && cd "$dir"
+}
+
+#cd directory
+fd() {
+  local dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+
+# fe [FUZZY PATTERN] - Open the selected file with the default editor (prefer vim)
+#   --multi:    <Tab> for multi choices. Use vim buffer to recall files
+#   --select-1: Bypass fuzzy finder if there's one match
+#   --exit-0:   Exit if there's no match
+fe() {
+  local files
+  IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 --preview="head -$LINES {}"))
+  #TODO ctrl-t:open files in tabs, ctrl-w: open files in windows
+  [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+}
+#1}}}
+
+
+###############################################################################################
+# git stuff {{{1
+
+git_checkout() {
+    local list response key branch header
+    list=$(git branch --all --color -vv; git tag) || return 1
+    mapfile -t response < <(fzf --prompt='checkout: ' \
+        --ansi --header="$header" --expect=ctrl-x <<< "$list")
+    key="${response[0]}"
+    branch=$(perl -pe 's/^\*?\s*(remotes\/[^\/]*\/)?([^ ]+).*/\2/' <<< "${response[1]}")
+    git checkout "$branch" || return 1
+}
+
+# gitshow - git commit browser
+gitshow() {
+  git log --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+      --bind "ctrl-m:execute:
+                (grep -m1 -o '[a-f0-9]\{7\}' |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+FZF-EOF"
+}
+
+# same as gitshow with preview window
+gitlog() {
+  local cmdshow="git show --color=always \"\$(grep -m1 -o -E '[a-f0-9]{7}' <<< {})\""
+  fzf --ansi -e --no-sort --tiebreak=index --bind="enter:execute($cmdshow | less -R)" \
+      --preview-window=up --preview="$cmdshow" \
+      < <(git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@")
+}
+#1}}}
+
+# vim:foldmethod=marker:foldlevel=0

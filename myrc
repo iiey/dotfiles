@@ -160,6 +160,13 @@ if type "dasht" &> /dev/null; then
     export DASHT_DOCSETS_DIR="$HOME/.local/share/Zeal/Zeal/docsets"
 fi
 
+if [ -f $HOME/.fzf.bash ]; then
+    # load fuzzy finder
+    source $HOME/.fzf.bash
+    # load it's command snippets
+    [ -f $HOME/.fzf_cmd ] && source $HOME/.fzf_cmd
+fi
+
 # default editor
 export EDITOR=vim
 
@@ -168,7 +175,6 @@ export EDITOR=vim
 #enable some extra features
 [ -f ~/.autojump/etc/profile.d/autojump.sh ] && source ~/.autojump/etc/profile.d/autojump.sh
 [ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash                        #fuzzy finder
 [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #git specific completion
 [ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
 

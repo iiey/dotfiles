@@ -2,7 +2,7 @@
 #Declare variables
 _current=$(pwd -P)
 _tmuxcolors="$HOME/.config/tmux"
-_dotfiles=("ackrc" "agignore" "apparix_bash" "ctags" "inputrc" "gitignore_global" "git_template" "gvimrc" "vimrc" "myrc" "tmux.conf")
+_dotfiles=("ackrc" "agignore" "apparix_bash" "ctags" "inputrc" "fzf_cmd" "gitignore_global" "git_template" "gvimrc" "vimrc" "myrc" "tmux.conf")
 case $OSTYPE in
   darwin*)
     _bashfile=$HOME/.bash_profile
