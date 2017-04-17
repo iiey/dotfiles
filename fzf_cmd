@@ -82,21 +82,15 @@ git_checkout() {
     git checkout "$branch" || return 1
 }
 
-# gitshow - git commit browser
-gitshow() {
-    git log --graph --color=always \
-        --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
-    fzf --ansi --no-sort --tiebreak=index --bind=ctrl-s:toggle-sort \
-        --bind "ctrl-m:execute:(grep -m1 -o '[a-f0-9]\{7\}' |
-                                xargs -I % sh -c 'git show --color=always % | less -R') <<< {}"
-    return 0;
-}
-
-# same as gitshow with preview window
+# a git commit browser
+#   ctrl-w: show preview window
+#   enter:  open commit diff
+#   ctrl-c: exit
 gitlog() {
     local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {})\""
-    fzf --ansi -e --no-sort --tiebreak=index --bind="enter:execute($cmdshow | less -R)" \
-        --preview-window=up --preview="$cmdshow" \
+    fzf --ansi -e --no-sort --tiebreak=index \
+        --bind="ctrl-w:toggle-preview,enter:execute($cmdshow | less -R)" \
+        --preview-window=down:hidden --preview="$cmdshow" \
         < <(git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@")
     return 0;
 }
