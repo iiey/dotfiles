@@ -21,7 +21,7 @@ export FZF_DEFAULT_OPTS="--reverse"
 #   overwrite default keybind c-r
 fh() {
     awk '!x[$0]++' $HISTFILE |
-    fzf --prompt='history search: ' --cycle --exact --no-sort --height 40%
+    fzf --prompt='history search: ' --cycle --exact --no-sort --tac --height 40%
 }
 bind '"\er": redraw-current-line'
 bind '"\C-r": "$(fh)\e\C-e\er"'
@@ -29,7 +29,7 @@ bind '"\C-r": "$(fh)\e\C-e\er"'
 #fzf locate and open it
 fl() {
     local uncork knot
-    local knot="$(locate ${1:-"*"} | fzf -e)"
+    local knot=$(locate "*" | fzf --query="$1" --exact)
     if [ -z "$knot" ]; then
         return
     elif [ -d "$knot" ]; then
@@ -44,9 +44,10 @@ fl() {
     eval "$uncork $knot"
 }
 
-#cd to bookmark of autojump
-fcd() {
-    local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 | fzf -e)
+#jump to bookmark of autojump
+fj() {
+    local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 |
+                fzf --query="$1" --exact --select-1)
     [ -d "$dir" ] && cd "$dir"
 }
 
@@ -94,6 +95,19 @@ gitlog() {
         < <(git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@")
     return 0;
 }
+
+#TODO check cases where status return not only diff files
+#TODO open in vim instead
+gitstatus() {
+    local cmddiff="git diff --color=always"
+    git status -sb | sed '/##/d' |
+    fzf --ansi --no-sort \
+        --preview-window=right:70% --preview="$cmddiff {2}" \
+        --bind="enter:execute($cmddiff {2} | less -R)" \
+        --bind="ctrl-o:execute(gvim {2})" \
+        --bind="j:down,k:up"
+    return 0;
+}
 #1}}}
 
-# vim:foldmethod=marker:foldlevel=0
+# vim:foldmethod=marker:foldlevel=1
