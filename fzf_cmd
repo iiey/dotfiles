@@ -92,7 +92,7 @@ gitlog() {
     fzf --ansi -e --no-sort --tiebreak=index \
         --bind="ctrl-w:toggle-preview,enter:execute($cmdshow | less -R)" \
         --preview-window=down:hidden --preview="$cmdshow" \
-        < <(git log --graph --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@")
+        < <(git log --graph --color=always --format="%C(auto)%h%d %s %Cgreen(%cr) %Creset<%an>" "$@")
     return 0;
 }
 
