@@ -26,10 +26,12 @@ alias la='ls -laAh'     #long list all
 alias ll='ls -lFh'      #long list without .
 
 # vim abbreviations
+#original
 alias v='vim'
-alias vi='vim'
-alias gv='gvim'
 alias g='gvim --remote-silent'
+#run with fzf
+alias vi='vim $(fzf)'
+alias gv='gvim --remote-silent $(fzf)'
 
 #todo: gerneral cd to switch between source and build
 #echo ${PWD%build*} delete all from left of match
@@ -37,19 +39,25 @@ alias g='gvim --remote-silent'
 alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 
 #ranger (exit but stay in ranger current directory)
-alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
-alias rg='ranger'
+if type ranger &> /dev/null; then
+    alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
+    alias rg='ranger'
+fi
 
 #silver search
-alias ag="ag --noheading --smart-case --skip-vcs-ignores \
-            --path-to-ignore $HOME/.agignore \
-            --color-match '01;31' \
-            --color-path '36' \
-            --color-line-number '32'"
+if type ag &> /dev/null; then
+    alias ag="ag --noheading --smart-case --skip-vcs-ignores \
+        --path-to-ignore $HOME/.agignore \
+        --color-match '01;31' \
+        --color-path '36' \
+        --color-line-number '32'"
+fi
 
 #ctags
 #see $HOME/.ctags for default parameter configuration
-alias tags='ctags -R -f ./.tags .'
+if type ctags &> /dev/null; then
+    alias tags='ctags -R -f ./.tags .'
+fi
 
 git-ctags() {
     #read project root dir from git
@@ -64,10 +72,14 @@ git-ctags() {
 }
 
 #tree
-alias tree="tree -CAFa -I 'CVS|.git|.svn' --dirsfirst"
+if type tree &> /dev/null; then
+    alias tree="tree -CAFa -I 'CVS|.git|.svn' --dirsfirst"
+fi
 
 #start tmux with colourful xterm and force it assuming term supported 256colour
-alias tmux='TERM=xterm-256color tmux -2'
+if type tmux &> /dev/null; then
+    alias tmux='TERM=xterm-256color tmux -2'
+fi
 
 #create tmux default working session
 #note: double quote to correctly expand var $HOME with tmux
@@ -104,7 +116,10 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 #mc colorscheme located unter ~/.local/share/mc/skins
-alias mc='mc -S $mc_color'
+if type mc &> /dev/null; then
+    alias mc='mc -S $mc_color'
+fi
+
 mc-color() {
     if [ ! "$#" -eq 1 ]
     then
@@ -179,15 +194,17 @@ export EDITOR=vim
 [ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
 
 # remove duplicated entries in PATH
-if [ -n "$PATH" ]; then
-    old_PATH=$PATH:; PATH=
-    while [ -n "$old_PATH" ]; do
-        x=${old_PATH%%:*}       # the first remaining entry
-        case $PATH: in
-            *:"$x":*) ;;        # already there
-            *) PATH=$PATH:$x;;  # not there yet
-        esac
-        old_PATH=${old_PATH#*:}
-    done
-    PATH=${PATH#:}; unset old_PATH x
-fi
+dedupPATH() {
+    if [ -n "$PATH" ]; then
+        old_PATH=$PATH:; PATH=
+        while [ -n "$old_PATH" ]; do
+            x=${old_PATH%%:*}       # the first remaining entry
+            case $PATH: in
+                *:"$x":*) ;;        # already there
+                *) PATH=$PATH:$x;;  # not there yet
+            esac
+            old_PATH=${old_PATH#*:}
+        done
+        PATH=${PATH#:}; unset old_PATH x
+    fi
+}
