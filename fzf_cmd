@@ -3,13 +3,17 @@
 # Global Setting {{{1
 #feed fzf with ag instead of find command
 #now fzf (w/o pipe) will use ag instead of find
-if type "ag" &> /dev/null;then
+if type ag &> /dev/null; then
     export FZF_DEFAULT_COMMAND='ag -g ""'
 fi
 
 #show matches in top-down order
 #cycle through when reaching top/bottom of list
 export FZF_DEFAULT_OPTS="--reverse"
+
+if type tree &> /dev/null; then
+    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+fi
 #1}}}
 
 
@@ -26,24 +30,6 @@ fh() {
 bind '"\er": redraw-current-line'
 bind '"\C-r": "$(fh)\e\C-e\er"'
 
-#fzf locate and open it
-fl() {
-    local uncork knot
-    local knot=$(locate "*" | fzf --query="$1" --exact)
-    if [ -z "$knot" ]; then
-        return
-    elif [ -d "$knot" ]; then
-        if echo "$OSTYPE" | grep -q darwin; then
-            uncork="open"
-        else
-            uncork="xdg-open"
-        fi
-    else
-        uncork="rifle"
-    fi
-    eval "$uncork $knot"
-}
-
 #jump to bookmark of autojump
 fj() {
     local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 |
@@ -57,10 +43,7 @@ fd() {
         cd "$dir"
 }
 
-# fe [FUZZY PATTERN] - Open the selected file with the default editor (prefer vim)
-#   --multi:    <Tab> for multi choices. Use vim buffer to recall files
-#   --select-1: Bypass fuzzy finder if there's one match
-#   --exit-0:   Exit if there's no match
+#open the selected file with the default editor (prefer vim)
 fe() {
     local files
     IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 --preview="head -$LINES {}"))
@@ -69,6 +52,17 @@ fe() {
 }
 #1}}}
 
+#redmine ticket searcher
+red() {
+    local ticket=$(redmine --all |
+                    fzf --query="$1" --exit-0 --select-1 \
+                        --preview-window=down:40% --preview="redmine --desc {1}"|
+                    awk '{print $1}')
+                    #sed 's/^\s*//' | cut -d ' ' -f1)
+    if echo "$ticket" | grep -qE '^[[:digit:]]+$'; then
+        redmine --desc "$ticket"
+    fi
+}
 
 ###############################################################################################
 # git stuff {{{1
