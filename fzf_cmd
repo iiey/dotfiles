@@ -33,7 +33,7 @@ bind '"\C-r": "$(fh)\e\C-e\er"'
 #jump to bookmark of autojump
 fj() {
     local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 |
-                fzf --query="$1" --exact --select-1)
+                fzf --query="$1" --select-1)
     [ -d "$dir" ] && cd "$dir"
 }
 
@@ -51,18 +51,6 @@ fe() {
     [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
 #1}}}
-
-#redmine ticket searcher
-red() {
-    local ticket=$(redmine --all |
-                    fzf --query="$1" --exit-0 --select-1 \
-                        --preview-window=down:40% --preview="redmine --desc {1}"|
-                    awk '{print $1}')
-                    #sed 's/^\s*//' | cut -d ' ' -f1)
-    if echo "$ticket" | grep -qE '^[[:digit:]]+$'; then
-        redmine --desc "$ticket"
-    fi
-}
 
 ###############################################################################################
 # git stuff {{{1
@@ -96,7 +84,7 @@ gitstatus() {
     local cmddiff="git diff --color=always"
     git status -sb | sed '/##/d' |
     fzf --ansi --no-sort \
-        --preview-window=right:70% --preview="$cmddiff {2}" \
+        --preview-window=right:70%:wrap --preview="$cmddiff {2}" \
         --bind="enter:execute($cmddiff {2} | less -R)" \
         --bind="ctrl-o:execute(gvim {2})" \
         --bind="j:down,k:up"
