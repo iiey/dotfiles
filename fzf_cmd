@@ -8,7 +8,6 @@ if type ag &> /dev/null; then
 fi
 
 #show matches in top-down order
-#cycle through when reaching top/bottom of list
 export FZF_DEFAULT_OPTS="--reverse"
 
 if type tree &> /dev/null; then
@@ -25,15 +24,16 @@ fi
 #   overwrite default keybind c-r
 fh() {
     awk '!x[$0]++' $HISTFILE |
-    fzf --prompt='history search: ' --cycle --exact --no-sort --tac --height 40%
+    fzf --prompt='history search: ' --cycle --exact --tac --no-sort --height 40%
 }
 bind '"\er": redraw-current-line'
 bind '"\C-r": "$(fh)\e\C-e\er"'
 
 #jump to bookmark of autojump
 fj() {
-    local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 |
-                fzf --query="$1" --select-1)
+    local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 |   #use only second column
+                sed '/rvm\/copy/d' |                            #ignore rvm_copy
+                fzf --query="$1" --select-1 --tac --no-sort)
     [ -d "$dir" ] && cd "$dir"
 }
 
@@ -55,10 +55,10 @@ fe() {
 ###############################################################################################
 # git stuff {{{1
 
-git_checkout() {
+gitcheckout() {
     local list response key branch header
     list=$(git branch --all --color -vv; git tag) || return 1
-    mapfile -t response < <(fzf --prompt='checkout: ' \
+    mapfile -t response < <(fzf --query=$1 --prompt='checkout: ' \
         --ansi --header="$header" --expect=ctrl-x <<< "$list")
     key="${response[0]}"
     branch=$(perl -pe 's/^\*?\s*(remotes\/[^\/]*\/)?([^ ]+).*/\2/' <<< "${response[1]}")
@@ -78,15 +78,14 @@ gitlog() {
     return 0;
 }
 
-#TODO check cases where status return not only diff files
 #TODO open in vim instead
 gitstatus() {
-    local cmddiff="git diff --color=always"
+    local cmddiff="git diff --color=always "$@""
     git status -sb | sed '/##/d' |
     fzf --ansi --no-sort \
         --preview-window=right:70%:wrap --preview="$cmddiff {2}" \
         --bind="enter:execute($cmddiff {2} | less -R)" \
-        --bind="ctrl-o:execute(gvim {2})" \
+        --bind="ctrl-o:execute(gvim --remote-silent {2})" \
         --bind="j:down,k:up"
     return 0;
 }
