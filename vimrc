@@ -154,6 +154,7 @@ endif
 Plug 'SirVer/ultisnips', v:version >= 704 ? {} : {'on' : []}
     Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
 Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
+Plug 'davidhalter/jedi-vim'
 
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'easymotion/vim-easymotion', {'on': '<Plug>(easymotion-f)'}
@@ -379,15 +380,15 @@ command! UpdateCtags call UpdateCtags($proj)
 
 "CTRLP {{{
 "ctrlp auto. finds projectRoot based on .svn/.git...
-let g:ctrlp_working_path_mode = 'ra'                "working dir is nearest acestor of current file
+let g:ctrlp_working_path_mode = 'ra'                    "working dir is nearest acestor of current file
 "note: see ctrlp_user_command and use .agignore instead
 let g:ctrlp_custom_ignore = {
     \ 'dir':  '\v[\/](.git|.svn|build|tmp)$',
-    \ 'file': '\v\.(exe|so|dll|swp|tags|zip)$'}          "exclude file and directories
+    \ 'file': '\v\.(exe|so|dll|swp|tags|zip)$'}         "exclude file and directories
 "set wildignore+=*/tmp/*,*/build/*,*.so,*.swp,*.zip
-let g:ctrlp_by_filename = 1                         "default searching by filename instead of full path
+let g:ctrlp_by_filename = 1                             "default searching by filename instead of full path
 let g:ctrlp_map = '[p'
-"let g:ctrlp_cmd = 'CtrlPMixed'                      "invoke default command to find in file, buffer and mru
+let g:ctrlp_cmd = 'CtrlPMixed'                          "invoke default command to find in file, buffer and mru
 " }}}
 
 
@@ -685,8 +686,9 @@ augroup vimrc
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 
-    "set specific folding for vim files
+    "specify foldmetho
     autocmd FileType vim setlocal foldmethod=marker
+    autocmd FileType python setlocal foldmethod=indent
 augroup END
 " }}}
 
