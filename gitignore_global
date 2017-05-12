@@ -6,7 +6,8 @@
 *.tags
 build/
 doc/tags
-rvm.kdev4
+*.kdev4
+*.vscode
 
 ###################
 # # Temporary files
