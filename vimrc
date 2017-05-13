@@ -22,6 +22,8 @@ set scrolloff=3             "screen lines offset above and below cursor
 set t_Co=256                "enable term color 256
 set laststatus=2            "always show status line
 set encoding=utf-8
+"use :set list/nolist to show/hide invisiable characters
+set listchars=nbsp:¬,eol:¶,tab:>-,extends:»,precedes:«,trail:•
 
 if v:version > 703
     set formatoptions+=j      "delete comment character when joining commented lines
