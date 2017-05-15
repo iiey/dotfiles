@@ -618,6 +618,7 @@ function! ChangeTheme(color)
     "Using 'execute' to evaluate value of argument not the argument
     execute ':colorscheme' l:color
     execute ':AirlineTheme' l:airline
+endfunc
 command! -nargs=* -complete=color ChangeTheme call ChangeTheme('<args>')
 
 "Head-up digraphs
@@ -629,11 +630,11 @@ endfunction
 inoremap <expr> <c-d> HUDigraphs()
 
 "search phrase with command :Search
-function! gsearch(phrase)
+function! GSearch(phrase)
     let url = "http://www.google.com/search?q=" . a:phrase
     call netrw#BrowseX(url, 0)
 endfunction
-command! -nargs=* Search call gsearch('<args>')
+command! -nargs=* Search call GSearch('<args>')
 
 "ON_EXIT
 function! OnQuit()
