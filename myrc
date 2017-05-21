@@ -34,6 +34,7 @@ alias g='gvim --remote-silent'
 #run with fzf
 alias vi='vim $(fzf)'
 alias gv='gvim --remote-silent $(fzf)'
+alias emacs='emacs --no-window-system'
 
 #todo: gerneral cd to switch between source and build
 #echo ${PWD%build*} delete all from left of match
@@ -83,6 +84,22 @@ if type tmux &> /dev/null; then
     alias tmux='TERM=xterm-256color tmux -2'
 fi
 
+# remove duplicated entries in PATH
+dedupPATH() {
+    if [ -n "$PATH" ]; then
+        old_PATH=$PATH:; PATH=
+        while [ -n "$old_PATH" ]; do
+            x=${old_PATH%%:*}       # the first remaining entry
+            case $PATH: in
+                *:"$x":*) ;;        # already there
+                *) PATH=$PATH:$x;;  # not there yet
+            esac
+            old_PATH=${old_PATH#*:}
+        done
+        PATH=${PATH#:}; unset old_PATH x
+    fi
+}
+
 #create tmux default working session
 #note: double quote to correctly expand var $HOME with tmux
 tmux-session() {
@@ -90,11 +107,14 @@ tmux-session() {
     [ -z "$(type -t tmux)" ] && return
     #create default session "dev" with some windows if no parameters are given
     [ $# -eq 0 ] && set -- "dev" "field" "labor" "vm" "rvm"
-    #note: arg1: session name, arg2: first window, arg3: second window,..
+    #create tmux command
+    #1. create session with first window
     local cmd="tmux new -s "$1" -n "$2""
+    #2. create other windows
     for i in "${@:3}"; do cmd="${cmd} \; new-window -n $i"; done
-    #as default switch to working dir at last window
+    #3. switch to my default working dir at last window
     [ -d $HOME/sources/git/rvm ] && cmd="${cmd} -c "$HOME/sources/git/rvm""
+    #evaluate tmux command
     eval $cmd
 }
 
@@ -192,19 +212,3 @@ export EDITOR=vim
 [ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
 [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #git specific completion
 [ -f ~/.rvm_functions ] && source ~/.rvm_functions              #rvm functions
-
-# remove duplicated entries in PATH
-dedupPATH() {
-    if [ -n "$PATH" ]; then
-        old_PATH=$PATH:; PATH=
-        while [ -n "$old_PATH" ]; do
-            x=${old_PATH%%:*}       # the first remaining entry
-            case $PATH: in
-                *:"$x":*) ;;        # already there
-                *) PATH=$PATH:$x;;  # not there yet
-            esac
-            old_PATH=${old_PATH#*:}
-        done
-        PATH=${PATH#:}; unset old_PATH x
-    fi
-}

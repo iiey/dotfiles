@@ -24,7 +24,7 @@ fi
 #   overwrite default keybind c-r
 fh() {
     awk '!x[$0]++' $HISTFILE |
-    fzf --prompt='history search: ' --cycle --exact --tac --no-sort --height 40%
+    fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --tac --no-sort --height 10%
 }
 bind '"\er": redraw-current-line'
 bind '"\C-r": "$(fh)\e\C-e\er"'
@@ -72,7 +72,7 @@ gitcheckout() {
 gitlog() {
     local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {})\""
     fzf --ansi -e --no-sort --tiebreak=index \
-        --bind="ctrl-w:toggle-preview,enter:execute($cmdshow | less -R)" \
+        --bind="ctrl-h:page-down,ctrl-l:page-up,ctrl-w:toggle-preview,enter:execute($cmdshow | less -R)" \
         --preview-window=down:hidden --preview="$cmdshow" \
         < <(git log --graph --color=always --format="%C(auto)%h%d %s %Cgreen(%cr) %Creset<%an>" "$@")
     return 0;
