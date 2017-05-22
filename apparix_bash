@@ -136,11 +136,11 @@ function _apparix_aliases ()
   nullglobsa=$(shopt -p nullglob)
   shopt -s nullglob
   if let $(($COMP_CWORD == 1)); then
-    local word=$( cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, ; ls -1p | grep '/$' | tr -d / )
+    local word=$( cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, )
     # now cur=<apparix mark> (completing on this) and dir='to'
     # Below will complete on subdirectories of current directory. swap if so desired.
     if [ -z "$cur" ] && type fzf &> /dev/null; then
-        word=$( IFS=$' ' echo "$word" | fzf )
+        word=$( echo "$word" | fzf )
     fi
     COMPREPLY=( $(compgen  -W "$word" -- $cur) )
     #COMPREPLY=( (cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, ; ls -1p | grep '/$' | tr -d /) | grep "\<$cur.*" ) )
