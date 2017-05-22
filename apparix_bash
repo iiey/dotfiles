@@ -142,7 +142,8 @@ function _apparix_aliases ()
     if [ -z "$cur" ] && type fzf &> /dev/null; then
         word=$( echo "$word" | fzf )
     fi
-    COMPREPLY=( $(compgen  -W "$word" -- $cur) )
+    #use sed to add space the end of each words
+    COMPREPLY=( "$( compgen  -W "$word" -- $cur | sed -e 's/[^\/]$/& /g' )" )
     #COMPREPLY=( (cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, ; ls -1p | grep '/$' | tr -d /) | grep "\<$cur.*" ) )
     # Below will not complete on subdirectories of current directory. swap if so desired.
     # COMPREPLY=( $( cat $HOME/.apparix{rc,expand} | grep "j,.*$cur.*," | cut -f2 -d, ) )
