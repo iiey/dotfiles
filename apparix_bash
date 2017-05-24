@@ -136,17 +136,16 @@ function _apparix_aliases ()
   nullglobsa=$(shopt -p nullglob)
   shopt -s nullglob
   if let $(($COMP_CWORD == 1)); then
-    local word=$( cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, )
-    # now cur=<apparix mark> (completing on this) and dir='to'
-    # Below will complete on subdirectories of current directory. swap if so desired.
+    #get words from bookmars list
+    local words=$( cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, )
+    #trigger fzf if it's available
     if [ -z "$cur" ] && type fzf &> /dev/null; then
-        word=$( echo "$word" | fzf )
+        words=$( echo "$words" | fzf )
     fi
-    #use sed to add space the end of each words
-    COMPREPLY=( "$( compgen  -W "$word" -- $cur | sed -e 's/[^\/]$/& /g' )" )
-    #COMPREPLY=( (cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, ; ls -1p | grep '/$' | tr -d /) | grep "\<$cur.*" ) )
-    # Below will not complete on subdirectories of current directory. swap if so desired.
-    # COMPREPLY=( $( cat $HOME/.apparix{rc,expand} | grep "j,.*$cur.*," | cut -f2 -d, ) )
+    #filter words based on cursor
+    words=$( compgen  -W "$words" -- $cur )
+    #add words with extra space at the end into completion array
+    for w in $words; do COMPREPLY+=( "$w " ); done
   else
     # now dir=<apparix mark> and cur=<subdirectory-of-mark> (completing on this)
     # or cur=<fileordir> (when bound for example to ae)
