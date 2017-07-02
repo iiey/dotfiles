@@ -143,6 +143,7 @@ Plug 'tpope/vim-surround'
 
 "EXTENDED (productive) {{{2
 Plug 'skywind3000/asyncrun.vim'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
     Plug 'junegunn/gv.vim'
 
@@ -321,6 +322,8 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 "or direct path to current actual libclang
 let g:clang_library_path=expand("$HOME")."/lib/libclang.so"
 
+"select first entry of popup menu
+let g:clang_auto_select=1
 "also complete parameters of function
 let g:clang_snippets = 1
 "default engine cannot jump between parameters
