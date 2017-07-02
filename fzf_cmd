@@ -23,8 +23,15 @@ fi
 #   show bash_history w/o duplicates and order preserved
 #   overwrite default keybind c-r
 fh() {
-    awk '!x[$0]++' $HISTFILE |
-    fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --tac --no-sort --height 10%
+    local revshist # return history in reverse order
+    if [[ $OSTYPE == "darwin"* ]]; then
+        revshist="tail -r $HISTFILE"
+    else
+       revshist="tac $HISTFILE"
+    fi
+
+    eval $revshist | awk '!x[$0]++' |
+    fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --no-sort --height 10%
 }
 bind '"\er": redraw-current-line'
 bind '"\C-r": "$(fh)\e\C-e\er"'
@@ -33,7 +40,7 @@ bind '"\C-r": "$(fh)\e\C-e\er"'
 fj() {
     local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 |   #use only second column
                 sed '/rvm\/copy/d' |                            #ignore rvm_copy
-                fzf --query="$1" --select-1 --tac --no-sort)
+                fzf --query="$1" --select-1 --tac --no-sort --height 10%)
     [ -d "$dir" ] && cd "$dir"
 }
 
