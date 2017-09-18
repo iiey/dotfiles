@@ -191,14 +191,19 @@ alias egrep="egrep $GREP_OPTIONS --color=auto"
 unset pattern
 unset GREP_OPTIONS
 
+# using zeal for docsets if dasht exists
+if type "dasht" &> /dev/null; then
+    export DASHT_DOCSETS_DIR="$HOME/.local/share/Zeal/Zeal/docsets"
+fi
+
 # correct previous console command with $fuck
 if type "thefuck" &> /dev/null; then
     eval "$(thefuck --alias)"
 fi
 
-# using zeal for docsets if dasht exists
-if type "dasht" &> /dev/null; then
-    export DASHT_DOCSETS_DIR="$HOME/.local/share/Zeal/Zeal/docsets"
+# correct previous console command with $fuck
+if type "tmuxp" &> /dev/null; then
+    eval "$(_TMUXP_COMPLETE=source tmuxp)"
 fi
 
 # default editor
