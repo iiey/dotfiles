@@ -1,4 +1,4 @@
-/build/
+/build*/
 /log/
 /logs/
 /images/
@@ -19,7 +19,6 @@
 *.scss
 *.old
 *.json
-*.xml
 *.html
 *.plist
 *.pdf

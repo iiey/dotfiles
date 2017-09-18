@@ -44,16 +44,20 @@ alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 #ranger (exit but stay in ranger current directory)
 if type ranger &> /dev/null; then
     alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
-    alias rg='ranger'
+#    alias rg='ranger'
 fi
 
 #silver search
 if type ag &> /dev/null; then
-    alias ag="ag --noheading --smart-case --skip-vcs-ignores \
-        --path-to-ignore $HOME/.agignore \
+    alias ag="ag --noheading --nobreak -S -p $HOME/.ignore \
         --color-match '01;31' \
         --color-path '36' \
         --color-line-number '32'"
+fi
+
+#ripper grep
+if type rg &> /dev/null; then
+    alias rg="rg --no-heading -S --colors 'path:fg:cyan'"
 fi
 
 #ctags

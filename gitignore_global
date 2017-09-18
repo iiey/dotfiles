@@ -4,7 +4,7 @@
 .kdev4/
 .svn
 *.tags
-build/
+build*/
 doc/tags
 *.kdev4
 *.vscode
