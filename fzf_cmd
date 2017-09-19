@@ -7,6 +7,11 @@ if type ag &> /dev/null; then
     export FZF_DEFAULT_COMMAND='ag -g ""'
 fi
 
+#refer rg over ag
+if type rg &> /dev/null; then
+    export FZF_DEFAULT_COMMAND='rg --files --hidden'
+fi
+
 #show matches in top-down order
 export FZF_DEFAULT_OPTS="--reverse"
 
