@@ -66,12 +66,12 @@ ${color grey}/shared $color${fs_used /shared} /${fs_size /shared} ${alignr}${fs_
 ${color grey}System:
 ${color grey}Uptime:$color $uptime
 ${color grey}Frequency :$color $freq_g GHz
-#${color grey}CPU :$color $cpu% ${cpubar 4}
+#${color grey}CPU :$color $cpu% ${cpubar}
 ${color grey}${cpugraph 0 32,155 104E8B 0077ff} $alignr${color blue}${diskiograph 32,155 104E8B 0077ff 750}
-${color grey}CPU1:$color ${cpu cpu1}% ${cpubar cpu1}
-${color grey}CPU2:$color ${cpu cpu2}% ${cpubar cpu2}
-${color grey}CPU3:$color ${cpu cpu3}% ${cpubar cpu3}
-${color grey}CPU4:$color ${cpu cpu4}% ${cpubar cpu4}
+${color grey}CPU1:${if_match ${cpu cpu1} > 90}${color red}${else}$color${endif} ${cpu cpu1}%$color ${cpubar cpu1}
+${color grey}CPU2:${if_match ${cpu cpu2} > 90}${color red}${else}$color${endif} ${cpu cpu2}%$color ${cpubar cpu2}
+${color grey}CPU3:${if_match ${cpu cpu3} > 90}${color red}${else}$color${endif} ${cpu cpu3}%$color ${cpubar cpu3}
+${color grey}CPU4:${if_match ${cpu cpu4} > 90}${color red}${else}$color${endif} ${cpu cpu4}%$color ${cpubar cpu4}
 ${color grey}RAM :$color $mem/$memmax - $memperc% ${alignr}${membar 5,120}
 ${color grey}Swap:$color $swap/$swapmax - $swapperc% ${alignr}${swapbar 5,120}
 ${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
