@@ -59,7 +59,8 @@ fd() {
 #open the selected file with the default editor (prefer vim)
 fe() {
     local files
-    IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 --preview="head -$LINES {}"))
+    IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 \
+                        --preview="highlight --force --out-format=ansi {} 2>/dev/null"))
     #TODO ctrl-t:open files in tabs, ctrl-w: open files in windows
     [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
