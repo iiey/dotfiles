@@ -2,7 +2,7 @@
 #script: my functions
 
 #ignore commands which less than two character and others trivial
-HISTIGNORE="?:??:l[als]:to:pwd:red*:clear:exit:&"
+HISTIGNORE="?:??:l[als]:to*:pwd:red*:clear:exit:&"
 #ignoreboth(^space and consecutive duplicates), remove duplicates
 HISTCONTROL=ignoreboth:erasedups
 #save and reload the history after each command finishes
