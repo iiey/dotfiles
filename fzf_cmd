@@ -51,8 +51,9 @@ fj() {
 
 #cd directory
 fd() {
-    local dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -print 2> /dev/null | fzf +m) &&
-        cd "$dir"
+    local dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -not -path "*/build*/*" -print 2> /dev/null |
+        fzf +m --preview-window=right --preview="tree {} -L 3 -C") &&
+        cd "$dir" && ls -l
 }
 
 #open the selected file with the default editor (prefer vim)
