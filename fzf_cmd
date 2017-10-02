@@ -13,8 +13,10 @@ if type rg &> /dev/null; then
 fi
 
 #show matches in top-down order
-export FZF_DEFAULT_OPTS="--reverse"
+export FZF_DEFAULT_OPTS="--reverse \
+                         --bind='ctrl-d:half-page-down,ctrl-u:half-page-up'"
 
+#working directory with tree preview
 if type tree &> /dev/null; then
     export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 fi
