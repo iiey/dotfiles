@@ -104,24 +104,6 @@ dedupPATH() {
     fi
 }
 
-#create tmux default working session
-#note: double quote to correctly expand var $HOME with tmux
-tmux-session() {
-    #check existance of tmux
-    [ -z "$(type -t tmux)" ] && return
-    #create default session "dev" with some windows if no parameters are given
-    [ $# -eq 0 ] && set -- "dev" "field" "labor" "vm" "rvm"
-    #create tmux command
-    #1. create session with first window
-    local cmd="tmux new -s "$1" -n "$2""
-    #2. create other windows
-    for i in "${@:3}"; do cmd="${cmd} \; new-window -n $i"; done
-    #3. switch to my default working dir at last window
-    [ -d $HOME/sources/git/rvm ] && cmd="${cmd} -c "$HOME/sources/git/rvm""
-    #evaluate tmux command
-    eval $cmd
-}
-
 
 #disable legacy feature of terminal emulator Software Flow Control
 #prevent accidentally pressing c-s/c-q
