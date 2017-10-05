@@ -74,6 +74,7 @@ fe() {
 }
 #1}}}
 
+
 ###############################################################################################
 # git stuff {{{1
 
@@ -112,6 +113,22 @@ gitstatus() {
         --bind="ctrl-o:execute(gvim --remote-silent {2})" \
         --bind="j:down,k:up"
     return 0;
+}
+#1}}}
+
+
+###############################################################################################
+#other commands {{{1
+
+#kill tmux session
+tkill() {
+    [ ! type tmux &> /dev/null ] && return
+    #select from session list with fzf
+    #remove everything after ':' before return session names
+    local sessions=( $(tmux list-session | fzf -m | sed 's/: .*//') )
+    for elem in ${sessions[@]}; do
+        tmux kill-session -t "$elem" && echo "killed session: '$elem'"
+    done
 }
 #1}}}
 
