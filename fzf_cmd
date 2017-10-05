@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # Global Setting {{{1
+# Use other trigger instead of default **
+#export FZF_COMPLETION_TRIGGER="'"
+
 #feed fzf with ag instead of find command
 #now fzf (w/o pipe) will use ag instead of find
 if type ag &> /dev/null; then
@@ -14,11 +17,11 @@ fi
 
 #show matches in top-down order
 export FZF_DEFAULT_OPTS="--reverse \
-                         --bind='ctrl-d:half-page-down,ctrl-u:half-page-up'"
+                         --bind='ctrl-h:half-page-down,ctrl-l:half-page-up'"
 
 #working directory with tree preview
 if type tree &> /dev/null; then
-    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -100'"
 fi
 #1}}}
 
@@ -54,15 +57,18 @@ fj() {
 #cd directory
 fd() {
     local dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -not -path "*/build*/*" -print 2> /dev/null |
-        fzf +m --preview-window=right --preview="tree {} -L 3 -C") &&
+        fzf +m --preview-window=right --preview="tree {} -L 3 -C | head -100") &&
         cd "$dir" && ls -l
 }
 
 #open the selected file with the default editor (prefer vim)
 fe() {
     local files
+    #for fast processing pipe only 300 headline of file
+    #highlight with ansi output format and line number
+    #also force output when filetype not recognized, mute error in case not a file
     IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 \
-                        --preview="head -300 {} | highlight --force -O ansi -l 2>/dev/null"))
+                        --preview="head -300 {} | highlight -O ansi -l --force 2>/dev/null"))
     #TODO ctrl-t:open files in tabs, ctrl-w: open files in windows
     [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
