@@ -226,3 +226,4 @@ fi
 [ -f ~/.autojump/etc/profile.d/autojump.sh ] && source ~/.autojump/etc/profile.d/autojump.sh
 [ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
 [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #git specific completion
+[ -f ~/.tmux-completion.bash ] && source ~/.tmux-completion.bash #tmux specific completion
