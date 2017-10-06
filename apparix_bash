@@ -143,10 +143,10 @@ function _apparix_aliases ()
         #fzf: --wit-nth show only second and third column (first is 'j')
         #fzf: --nth=1 limits search only on first displayed column
         #tree: input third column (directory), level one, force colors
-        #fzf: post-processing with cut to return only second column (bookmark)
+        #postprocess: trim repeated whitespace then cut to return only second column (bookmark)
         words=$(cat $HOME/.apparix{rc,expand} | column -s ',' -t |
                 fzf --with-nth=2,3 --nth=1 --preview='tree {3} -L 1 -C | head -100' |
-                cut -d ' ' -f2)
+                tr -s ' ' | cut -d ' ' -f2)
     fi
     #filter words based on cursor
     words=$( compgen  -W "$words" -- $cur )
