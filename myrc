@@ -206,6 +206,6 @@ fi
 [[ $PATH != *"/usr/lib/ccache"* ]] && [[ -d /usr/lib/ccache ]] && export PATH=/usr/lib/ccache/:${PATH}
 #enable some extra features
 [ -f ~/.autojump/etc/profile.d/autojump.sh ] && source ~/.autojump/etc/profile.d/autojump.sh
-[ -f ~/.apparix_bash ] && source ~/.apparix_bash                #bookmark directories
-[ -f ~/.git-completion.bash ] && source ~/.git-completion.bash  #git specific completion
-[ -f ~/.tmux-completion.bash ] && source ~/.tmux-completion.bash #tmux specific completion
+[ -f ~/.apparix.bash ] && source ~/.apparix.bash                    #bookmark directories
+[ -f ~/.git-completion.bash ] && source ~/.git-completion.bash      #git specific completion
+[ -f ~/.tmux-completion.bash ] && source ~/.tmux-completion.bash    #tmux specific completion
