@@ -138,14 +138,17 @@ function _apparix_aliases ()
   if let $(($COMP_CWORD == 1)); then
     #get words from bookmars list
     local words=$( cat $HOME/.apparix{rc,expand} | grep "\<j," | cut -f2 -d, )
+    #without tree command, string is empty, preview-window is hidden
+    #eval: for executing inner string command '..'
+    #tree: input third column (directory), level one, force colors
+    type tree &> /dev/null && local cmd_tree="eval 'tree {3} -L 1 -C | head -100'"
     #trigger fzf if it's available
     if [ -z "$cur" ] && type fzf &> /dev/null; then
         #fzf: --wit-nth show only second and third column (first is 'j')
         #fzf: --nth=1 limits search only on first displayed column
-        #tree: input third column (directory), level one, force colors
         #postprocess: trim repeated whitespace then cut to return only second column (bookmark)
         words=$(cat $HOME/.apparix{rc,expand} | column -s ',' -t |
-                fzf --with-nth=2,3 --nth=1 --preview='tree {3} -L 1 -C | head -100' |
+                fzf --with-nth=2,3 --nth=1 --preview="$cmd_tree" |
                 tr -s ' ' | cut -d ' ' -f2)
     fi
     #filter words based on cursor
