@@ -1,8 +1,8 @@
 #!/bin/sh
 #  BASH-style functions
 #
-#  Name this file for example .bash_apparix in your $HOME directory
-#  and put the line 'source $HOME/.bash_apparix' (without quotes)
+#  Name this file for example .apparix.bash in your $HOME directory
+#  and put the line 'source $HOME/.apparix.bash' (without quotes)
 #  in the file $HOME/.bashrc.
 #  If you use the relevant functions, make sure $EDITOR is set
 #  to the name of an available editor.
@@ -157,12 +157,20 @@ function _apparix_aliases ()
     # or cur=<fileordir> (when bound for example to ae)
     dir=`apparix --try-current-last -favour rOl $dir 2>/dev/null` || return 0
     eval_compreply="COMPREPLY=( $(
-      cd "$dir"
+      #check existence before cd
+      [[ ! -d "$dir" ]] && return || cd "$dir"
       \ls -d $cur* | while read r
       do
-        [[ $1 == 'ae' || $1 == 'als' || -d "$r" ]] &&
-        [[ $r == *$cur* ]] &&
-          echo \"${r// /\\ }\/\"
+        #feed name to array if only it matches subpath
+        if [[ "$r" == *$cur* ]]; then
+            #complete directory with suffix '/'
+            if [[ -d "$r" ]]; then
+                echo \"${r// /\\ }\/\"
+            #complete filenames without suffix
+            elif [[ $1 == 'ae' || $1 == 'als' ]]; then
+                echo \"${r// /\\ }\"
+            fi
+        fi
       done
     ) )"
   eval $eval_compreply
@@ -175,7 +183,6 @@ function _apparix_aliases ()
 # command to register the above to expand when the 'to' command's args are
 # being expanded
 complete -o nospace -F _apparix_aliases to
-complete -o nospace -F _apparix_aliases a
 complete -o nospace -F _apparix_aliases ald
 complete -o nospace -F _apparix_aliases als
 complete -o nospace -F _apparix_aliases ae
