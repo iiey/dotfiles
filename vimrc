@@ -357,7 +357,8 @@ set tags=./.tags;$HOME/sources              "searching for .tags from current up
 "guess projRootDir by checking version control system
 for vcs in ['.git', '.svn', '.hg']
     "searching from current "." upwards ";" to "~/sources"
-    let projRootDir = fnamemodify(finddir(vcs, '.;$HOME/sources'), ':h')
+    "see also filename-modifiers: :p --> full path, :h --> take head remove last component
+    let projRootDir = fnamemodify(finddir(vcs, '.;$HOME/sources'), ':p:h:h')
     if isdirectory(projRootDir.'/'.vcs)
         "init env-var for later uses
         let $proj = projRootDir
@@ -494,7 +495,7 @@ let b:bad_whitespace_show=0
 
 "MAKE {{{
 "identify build-folder by searching "upwards" for "build" from "." to "~/sources"
-let projBuildDir = finddir('build', '.;$HOME/sources')
+let projBuildDir = fnamemodify(finddir('build', '.;$HOME/sources'), ':p:h')
 if projBuildDir !=""
     let &makeprg='cmake --build ' . shellescape(projBuildDir) . ' --target '
 endif
