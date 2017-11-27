@@ -505,15 +505,21 @@ endif
 
 "GREP - SILVER SEARCH {{{
 if executable('ag')
-  "use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
+  "use ag over vimgrep
+  set grepprg=ag\ --vimgrep
   "use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag -Q -l --nocolor --hidden -g "" %s'
 
   "ag is fast that ctrlp doesn't need to cache
   let g:ctrlp_use_caching = 0
+endif
+"}}}
 
+"GREP - RIPGREP {{{
+if executable('rg')
+  "use rg over ag
+  let g:ctrlp_user_command = 'rg --files %s'
+  let g:ctrlp_use_caching = 0
 endif
 "}}}
 
@@ -529,7 +535,7 @@ command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
 command! -bang -nargs=* -complete=file Ag AsyncRun -program=grep @ <args>
 
 "FIXME search pattern with double quotes not work
-if !exists(':Ag') && executable('ag')
+if !exists(':Ag') && (executable('ag') || executable('rg'))
     command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 endif
 
@@ -537,7 +543,7 @@ endif
 function! AsyncOnExit()
     "user can close quickfix manually if it displays grep results
     let l:grep_job = 0
-    for cmd in ['^ag', '^ack', '^grep']
+    for cmd in ['^ag', '^ack', '^grep', '^rg']
         if @: =~? cmd | let l:grep_job += 1 | endif
     endfor
     "create a timer if only job other than grep succeeded
