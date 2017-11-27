@@ -417,9 +417,9 @@ EXEC 01;31  # Unix
 
 #############################################################################
 # Your customizations
-# blink ; red text ; default bg
-ORPHAN  05;31;49
-MISSING 05;31;49
+# orphan (fg light gray, bg black) -> missing (fg red, bg default)
+ORPHAN  37;40
+MISSING 31;49
 EXEC 32  # Unix
 .cmake 33
 .diff 34
