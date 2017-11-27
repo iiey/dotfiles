@@ -176,6 +176,7 @@ Plug 'scrooloose/nerdtree', {'on': []}
 Plug 'edkolev/tmuxline.vim'
 Plug 'blueyed/vim-diminactive'
 "}}}
+"}}} Load Plugins
 
 
 " COLORSCHEME {{{
@@ -528,9 +529,9 @@ endif
 "}}}
 
 
+"GREP - SILVER SEARCH {{{
 "fzf.vim uses FZF_DEFAULT_COMMAND
 "':Ag' uses grepgrp
-"GREP - SILVER SEARCH {{{
 if executable('ag')
   "use ag over vimgrep
   set grepprg=ag\ --vimgrep
@@ -541,6 +542,7 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 "}}}
+
 
 "GREP - RIPGREP {{{
 if executable('rg')
@@ -732,7 +734,7 @@ augroup END
 " }}}
 
 
-" MAPPING {{{
+" MAPPING {{{1
 "LEADER KEY (by default is backslash "\")
 "let mapleader = "["
 
@@ -770,15 +772,7 @@ nnoremap <C-q> :qa!<cr>
 "save all & quit
 nnoremap <C-s> :xa<cr>
 
-"search in this file (disable line substitute)
-"<c-r> inserts contain of named register, '=" register expr, <cword> expr of word under cursor
-"see :h c_ctrl-r
-"use double quote to escape regex character
-nnoremap S :Ag<space>"<c-r>=expand("<cword>")<cr>"<space>%:p
-"change working directory
-nnoremap [cd :cd %:p:h<cr>:pwd<cr>
-
-"WINDOW:
+"WINDOW: {{{2
 "s for split and disable word substitude
 noremap s <c-w>
 "simulate tmux key-z
@@ -790,16 +784,18 @@ nnoremap s. 5<c-w>>
 "win-resize horizontal
 nnoremap s0 5<c-w>+
 nnoremap s- 5<c-w>-
+"}}}
 
-"MOVEMENT:
+"MOVEMENT: {{{2
 "increase steps of basic moves
 nnoremap <C-e> 5<C-e>
 nnoremap <C-y> 5<C-y>
 "this is convenient and more comfortable
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
+"}}}
 
-"SEARCHING:
+"SEARCHING: {{{2
 "make matches appear in the middle of screen (add zz)
 nnoremap n nzz
 nnoremap N Nzz
@@ -808,11 +804,25 @@ nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
 nnoremap <c-]> <c-]>zz
+"search with silversearcher
+"<c-r> inserts contain of named register, '=" register expr, <cword> expr of word under cursor. See :h c_ctrl-r
+"use double quote to escape regex character
+" %:p current filename, %:p:h truncate name -> current dir
+nnoremap [s :Ag<space>"<c-r>=expand("<cword>")<cr>"<space>%:p
+nnoremap [S :Ag<space>"<c-r>=expand("<cword>")<cr>"<space>%:p<cr>
+"search with ripgrep
+nnoremap [r :Rg<space>"<c-r>=expand("<cword>")<cr>"
+nnoremap [R :Rg<space>"<c-r>=expand("<cword>")<cr>"<cr>
+"search with fuzzy finder
+nnoremap [f :FZF<cr>
+"change working directory
+nnoremap [cd :cd %:p:h<cr>:pwd<cr>
 "manual change cword forwards
 "repeat with: <c-[>(goto normal) n(ext match) .(repeat)
 nnoremap c* *<c-o>cgn
+"}}}
 
-"TABS JUMP:
+"TABS JUMP: {{{2
 "tabprevious (gT) and tapnext (gt)
 "or ngt for jumping to n.te tab
 noremap <C-S><left> :tabp<cr>
@@ -823,13 +833,14 @@ noremap > :tabn<cr>
 "using (s-)tab and and repeat with dot command to shift instead
 vnoremap <tab> >
 vnoremap <s-tab> <
+"}}}
 
 "map vertical help
 cnoremap vh vert botright help<space>
 "map vertical splitfind
 cnoremap vf vert sf<space>
 
-"FN:
+"FN: {{{2
 nnoremap <silent>   <F2> :call ToggleTree()<cr>
 nnoremap            <F3> :TagbarToggle<cr>
 nnoremap <silent>   <F4> :UpdateCtags<cr>
@@ -837,8 +848,9 @@ nnoremap            <F5> :UndotreeToggle<cr>
 
 nnoremap <silent>   <F10> :call OnQuit()<cr>
 imap                <F10> <c-o><F10>                        "if in Insert-Mode switch to Insert-Normal-Mode to execute F10
+"}}}
 
-"DEACTIVATION:
+"DEACTIVATION: {{{2
 "useless substitutions
 "nnoremap s <NOP>
 "nnoremap S <NOP>
@@ -850,8 +862,9 @@ nnoremap J <NOP>
 nnoremap K <NOP>
 "Ex mode
 nnoremap Q <NOP>
+"}}}
 
 " cppman
 "command! -nargs=+ Cppman silent! call system("tmux split-window cppman " . expand(<q-args>))
 "autocmd FileType cpp nnoremap <silent><buffer> K <Esc>:Cppman <cword><CR>
-" }}}
+" }}} Mapping
