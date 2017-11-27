@@ -146,6 +146,9 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
     Plug 'junegunn/gv.vim'
+Plug 'tpope/vim-vinegar'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+    Plug 'junegunn/fzf.vim'
 
 Plug 'vim-utils/vim-man'
 "no zeal support on mac os because of dash
@@ -469,6 +472,27 @@ let g:EasyMotion_smartcase = 1
 "}}}
 
 
+"FZF.VIM {{{
+"define window layout
+let g:fzf_layout = { 'down': '~30%' }
+" [Commands] -- expect expression for directly executing the command
+let g:fzf_commands_expect = 'ctrl-x'
+
+if executable('fzf')
+    "Files command with preview window
+    command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+    "Ripgrep
+    command! -bang -nargs=* -complete=file Rg
+                \ call fzf#vim#grep(
+                \   'rg --column --line-number --no-heading --color=always --ignore-case ' . <q-args>, 1,
+                \   <bang>0 ? fzf#vim#with_preview('up:60%')
+                \           : fzf#vim#with_preview('right:50%:hidden', 'ctrl-w'),
+                \   <bang>0)
+endif
+"}}}
+
+
 "OTHER PLUGINS {{{
 "CPP-ENHANCED-HIGHLIGHT
 let g:cpp_class_scope_highlight = 1
@@ -497,12 +521,15 @@ let b:bad_whitespace_show=0
 "identify build-folder by searching "upwards" for "build" from "." to "~/sources"
 let projBuildDir = fnamemodify(finddir('build', '.;$HOME/sources'), ':p:h')
 if projBuildDir !=""
+    "TODO handle build directory with name other than 'build'
     let &makeprg='cmake --build ' . shellescape(projBuildDir) . ' --target '
 endif
 "Note: Using "-- -jN" to pass jobs config to make command
 "}}}
 
 
+"fzf.vim uses FZF_DEFAULT_COMMAND
+"':Ag' uses grepgrp
 "GREP - SILVER SEARCH {{{
 if executable('ag')
   "use ag over vimgrep
