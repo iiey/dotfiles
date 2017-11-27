@@ -170,7 +170,6 @@ Plug 'majutsushi/tagbar'
 Plug 'scrooloose/nerdtree', {'on': []}
     Plug 'jistr/vim-nerdtree-tabs'
     Plug 'ryanoasis/vim-devicons'
-Plug 'wincent/terminus'
 Plug 'edkolev/tmuxline.vim'
 Plug 'blueyed/vim-diminactive'
 "}}}
