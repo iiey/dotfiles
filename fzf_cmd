@@ -4,7 +4,7 @@
 # Use other trigger instead of default **
 #export FZF_COMPLETION_TRIGGER="'"
 
-#feed fzf with ag instead of find command
+#NOTE: this determines also search program for fzf.vim
 #now fzf (w/o pipe) will use ag instead of find
 if type ag &> /dev/null; then
     export FZF_DEFAULT_COMMAND='ag -g ""'
