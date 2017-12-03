@@ -9,27 +9,27 @@
     st = status --short --branch
     tg = log --tags --simplify-by-decoration --date=format:'%Y-%m-%d %H:%M' --pretty='format:%cd %d'
 [color]
-	ui = auto
+    ui = auto
 [core]
-	excludesfile = ~/.gitignore
+    excludesfile = ~/.gitignore
 [diff]
     #remove a/ b/ prefix
-	noprefix = true
+    noprefix = true
 [difftool]
-	prompt = false
+    prompt = false
 [init]
     #.git/hook/ctags
-	templatedir = ~/.git_template
+    templatedir = ~/.git_template
 [log]
     #use short form of sha1
-	abbrevCommit = true
-	date = local
+    abbrevCommit = true
+    date = local
 [pull]
     #pull if only all commits were pushed
-	ff = only
+    ff = only
 [merge]
-	ff = false
-	tool = kdiff3
+    ff = false
+    tool = kdiff3
 [mergetool]
     #do not store .orig after merge
-	keepBackup = false
+    keepBackup = false
