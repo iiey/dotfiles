@@ -1,11 +1,22 @@
 [alias]
     edit = config --global --edit
     graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-	st = status -sb
     vdiff = "!f() { git diff $@ | vi -; }; f"
+    log1 = log --pretty=oneline
+    logp = log --patch -1
+    logr = log ..origin/master
+    logl = log origin/master..
+    st = status --short --branch
     tg = log --tags --simplify-by-decoration --date=format:'%Y-%m-%d %H:%M' --pretty='format:%cd %d'
+[color]
+	ui = auto
 [core]
 	excludesfile = ~/.gitignore
+[diff]
+    #remove a/ b/ prefix
+	noprefix = true
+[difftool]
+	prompt = false
 [init]
     #.git/hook/ctags
 	templatedir = ~/.git_template
@@ -22,8 +33,3 @@
 [mergetool]
     #do not store .orig after merge
 	keepBackup = false
-[difftool]
-	prompt = false
-[diff]
-    #remove a/ b/ prefix
-	noprefix = true
