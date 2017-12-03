@@ -376,7 +376,7 @@ function! UpdateCtags(proDir)
     "generate ctags only for projects
     if empty(a:proDir) | echom "project directory empty!" | return | endif
     "execute 'ctags' at projDir to take advantage of --tag-relative=yes
-    let cmd = 'cd ' . a:proDir . '&&' . 'ctags -f ./.tags .'
+    let cmd = 'cd ' . a:proDir . '&&' . 'ctags -R -f ./.tags .'
     if exists(":AsyncRun")
         execute "AsyncRun " . cmd
     else
@@ -512,9 +512,10 @@ let g:undotree_WindowLayout = 3         "undo-/diff-window open on the left side
 "TAGBAR
 let g:tagbar_autofocus=1                "focus on actual function
 
-"BETTER-WHITESPACE
+"BAD-WHITESPACE
 let g:better_whitespace_filetypes_blacklist=['txt', 'csv', 'ppm']
-let b:bad_whitespace_show=0
+"TODO modify plugin to have init-option
+let g:bad_whitespace_default=0
 " }}}
 
 
