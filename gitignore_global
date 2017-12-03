@@ -11,6 +11,7 @@ doc/tags
 
 ###################
 # # Temporary files
+*.kate-swp
 *.swp
 *.swo
 *~
