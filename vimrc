@@ -176,6 +176,8 @@ Plug 'scrooloose/nerdtree', {'on': []}
 Plug 'edkolev/tmuxline.vim'
 Plug 'blueyed/vim-diminactive'
 "}}}
+
+call plug#end()
 "}}} Load Plugins
 
 
