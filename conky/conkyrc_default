@@ -58,7 +58,7 @@ ${color grey}Up:$color ${upspeed eth0} ${color grey} - Down:$color ${downspeed e
 
 #$hr
 ${color grey}File systems:
-${color grey}/       $color${fs_used /}/${fs_size /} ${alignr}${fs_bar 5,150 /}
+${color grey}/       $color${fs_used /} /${fs_size /} ${alignr}${fs_bar 5,150 /}
 ${color grey}/home   $color${fs_used /home} /${fs_size /home} ${alignr}${fs_bar 5,150 /home}
 ${color grey}/shared $color${fs_used /shared} /${fs_size /shared} ${alignr}${fs_bar 5,150 /shared}
 
@@ -68,10 +68,14 @@ ${color grey}Uptime:$color $uptime
 ${color grey}Frequency :$color $freq_g GHz
 #${color grey}CPU :$color $cpu% ${cpubar}
 ${color grey}${cpugraph 0 32,155 104E8B 0077ff} $alignr${color blue}${diskiograph 32,155 104E8B 0077ff 750}
-${color grey}CPU1:${if_match ${cpu cpu1} > 90}${color red}${else}$color${endif} ${cpu cpu1}%$color ${cpubar cpu1}
-${color grey}CPU2:${if_match ${cpu cpu2} > 90}${color red}${else}$color${endif} ${cpu cpu2}%$color ${cpubar cpu2}
-${color grey}CPU3:${if_match ${cpu cpu3} > 90}${color red}${else}$color${endif} ${cpu cpu3}%$color ${cpubar cpu3}
-${color grey}CPU4:${if_match ${cpu cpu4} > 90}${color red}${else}$color${endif} ${cpu cpu4}%$color ${cpubar cpu4}
+${color grey}CPU1:${alignr}${if_match ${cpu cpu1} > 90}${color red}${else}$color${endif} ${cpu cpu1}%$color ${alignr}${cpubar cpu1 5, 255}
+${color grey}CPU2:${alignr}${if_match ${cpu cpu2} > 90}${color red}${else}$color${endif} ${cpu cpu2}%$color ${alignr}${cpubar cpu2 5, 255}
+${color grey}CPU3:${alignr}${if_match ${cpu cpu3} > 90}${color red}${else}$color${endif} ${cpu cpu3}%$color ${alignr}${cpubar cpu3 5, 255}
+${color grey}CPU4:${alignr}${if_match ${cpu cpu4} > 90}${color red}${else}$color${endif} ${cpu cpu4}%$color ${alignr}${cpubar cpu4 5, 255}
+${color grey}CPU5:${alignr}${if_match ${cpu cpu5} > 90}${color red}${else}$color${endif} ${cpu cpu5}%$color ${alignr}${cpubar cpu5 5, 255}
+${color grey}CPU6:${alignr}${if_match ${cpu cpu6} > 90}${color red}${else}$color${endif} ${cpu cpu6}%$color ${alignr}${cpubar cpu6 5, 255}
+${color grey}CPU7:${alignr}${if_match ${cpu cpu7} > 90}${color red}${else}$color${endif} ${cpu cpu7}%$color ${alignr}${cpubar cpu7 5, 255}
+${color grey}CPU8:${alignr}${if_match ${cpu cpu8} > 90}${color red}${else}$color${endif} ${cpu cpu8}%$color ${alignr}${cpubar cpu8 5, 255}
 ${color grey}RAM :$color $mem/$memmax - $memperc% ${alignr}${membar 5,120}
 ${color grey}Swap:$color $swap/$swapmax - $swapperc% ${alignr}${swapbar 5,120}
 ${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
