@@ -67,6 +67,9 @@ ${color grey}System:
 ${color grey}Uptime:$color $uptime
 ${color grey}Frequency :$color $freq_g GHz
 #${color grey}CPU :$color $cpu% ${cpubar}
+
+${color grey}GPU:$color ${exec nvidia-smi|grep %|cut -c 62-63}% ${color grey}RAM:$color ${exec nvidia-smi|grep %|cut -c 37-40}MB ${color grey}Temp:$color ${nvidia temp}°C ${color grey}Freq:$color ${nvidia gpufreq}Mhz
+
 ${color grey}${cpugraph 0 32,155 104E8B 0077ff} $alignr${color blue}${diskiograph 32,155 104E8B 0077ff 750}
 ${color grey}CPU1:${alignr}${if_match ${cpu cpu1} > 90}${color red}${else}$color${endif} ${cpu cpu1}%$color ${alignr}${cpubar cpu1 5, 255}
 ${color grey}CPU2:${alignr}${if_match ${cpu cpu2} > 90}${color red}${else}$color${endif} ${cpu cpu2}%$color ${alignr}${cpubar cpu2 5, 255}
