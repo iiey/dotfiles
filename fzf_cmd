@@ -95,7 +95,7 @@ gitcheckout() {
 gitlog() {
     local pos   #position of preview window
     [ $(tput cols) -ge 200 ] && pos="right" || pos="down"
-    local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {})\""
+    local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {} | head -1 )\""
     fzf --ansi -e --no-sort --tiebreak=index \
         --bind="ctrl-h:page-down,ctrl-l:page-up,ctrl-w:toggle-preview,enter:execute($cmdshow | less -R)" \
         --preview-window="$pos":hidden:wrap --preview="$cmdshow" \
