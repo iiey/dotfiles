@@ -2,6 +2,7 @@
     edit = config --global --edit
     graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
     vdiff = "!f() { git diff $@ | vi -; }; f"
+    stats = "!f() { git log --format='%an' "$@" | sort | uniq -c | sort -rn | head; }; f"
     log1 = log --pretty=oneline
     logp = log --patch -1
     logr = log ..origin/master
@@ -15,6 +16,7 @@
 [diff]
     #remove a/ b/ prefix
     noprefix = true
+	tool = vimdiff
 [difftool]
     prompt = false
 [init]
