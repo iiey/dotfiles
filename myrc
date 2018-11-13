@@ -13,6 +13,9 @@ else
     PROMPT_COMMAND="history -a; history -c; history -r; ${PROMPT_COMMAND}"
 fi
 
+#use default language (en) as output
+export LC_MESSAGES=C
+
 #enable star globbing
 [ $BASH_VERSINFO -ge 4 ] && shopt -s globstar
 
