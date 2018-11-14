@@ -114,6 +114,29 @@ gitstatus() {
         --bind="j:down,k:up"
     return 0;
 }
+
+# stash list show
+gitstash() {
+    local out key idx
+    stashlist=$(git stash list --pretty='%C(yellow)%gd %>(14)%Cgreen%cr %C(blue)%gs')
+    [ -z "$stashlist" ] && return
+    out=($(fzf --ansi --no-sort \
+        --header='enter:show, ctrl-d:diff, ctrl-o:pop, ctrl-y:apply, ctrl-x:drop' \
+        --preview='git stash show --color=always -p $(cut -d" " -f1 <<< {}) | head -'$LINES \
+        --preview-window=down:80% --reverse \
+        --bind='enter:execute(git stash show --color=always -p $(cut -d" " -f1 <<< {}) | less -r > /dev/tty)' \
+        --bind='ctrl-d:execute(git diff --color=always $(cut -d" " -f1 <<< {}) | less -r > /dev/tty)' \
+        --expect=ctrl-o,ctrl-y,ctrl-x <<< "$stashlist"))
+    #fzf returns key (first) result (second) if 'expect' specified (without --print-query)
+    key=${out[0]}
+    idx=${out[1]}
+    [ -n "$idx" ] && case "$key" in
+        ctrl-o) git stash pop $idx ;;
+        ctrl-x) git stash drop $idx ;;
+        ctrl-y) git stash apply $idx ;;
+    esac
+}
+
 #1}}}
 
 
