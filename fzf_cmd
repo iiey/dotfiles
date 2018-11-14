@@ -79,8 +79,10 @@ fe() {
 # git stuff {{{1
 
 gitcheckout() {
+    #check whether a git repo before executing command
+    git rev-parse --is-inside-work-tree &> /dev/null || return
     local list response key branch header
-    list=$(git branch --all --color -vv; git tag) || return 1
+    list=$(git branch --all --color -vv; git tag) || return
     mapfile -t response < <(fzf --query=$1 --prompt='checkout: ' \
         --ansi --header="$header" --expect=ctrl-x <<< "$list")
     key="${response[0]}"
@@ -88,15 +90,14 @@ gitcheckout() {
     git checkout "$branch" || return 1
 }
 
-# a git commit browser
-#   ctrl-w: show preview window
-#   enter:  open commit diff
-#   ctrl-c: exit
+# commits browser
 gitlog() {
+    git rev-parse --is-inside-work-tree &> /dev/null || return
     local pos   #position of preview window
     [ $(tput cols) -ge 200 ] && pos="right" || pos="down"
     local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {} | head -1 )\""
     fzf --ansi -e --no-sort --tiebreak=index \
+        --header='enter:diff, ctrl-w:show, ctrl-c:exit' \
         --bind="ctrl-h:page-down,ctrl-l:page-up,ctrl-w:toggle-preview,enter:execute($cmdshow | less -R)" \
         --preview-window="$pos":hidden:wrap --preview="$cmdshow" \
         < <(git log --graph --color=always --format="%C(auto)%h%d %s %Cgreen(%cr) %Creset<%an>" "$@")
@@ -104,14 +105,20 @@ gitlog() {
 }
 
 #TODO open in vim instead
-gitstatus() {
+#FIXME not work for file with spaces
+# diffs browser
+gitdiff() {
+    git rev-parse --is-inside-work-tree &> /dev/null || return
     local cmddiff="git diff --color=always "$@""
-    git status -sb | sed '/##/d' |
+    difflist=$(git status -sb | sed '/##/d' | sed '/??/d')
+    [ -z "$difflist" ] && return
     fzf --ansi --no-sort \
+        --header='enter:diff, ctrl-o:open' \
         --preview-window=right:70%:wrap --preview="$cmddiff {2}" \
         --bind="enter:execute($cmddiff {2} | less -R)" \
         --bind="ctrl-o:execute(gvim --remote-silent {2})" \
-        --bind="j:down,k:up"
+        --bind="j:down,k:up" \
+        <<< "$difflist"
     return 0;
 }
 
