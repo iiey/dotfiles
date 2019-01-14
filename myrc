@@ -47,7 +47,6 @@ alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 #ranger (exit but stay in ranger current directory)
 if type ranger &> /dev/null; then
     alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
-#    alias rg='ranger'
 fi
 
 #silver search
@@ -161,19 +160,10 @@ term-color() {
     fi
 }
 
-
-# grep_options
-GREP_OPTIONS=
-for pattern in .cvs .git .svn build HMI-Display; do
-    GREP_OPTIONS="$GREP_OPTIONS --exclude-dir=$pattern"
-done
-for pattern in .tags .png; do
-    GREP_OPTIONS="$GREP_OPTIONS --exclude=$pattern"
-done
-alias grep="grep $GREP_OPTIONS --color=auto"
-alias fgrep="fgrep $GREP_OPTIONS --color=auto"
-alias egrep="egrep $GREP_OPTIONS --color=auto"
-unset pattern
+GREP_OPTIONS="-I --color=auto --exclude-dir={.cvs,.git,.svn,.vscode,build} --exclude=*{.jpg,.png,.tags}"
+alias grep="grep $GREP_OPTIONS"
+alias fgrep="fgrep $GREP_OPTIONS"
+alias egrep="egrep $GREP_OPTIONS"
 unset GREP_OPTIONS
 
 # using zeal for docsets if dasht exists
