@@ -7,7 +7,7 @@
 #NOTE: this determines also search program for fzf.vim
 #now fzf (w/o pipe) will use ag instead of find
 if type ag &> /dev/null; then
-    export FZF_DEFAULT_COMMAND='ag -g ""'
+    export FZF_DEFAULT_COMMAND='ag -p ~/.gitignore -g ""'
 fi
 
 #refer rg over ag
@@ -43,8 +43,9 @@ fh() {
     eval $revshist | awk '!x[$0]++' |
     fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --no-sort --height 10%
 }
-bind '"\er": redraw-current-line'
-bind '"\C-r": "$(fh)\e\C-e\er"'
+
+[[ $- == *i* ]] && bind '"\er": redraw-current-line'
+[[ $- == *i* ]] && bind '"\C-r": "$(fh)\e\C-e\er"'
 
 #jump to bookmark of autojump
 fj() {
@@ -97,8 +98,9 @@ gitlog() {
     [ $(tput cols) -ge 200 ] && pos="right" || pos="down"
     local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {} | head -1 )\""
     fzf --ansi -e --no-sort --tiebreak=index \
-        --header='enter:diff, ctrl-w:show, ctrl-c:exit' \
-        --bind="ctrl-h:page-down,ctrl-l:page-up,ctrl-w:toggle-preview,enter:execute($cmdshow | less -R)" \
+        --header='enter:diff, ?:show, ctrl-c:exit, move:ctrl-h/l(page)-d/u(half-page)-j/k(line)' \
+        --bind="ctrl-h:page-down,ctrl-l:page-up,ctrl-d:half-page-down,ctrl-u:half-page-up" \
+        --bind="?:toggle-preview,enter:execute($cmdshow | less -R)" \
         --preview-window="$pos":hidden:wrap --preview="$cmdshow" \
         < <(git log --graph --color=always --format="%C(auto)%h%d %s %Cgreen(%cr) %Creset<%an>" "$@")
     return 0;
@@ -113,7 +115,7 @@ gitdiff() {
     [ -z "$difflist" ] && return
     fzf --ansi --no-sort \
         --header='enter:diff, ctrl-o:open' \
-        --preview-window=right:70%:wrap --preview="eval $cmddiff {2..}" \
+        --preview-window=down:80%:wrap --preview="eval $cmddiff {2..}" \
         --bind="enter:execute(eval $cmddiff {2..} | less -R)" \
         --bind="ctrl-o:execute(gvim --remote-silent {2})" \
         --bind="j:down,k:up" \
