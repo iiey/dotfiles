@@ -13,13 +13,11 @@ else
     PROMPT_COMMAND="history -a; history -c; history -r; ${PROMPT_COMMAND}"
 fi
 
-#use default language (en) as output
-export LC_MESSAGES=C
-
 #enable star globbing
 [ $BASH_VERSINFO -ge 4 ] && shopt -s globstar
 
-#ALIASES
+
+##ALIASES
 # up dir
 alias 2.='cd ../../'
 alias 3.='cd ../../../'
@@ -66,6 +64,17 @@ fi
 #see $HOME/.ctags for default parameter configuration
 if type ctags &> /dev/null; then
     alias tags='ctags -R -f ./.tags .'
+fi
+
+#tldr
+if command -v tldr &> /dev/null; then
+    complete -W "$(tldr 2>/dev/null --list)" tldr
+fi
+
+#node & npm
+if type node &>/dev/null && type npm  &>/dev/null; then
+    [[ $PATH != *"npm-global"* ]] && [[ -d ~/.npm-global ]] && export PATH=${PATH}:${HOME}/.npm-global
+    eval "$(npm completion)"
 fi
 
 git-ctags() {
@@ -160,6 +169,11 @@ term-color() {
     fi
 }
 
+
+##DEFAULT OPTION
+#use default language (en) as output
+export LC_MESSAGES=C
+
 GREP_OPTIONS="-I --color=auto --exclude-dir={.cvs,.git,.svn,.vscode,build} --exclude=*{.jpg,.png,.tags}"
 alias grep="grep $GREP_OPTIONS"
 alias fgrep="fgrep $GREP_OPTIONS"
@@ -184,11 +198,6 @@ fi
 # default editor
 export EDITOR=vim
 
-# load fuzzy finder
-[ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
-# load it's command snippets
-type "fzf" &> /dev/null && source $HOME/.fzf_cmd
-
 #less option
 export LESS="-RMj.5"
 #use lesspipe to preprocessing input for highlighting code in case term support 256 colors
@@ -197,6 +206,12 @@ if [ "$(tput colors)" -ge 256 ] && type highlight &> /dev/null; then
     export LESSOPEN="| highlight %s -s pablo -O xterm256 --force 2>/dev/null"
 fi
 
+
+##SOURCING
+# load fuzzy finder
+[ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
+# load it's command snippets
+type "fzf" &> /dev/null && source $HOME/.fzf_cmd
 
 if [ -d "$HOME/.bash-git-prompt" ]; then
     GIT_PROMPT_THEME=Ubuntu_Simple
