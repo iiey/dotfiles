@@ -64,12 +64,14 @@ fd() {
 
 #open the selected file with the default editor (prefer vim)
 fe() {
-    local files
+    local files pipe_highlight term
+    term=$([ "$(tput colors)" -ge 256 ] && echo 'xterm256' || echo 'ansi')
+    command -v highlight &>/dev/null && pipe_highlight="| highlight -s pablo -O ${term} -l --force 2>/dev/null"
     #for fast processing pipe only 300 headline of file
     #highlight with ansi output format and line number
     #also force output when filetype not recognized, mute error in case not a file
     IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 \
-                        --preview="head -300 {} | highlight -O ansi -l --force 2>/dev/null"))
+                           --preview="head -300 {} ${pipe_highlight}"))
     #TODO ctrl-t:open files in tabs, ctrl-w: open files in windows
     [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
 }
@@ -153,11 +155,11 @@ gitstash() {
 
 #kill tmux session
 tkill() {
-    [ ! type tmux &> /dev/null ] && return
+    type tmux &> /dev/null  || return
     #select from session list with fzf
     #remove everything after ':' before return session names
     local sessions=( $(tmux list-session | fzf -m | sed 's/: .*//') )
-    for elem in ${sessions[@]}; do
+    for elem in "${sessions[@]}"; do
         tmux kill-session -t "$elem" && echo "killed session: '$elem'"
     done
 }
