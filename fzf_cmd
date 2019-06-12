@@ -37,11 +37,12 @@ fh() {
     if [[ $OSTYPE == "darwin"* ]]; then
         revshist="tail -r $HISTFILE"
     else
-       revshist="tac $HISTFILE"
+        revshist="tac $HISTFILE"
     fi
 
     eval $revshist | awk '!x[$0]++' |
-    fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --no-sort --height 10%
+    fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --no-sort --height 10% \
+                                      --bind="ctrl-x:execute-silent(eval {})+abort"
 }
 
 [[ $- == *i* ]] && bind '"\er": redraw-current-line'
