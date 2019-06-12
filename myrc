@@ -189,6 +189,15 @@ export EDITOR=vim
 # load it's command snippets
 type "fzf" &> /dev/null && source $HOME/.fzf_cmd
 
+#less option
+export LESS="-RMj.5"
+#use lesspipe to preprocessing input for highlighting code in case term support 256 colors
+#FIXME: not interfere with '~/.lessfilter'
+if [ "$(tput colors)" -ge 256 ] && type highlight &> /dev/null; then
+    export LESSOPEN="| highlight %s -s pablo -O xterm256 --force 2>/dev/null"
+fi
+
+
 if [ -d "$HOME/.bash-git-prompt" ]; then
     GIT_PROMPT_THEME=Ubuntu_Simple
     GIT_PROMPT_ONLY_IN_REPO=1
