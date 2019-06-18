@@ -110,17 +110,19 @@ gitlog() {
 }
 
 #TODO open in vim instead
+#TODO parse first col {1} to check for diff between index and last commit
 # diffs browser
 gitdiff() {
     git rev-parse --is-inside-work-tree &> /dev/null || return
     local cmddiff="git diff --color=always "$@""
-    difflist=$(git status -sb | sed '/##/d' | sed '/??/d')
+    difflist=$(git status --short)
     [ -z "$difflist" ] && return
     fzf --ansi --no-sort \
-        --header='enter:diff, ctrl-o:open' \
+        --header='j/k:down/up, enter:diff, ctrl-o:open, ctrl-x:checkout' \
         --preview-window=down:80%:wrap --preview="eval $cmddiff {2..}" \
         --bind="enter:execute(eval $cmddiff {2..} | less -R)" \
-        --bind="ctrl-o:execute(gvim --remote-silent {2})" \
+        --bind="ctrl-o:execute(gvim --remote-silent {2..})" \
+        --bind="ctrl-x:execute(git checkout {2..})" \
         --bind="j:down,k:up" \
         <<< "$difflist"
     return 0;
