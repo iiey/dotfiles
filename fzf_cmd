@@ -30,8 +30,7 @@ fi
 #Files and Folders {{{1
 
 #fuzzy history
-#   show bash_history w/o duplicates and order preserved
-#   overwrite default keybind c-r
+#show bash_history w/o duplicates and order preserved
 fh() {
     local revshist # return history in reverse order
     if [[ $OSTYPE == "darwin"* ]]; then
@@ -44,9 +43,6 @@ fh() {
     fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --no-sort --height 10% \
                                       --bind="ctrl-x:execute-silent(eval {})+abort"
 }
-
-[[ $- == *i* ]] && bind '"\er": redraw-current-line'
-[[ $- == *i* ]] && bind '"\C-r": "$(fh)\e\C-e\er"'
 
 #jump to bookmark of autojump
 fj() {
@@ -166,6 +162,22 @@ tkill() {
         tmux kill-session -t "$elem" && echo "killed session: '$elem'"
     done
 }
+#1}}}
+
+
+###############################################################################################
+#key bindings {{{1
+if [[ $- == *i* ]]; then
+    #overwrite default keybind c-r
+    bind '"\er": redraw-current-line'
+    bind '"\C-r": "$(fh)\e\C-e\er"'
+
+    #git things
+    #use -x to execute a shell-comand by bash
+    bind -x '"\C-g\C-l": "gitlog"'
+    bind -x '"\C-g\C-d": "gitdiff"'
+    bind -x '"\C-g\C-s": "gitstash"'
+fi
 #1}}}
 
 # vim:foldmethod=marker:foldlevel=1
