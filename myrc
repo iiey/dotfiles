@@ -69,7 +69,6 @@ alias g='gvim --remote-silent'
 #run with fzf
 alias vi='vim $(fzf)'
 alias gv='gvim --remote-silent $(fzf)'
-alias emacs='emacs --no-window-system'
 
 #todo: gerneral cd to switch between source and build
 #echo ${PWD%build*} delete all from left of match
