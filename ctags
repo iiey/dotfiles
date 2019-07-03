@@ -1,8 +1,5 @@
 --recurse=yes
 --languages=+C,C++,Sh,Vim,Python,-Javascript,HTML,SQL
---C++-kinds=+p
---fields=+iaS
---extra=+f
 
 --exclude=build*
 --exclude=log
