@@ -199,26 +199,26 @@ term-color() {
 
 
 ###COMPLETION {{{1
-#node & npm
-if type node &>/dev/null && type npm  &>/dev/null; then
-    [[ $PATH != *"npm-global"* ]] && [[ -d ~/.npm-global ]] && export PATH=${PATH}:${HOME}/.npm-global
-    eval "$(npm completion)"
-fi
-
-# correct previous console command with $fuck
-if type "thefuck" &> /dev/null; then
-    eval "$(thefuck --alias)"
-fi
-
-# correct previous console command with $fuck
-if type "tmuxp" &> /dev/null; then
-    eval "$(_TMUXP_COMPLETE=source tmuxp)"
-fi
-
-#tldr
-if command -v tldr &> /dev/null; then
-    complete -W "$(tldr 2>/dev/null --list)" tldr
-fi
+##node & npm (load: 0.21s)
+#if type node &>/dev/null && type npm  &>/dev/null; then
+#    [[ $PATH != *"npm-global"* ]] && [[ -d ~/.npm-global ]] && export PATH=${PATH}:${HOME}/.npm-global
+#    eval "$(npm completion)"
+#fi
+#
+## correct previous console command with $fuck (load: 0.13s)
+#if type "thefuck" &> /dev/null; then
+#    eval "$(thefuck --alias)"
+#fi
+#
+## correct previous console command with $fuck (load: 0.12s)
+#if type "tmuxp" &> /dev/null; then
+#    eval "$(_TMUXP_COMPLETE=source tmuxp)"
+#fi
+#
+##tldr (load: 0.07s)
+#if command -v tldr &> /dev/null; then
+#    complete -W "$(tldr 2>/dev/null --list)" tldr
+#fi
 #}}}1
 
 
