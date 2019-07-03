@@ -1,50 +1,54 @@
-# Create own window instead of using desktop (required in nautilus).
-own_window yes
-own_window_type normal
-own_window_transparent no
-own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
-own_window_argb_visual yes
-own_window_argb_value 0
-own_window_class conky
+conky.config = {
+    -- Create own window instead of using desktop (required in nautilus).
+    own_window = true,
+    own_window_type = 'normal',
+    own_window_transparent = false,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_argb_visual = true,
+    own_window_argb_value = 0,
+    own_window_class = 'conky',
 
-# Graphics settings.
-double_buffer yes	# Use double buffering
-use_spacer right	# Add space around certain objects.
-use_xft yes		# Use anti-aliased font.
+    -- Graphics settings.
+    double_buffer = true,                           -- Use double buffering
+    use_spacer = 'right',                           -- Add space around certain objects.
+    use_xft = true,                                 -- Use anti-aliased font.
 
-draw_shades no
+    draw_shades = false,
 
-alignment top_right
+    alignment = 'top_right',
+    xinerama_head = 1,                              --Show on first monitor (in case more than one)
 
-update_interval 1	# Update interval in seconds.
+    update_interval = 1,                            -- Update interval in seconds.
 
-minimum_size 290 600
-maximum_width 290
+    minimum_width = 290, minimum_height = 600,
+    maximum_width = 290,
 
-# Text settings.
-draw_outline no
-draw_borders no
-uppercase no
+    -- Text settings.
+    draw_outline = false,
+    draw_borders = false,
+    uppercase = false,
 
-# Border settings.
-stippled_borders 3
-#border_margin 9
-border_width 0
-gap_x 12
-gap_y 42
+    -- Border settings.
+    stippled_borders = 3,
+    --border_margin 9
+    border_width = 0,
+    gap_x = 12,
+    gap_y = 42,
 
-# Color settings.
-default_color ffffff
+    -- Color settings.
+    default_color = '#ffffff',
 
-#font
-xftfont Open Sans Light:size=10
+    --font
+    font = 'Open Sans Light:size=10',
 
-#lua_load ~/.config/conky/rings/rings-v1.2.lua
-lua_load ~/conky/rings.lua
-lua_draw_hook_pre ring_stats
+    --lua_load ~/.config/conky/rings/rings-v1.2.lua
+    lua_load = '~/sources/dotfiles/conky/rings.lua',
+    lua_draw_hook_pre = 'ring_stats',
 
-# Lines after 'TEXT' will be formatted on screen
-TEXT
+    -- Lines after 'TEXT' will be formatted on screen
+};
+
+conky.text = [[
 ${voffset 135}${goto 127}${font Open Sans:size=23}${time %I:%M}$font
 ${voffset 5}${goto 157}${font Open Sans:size=10}${time %S}$font
 ${voffset 27}${goto 65} ${font Open Sans:size=10}${cpu}%
@@ -69,11 +73,11 @@ ${alignr}${wireless_essid eth0}
 ${alignr}${addr eth0}
 ${alignr}Down ${downspeedf eth0}kbps
 ${alignr}Up ${upspeedf eth0}kbps
-$else
-${if_existing /proc/net/route wlan0}
+${else}${if_existing /proc/net/route wlan0}
 ${alignc}${wireless_essid wlan0}
 ${alignc}${addr wlan0}
 ${alignc}Down ${downspeedf wlan0}kbps
 ${alignc}Up ${upspeedf wlan0}kbps
-$endif
+${endif}${endif}
 
+]];

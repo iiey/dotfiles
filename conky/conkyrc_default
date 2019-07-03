@@ -1,53 +1,58 @@
-# Conky, a system monitor, based on torsmo
-#create a window
-own_window yes
-own_window_type normal
-#transparent background
-#note: this works if only desktop effects's active
-#kde5: check system setttings > hardware > display and monitor > compositor
-own_window_transparent no
-own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
-own_window_argb_visual yes
-own_window_argb_value 0
-own_window_class Conky
+conky.config = {
+    --Conky, a system monitor, based on torsmo
+    --create a window
+    own_window = true,
+    own_window_type = 'normal',
 
-default_color white
-default_outline_color white
-default_shade_color white
+    --transparent background
+    --note: this works if only desktop effects's active
+    --kde5: check system setttings > hardware > display and monitor > compositor
+    own_window_transparent = false,
+    own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+    own_window_argb_visual = true,
+    own_window_argb_value = 0,
+    own_window_class = 'Conky',
 
-alignment top_left
-border_width 0
-draw_borders no                     #outline borders
-gap_x 5                             #gap between right and left border of screen
-gap_y 30                            #gap between top and bottom border of screen
-minimum_size 90 500                 #need restart to take effect
+    default_color = 'white',
+    default_outline_color = 'white',
+    default_shade_color = 'white',
 
-use_xft yes                         #anti alias font
-xftfont DejaVu Sans Mono:size=9
-uppercase no
+    alignment = 'top_left',                     --show on top left of screen
+    xinerama_head = 1,                          --show on first monitor (in case more than one)
+    border_width = 0,
+    draw_borders = false,                       --outline borders
+    gap_x = 5,                                  --gap between right and left border of screen
+    gap_y = 30,                                 --gap between top and bottom border of screen
+    minimum_width = 90, minimum_height = 500,   --need restart to take effect
 
-out_to_console no
-out_to_stderr no
-extra_newline no
-use_spacer none
+    use_xft = true,                             --anti alias font
+    font = 'DejaVu Sans Mono:size=9',
+    uppercase = false,
 
-stippled_borders 0
-draw_outline no
-draw_shades no
-draw_graph_borders no
-show_graph_scale no
-show_graph_range no
+    out_to_console = false,
+    out_to_stderr = false,
+    extra_newline = false,
+    use_spacer = 'none',
 
-update_interval 2.0                 #update interval in seconds
-double_buffer yes                   #prevent flickering
-cpu_avg_samples 2
-net_avg_samples 2
+    stippled_borders = 0,
+    draw_outline = false,
+    draw_shades = false,
+    draw_graph_borders = false,
+    show_graph_scale = false,
+    show_graph_range = false,
 
-#load rings with cpu, ram and time
-#lua_load ~/conky/rings.lua
-#lua_draw_hook_pre ring_stats
+    update_interval = 2.0,                      --update interval in seconds
+    double_buffer = true,                       --prevent flickering
+    cpu_avg_samples = 2,
+    net_avg_samples = 2,
 
-TEXT
+--load rings with cpu, ram and time
+--lua_load ~/sources/dotfiles/conky/rings.lua
+--lua_draw_hook_pre ring_stats
+
+};
+
+conky.text = [[
 ${font DejaVu Sans Mono:size=8}
 $nodename - $sysname $kernel on $machine${font}
 #${alignr}${time %T}
@@ -99,3 +104,4 @@ ${font}
 ${voffset 50}
 #$hr
 
+]];
