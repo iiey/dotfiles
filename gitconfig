@@ -5,8 +5,8 @@
     stats = "!f() { git log --format='%an' "$@" | sort | uniq -c | sort -rn | head; }; f"
     log1 = log --pretty=oneline
     logp = log --patch -1
-    logr = log ..origin/master
-    logl = log origin/master..
+    logr = log ..@{u}
+    logl = log @{u}..
     st = status --short --branch
     tg = log --tags --simplify-by-decoration --date=format:'%Y-%m-%d %H:%M' --pretty='format:%cd %d'
     irb = "!f() { git rebase -i HEAD~$1; }; f"
