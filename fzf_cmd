@@ -119,15 +119,18 @@ gitbranch() {
 # commits browser
 gitlog() {
     git rev-parse --is-inside-work-tree &> /dev/null || return
-    local pos   #position of preview window
-    [ $(tput cols) -ge 200 ] && pos="right" || pos="down"
-    local cmdshow="git show --color=always \"\$(grep -m1 -o '[a-f0-9]\{7\}' <<< {} | head -1 )\""
-    fzf --ansi -e --no-sort --tiebreak=index \
-        --header='enter:diff, ?:show, ctrl-c:exit, move:ctrl-h/l(page)-d/u(half-page)-j/k(line)' \
-        --bind="ctrl-h:page-down,ctrl-l:page-up,ctrl-d:half-page-down,ctrl-u:half-page-up" \
+    local pos
+    [ "$(tput cols)" -ge 200 ] && pos="right" || pos="down"
+    local fmt='%C(auto)%h %Cgreen%cd%C(auto)%d %s <%an>'
+    local cmdgrep="\"\$(grep -m1 -o '[a-f0-9]\{7,40\}' <<< {} | head -n1 )\""
+    local cmdshow="git show --color=always $cmdgrep"
+    local cmdinfo="git log --color=always --name-status -n10 $cmdgrep | less -R"
+    fzf --prompt='gitlog: ' --ansi -e --no-sort --tiebreak=index \
+        --header='enter:diff, ?:show, c-i:info, c-c:exit, move:c-v/b(page)-h/l(half)-j/k(line)' \
+        --bind="ctrl-v:page-down,ctrl-b:page-up,ctrl-i:execute($cmdinfo)" \
         --bind="?:toggle-preview,enter:execute($cmdshow | less -R)" \
         --preview-window="$pos":hidden:wrap --preview="$cmdshow" \
-        < <(git log --graph --color=always --format="%C(auto)%h%d %s %Cgreen(%cr) %Creset<%an>" "$@")
+        < <(git log --graph --color=always --date=short --format="$fmt" "$@")
     return 0;
 }
 
