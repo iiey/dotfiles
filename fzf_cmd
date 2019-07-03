@@ -92,16 +92,18 @@ fe() {
 ###############################################################################################
 # git stuff {{{1
 
-gitcheckout() {
+# branches browser, enter to checkout a selected branch
+gitbranch() {
     #check whether a git repo before executing command
     git rev-parse --is-inside-work-tree &> /dev/null || return
-    local list response key branch header
-    list=$(git branch --all --color -vv; git tag) || return
-    mapfile -t response < <(fzf --query="$1" --prompt='checkout: ' \
-        --ansi --header="$header" --expect=ctrl-x <<< "$list")
-    key="${response[0]}"
-    branch=$(perl -pe 's/^\*?\s*(remotes\/[^\/]*\/)?([^ ]+).*/\2/' <<< "${response[1]}")
-    git checkout "$branch" || return 1
+    local branches cmdpreview out
+    branches=$(git branch --color=always --sort=committerdate "$@" | \
+                grep -v 'HEAD\s' | sed s/^..// | cut -d" " -f1)
+    local cmdpreview="git log --oneline --graph --date=short --color=always \
+                              --pretty='format:%C(auto)%cd %h%d %s' {} | head -$LINES"
+    out=$(fzf --ansi --tac +s --header="current: $(git rev-parse --abbrev-ref HEAD)" \
+              --preview-window right:70% --preview="$cmdpreview" <<< "$branches") || return
+    git checkout "${out#remotes/}"
 }
 
 # commits browser
@@ -204,8 +206,9 @@ if [[ $- == *i* ]]; then
 
     #git things
     #use -x to execute a shell-comand by bash
-    bind -x '"\C-g\C-l": "gitlog"'
+    bind -x '"\C-g\C-b": "gitbranch"'
     bind -x '"\C-g\C-d": "gitdiff"'
+    bind -x '"\C-g\C-l": "gitlog"'
     bind -x '"\C-g\C-s": "gitstash"'
 fi
 #1}}}
