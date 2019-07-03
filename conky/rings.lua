@@ -163,6 +163,7 @@ function conky_ring_stats()
 		str=conky_parse(str)
 		
 		value=tonumber(str)
+        if not value then value=0 end
 		pct=value/pt['max']
 		
 		draw_ring(cr,pct,pt)
