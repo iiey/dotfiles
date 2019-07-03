@@ -9,15 +9,17 @@
     logl = log origin/master..
     st = status --short --branch
     tg = log --tags --simplify-by-decoration --date=format:'%Y-%m-%d %H:%M' --pretty='format:%cd %d'
+    irb = "!f() { git rebase -i HEAD~$1; }; f"
+    srb = !git fetch --all && git rebase
 [color]
     ui = auto
 [core]
     excludesfile = ~/.gitignore
-	pager = less -FRX
+    pager = less -FRX
 [diff]
     #remove a/ b/ prefix
     noprefix = true
-	tool = vimdiff
+    tool = vimdiff
 [difftool]
     prompt = false
 [init]
