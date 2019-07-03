@@ -1,10 +1,30 @@
-#alternate mappings for "page up" and "page down" to search the history
+#use c-x c-r to re-read-init-file after save changes
+
+#"PAGEUP" and "PAGEDOWN" to search in history
 "\e[5~": history-search-backward
 "\e[6~": history-search-forward
-#override default make more sense
+#override default (previous/next-history)
 "\C-p": history-search-backward
 "\C-n": history-search-forward
 
 #readline displays possible completions using different colors
 #indicated files are highlight based on LS_COLORS
 set colored-stats on
+
+
+##modify default behaviour of completion functions (TAB after ambiguous words)
+#set completion-ignore-case off
+
+#one match per line. See also 'man readline' (bash 4.2+)
+#set completion-display-width 0
+
+#list matches immediately instead of ringing bell
+#autofill untyped common part (differ from show-all-if-unmodified)
+set show-all-if-ambiguous on
+
+#show possible suggestions before cycling through list
+set menu-complete-display-prefix on
+
+#cycle through choices with ctrl-right/left
+"\e[1;5C": menu-complete
+"\e[1;5D": menu-complete-backward
