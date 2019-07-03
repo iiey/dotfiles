@@ -139,6 +139,18 @@ gitdiff() {
     return 0;
 }
 
+# interactive rebase from a chosen commit sha
+gitrebase() {
+    git rev-parse --is-inside-work-tree &> /dev/null || return
+    local fmt='%C(auto)%h %Cgreen%ad%C(auto)%d %s <%an>'
+    local log=$(git log --color=always --date=short --pretty="$fmt" | head -n 99)
+    #declare and assign separately to avoid shallow exit code of 'last' command
+    local commit
+    #chose a commit exit in case user cancel
+    commit=$(fzf --ansi --prompt='gitrebase: ' <<< "$log") || return
+    git rebase -i "$(echo "$commit" | awk '{print $1"^"}')" "$@"
+}
+
 # stash list show
 gitstash() {
     git rev-parse --is-inside-work-tree &> /dev/null || return
