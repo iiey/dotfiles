@@ -97,7 +97,7 @@ ${color lightgrey}${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
 ${color lightgrey}${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
 
 #$hr
-${execi 1800 curl wttr.in/ilmenau?0qT}
+${execi 1800 INFO=$( curl -m 5 -s wttr.in/ilmenau?0qT ) && echo "$INFO" | grep -q 'out of queries' || echo "$INFO" }
 ${font DejaVu Sans Mono:size=8}
 ${execi 30 fortune -s | cowsay -f tux}
 ${font}
