@@ -1,6 +1,7 @@
 #!/bin/bash
-#script: my functions
+#personal bashrc configuration
 
+###DEFAULT BEHAVIOR {{{1
 #ignore commands which less than two character and others trivial
 HISTIGNORE="?:??:l[als]:to *:pwd:clear:exit:&"
 #ignoreboth(^space and consecutive duplicates), remove duplicates
@@ -16,8 +17,41 @@ fi
 #enable star globbing
 [ $BASH_VERSINFO -ge 4 ] && shopt -s globstar
 
+#use default language (en) as output
+export LC_MESSAGES=C
 
-##ALIASES
+#disable legacy feature of terminal emulator Software Flow Control
+#prevent accidentally pressing c-s/c-q
+#check interactive shell before enable foreward-search
+[[ $- == *i*  ]] && stty -ixon
+
+#colors for file and folder in terminal
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+fi
+
+# default editor
+export EDITOR=vim
+
+#less option
+export LESS="-RMj.5"
+#use lesspipe to preprocessing input for highlighting code in case term support 256 colors
+#FIXME: not interfere with '~/.lessfilter'
+if [ "$(tput colors)" -ge 256 ] && type highlight &> /dev/null; then
+    export LESSOPEN="| highlight %s -s pablo -O xterm256 --force 2>/dev/null"
+fi
+
+# using zeal for docsets if dasht exists
+if type "dasht" &> /dev/null; then
+    export DASHT_DOCSETS_DIR="$HOME/.local/share/Zeal/Zeal/docsets"
+fi
+
+#using ccache instead of gcc
+[[ $PATH != *"/usr/lib/ccache"* ]] && [[ -d /usr/lib/ccache ]] && export PATH=/usr/lib/ccache/:${PATH}
+#}}}1
+
+
+###ALIASES {{{1
 # up dir
 alias 2.='cd ../../'
 alias 3.='cd ../../../'
@@ -60,38 +94,22 @@ if type rg &> /dev/null; then
     alias rg="rg --no-heading -S --colors 'path:fg:cyan'"
 fi
 
+#gnu grep
+GREP_OPTIONS="-I --color=auto --exclude-dir={.cvs,.git,.svn,.vscode,build} --exclude=*{.jpg,.png,.tags}"
+alias grep="grep $GREP_OPTIONS"
+alias fgrep="fgrep $GREP_OPTIONS"
+alias egrep="egrep $GREP_OPTIONS"
+unset GREP_OPTIONS
+
 #ctags
 #see $HOME/.ctags for default parameter configuration
 if type ctags &> /dev/null; then
     alias tags='ctags -R -f ./.tags .'
 fi
 
-#tldr
-if command -v tldr &> /dev/null; then
-    complete -W "$(tldr 2>/dev/null --list)" tldr
-fi
-
-#node & npm
-if type node &>/dev/null && type npm  &>/dev/null; then
-    [[ $PATH != *"npm-global"* ]] && [[ -d ~/.npm-global ]] && export PATH=${PATH}:${HOME}/.npm-global
-    eval "$(npm completion)"
-fi
-
-git-ctags() {
-    #read project root dir from git
-    local dir=$(git rev-parse --show-toplevel)
-    #return if not found (in .git or outside cvs)
-    [ -z $dir ] && return
-    #execute 'git init' if hooks was not copied (from local template)
-    #note: directory changing and init are done in subshell (...)
-    [ -f "${dir}/.git/hooks/ctags" ] || ( cd $dir && git init )
-    #call ctags
-    eval "${dir}/.git/hooks/ctags"
-}
-
 #tree
 if type tree &> /dev/null; then
-    alias tree="tree -CAFa -I 'CVS|.git|.svn' --dirsfirst"
+    alias tree="tree -CAFa -I 'CVS|.git|.svn|.vscode' --dirsfirst"
 fi
 
 #start tmux with colourful xterm and force it assuming term supported 256colour
@@ -99,8 +117,23 @@ if type tmux &> /dev/null; then
     alias tmux='TERM=xterm-256color tmux -2'
 fi
 
-# remove duplicated entries in PATH
+#mc colorscheme located unter ~/.local/share/mc/skins
+#themes: asterisk, blue, bluemoon, dark, darkened, gotar, nicedark, solarized,...
+case "$KONSOLE_PROFILE_NAME" in
+    DarkPastels)    mc_color=gotar;;
+    Solarized)      mc_color=solarized;;
+    *)              mc_color=default;;
+esac
+if type mc &> /dev/null; then
+    alias mc='mc -S $mc_color'
+fi
+#}}}1
+
+
+###FUNCTIONS {{{1
+#remove duplicated entries in PATH
 dedupPATH() {
+#{{{2
     if [ -n "$PATH" ]; then
         old_PATH=$PATH:; PATH=
         while [ -n "$old_PATH" ]; do
@@ -114,32 +147,24 @@ dedupPATH() {
         PATH=${PATH#:}; unset old_PATH x
     fi
 }
+#}}}2
 
-
-#disable legacy feature of terminal emulator Software Flow Control
-#prevent accidentally pressing c-s/c-q
-#check interactive shell before enable foreward-search
-[[ $- == *i*  ]] && stty -ixon
-
-
-#mc colorscheme:asterisk, blue, bluemoon, dark, darkened, gotar, nicedark, solarized,...
-case "$KONSOLE_PROFILE_NAME" in
-    DarkPastels)    mc_color=gotar;;
-    Solarized)      mc_color=solarized;;
-    *)              mc_color=default;;
-esac
-
-#colors for file and folder in terminal
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-fi
-
-#mc colorscheme located unter ~/.local/share/mc/skins
-if type mc &> /dev/null; then
-    alias mc='mc -S $mc_color'
-fi
+git-ctags() {
+#{{{2
+    #read project root dir from git
+    local dir=$(git rev-parse --show-toplevel)
+    #return if not found (in .git or outside cvs)
+    [ -z $dir ] && return
+    #execute 'git init' if hooks was not copied (from local template)
+    #note: directory changing and init are done in subshell (...)
+    [ -f "${dir}/.git/hooks/ctags" ] || ( cd $dir && git init )
+    #call ctags
+    eval "${dir}/.git/hooks/ctags"
+}
+#}}}2
 
 mc-color() {
+#{{{2
     if [ ! "$#" -eq 1 ]
     then
         echo "Usage:mc-color param"
@@ -149,10 +174,11 @@ mc-color() {
         mc
     fi
 }
+#}}}2
 
-
-# switch term colorscheme
+#switch term colorscheme
 term-color() {
+#{{{2
     if [ ! "$#" -eq 1 ]
     then
         echo "Usage: term-color param"
@@ -168,21 +194,15 @@ term-color() {
         export KONSOLE_PROFILE_NAME=$1
     fi
 }
+#}}}2
+#}}}1
 
 
-##DEFAULT OPTION
-#use default language (en) as output
-export LC_MESSAGES=C
-
-GREP_OPTIONS="-I --color=auto --exclude-dir={.cvs,.git,.svn,.vscode,build} --exclude=*{.jpg,.png,.tags}"
-alias grep="grep $GREP_OPTIONS"
-alias fgrep="fgrep $GREP_OPTIONS"
-alias egrep="egrep $GREP_OPTIONS"
-unset GREP_OPTIONS
-
-# using zeal for docsets if dasht exists
-if type "dasht" &> /dev/null; then
-    export DASHT_DOCSETS_DIR="$HOME/.local/share/Zeal/Zeal/docsets"
+###COMPLETION {{{1
+#node & npm
+if type node &>/dev/null && type npm  &>/dev/null; then
+    [[ $PATH != *"npm-global"* ]] && [[ -d ~/.npm-global ]] && export PATH=${PATH}:${HOME}/.npm-global
+    eval "$(npm completion)"
 fi
 
 # correct previous console command with $fuck
@@ -195,19 +215,14 @@ if type "tmuxp" &> /dev/null; then
     eval "$(_TMUXP_COMPLETE=source tmuxp)"
 fi
 
-# default editor
-export EDITOR=vim
-
-#less option
-export LESS="-RMj.5"
-#use lesspipe to preprocessing input for highlighting code in case term support 256 colors
-#FIXME: not interfere with '~/.lessfilter'
-if [ "$(tput colors)" -ge 256 ] && type highlight &> /dev/null; then
-    export LESSOPEN="| highlight %s -s pablo -O xterm256 --force 2>/dev/null"
+#tldr
+if command -v tldr &> /dev/null; then
+    complete -W "$(tldr 2>/dev/null --list)" tldr
 fi
+#}}}1
 
 
-##SOURCING
+###SOURCING {{{1
 # load fuzzy finder
 [ -f $HOME/.fzf.bash ] && source $HOME/.fzf.bash
 # load it's command snippets
@@ -219,10 +234,12 @@ if [ -d "$HOME/.bash-git-prompt" ]; then
     source ~/.bash-git-prompt/gitprompt.sh
 fi
 
-# using ccache instead of gcc
-[[ $PATH != *"/usr/lib/ccache"* ]] && [[ -d /usr/lib/ccache ]] && export PATH=/usr/lib/ccache/:${PATH}
 #enable some extra features
 [ -f ~/.autojump/etc/profile.d/autojump.sh ] && source ~/.autojump/etc/profile.d/autojump.sh
 [ -f ~/.apparix.bash ] && source ~/.apparix.bash                    #bookmark directories
 [ -f ~/.git-completion.bash ] && source ~/.git-completion.bash      #git specific completion
 [ -f ~/.tmux-completion.bash ] && source ~/.tmux-completion.bash    #tmux specific completion
+#}}}1
+
+
+# vim:foldmethod=marker:foldlevel=1
