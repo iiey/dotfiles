@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env sh
 
 #check for fzf availability
 type -f fzf >/dev/null 2>&1 || return
@@ -9,12 +9,12 @@ type -f fzf >/dev/null 2>&1 || return
 
 #NOTE: this determines also search program for fzf.vim
 #now fzf (w/o pipe) will use ag instead of find
-if type ag &> /dev/null; then
+if type ag >/dev/null 2>&1; then
     export FZF_DEFAULT_COMMAND='ag -p ~/.gitignore -g ""'
 fi
 
 #refer rg over ag
-if type rg &> /dev/null; then
+if type rg >/dev/null 2>&1; then
     export FZF_DEFAULT_COMMAND='rg --files --hidden'
 fi
 
@@ -23,7 +23,7 @@ export FZF_DEFAULT_OPTS="--reverse \
                          --bind='ctrl-h:half-page-down,ctrl-l:half-page-up'"
 
 #working directory with tree preview
-if type tree &> /dev/null; then
+if type tree >/dev/null 2>&1; then
     export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -100'"
 fi
 #1}}}
@@ -36,7 +36,7 @@ fi
 #show bash_history w/o duplicates and order preserved
 fh() {
     local revshist # return history in reverse order
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+    if echo "$OSTYPE" | grep -q 'darwin' >/dev/null 2>&1; then
         revshist="tail -r $HISTFILE"
     else
         revshist="tac $HISTFILE"
@@ -57,7 +57,7 @@ fj() {
 
 #goto directory
 fcd() {
-    command -v tree &>/dev/null && local treeview="tree -L 3 -C {} | head -100"
+    command -v tree >/dev/null 2>&1 && local treeview="tree -L 3 -C {} | head -100"
     local dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -not -path "*/build*/*" -print 2> /dev/null |
         fzf +m --preview-window=right --preview="$treeview") &&
         cd "$dir" && ls -l
@@ -69,7 +69,7 @@ fe() {
     term=$([ "$(tput colors)" -ge 256 ] && echo 'xterm256' || echo 'ansi')
     #highlight with ansi output format and line number
     #also force output when filetype not recognized, mute error in case not a file
-    command -v highlight &>/dev/null && pipe_highlight="| highlight -s pablo -O ${term} -l --force 2>/dev/null"
+    command -v highlight >/dev/null 2>&1 && pipe_highlight="| highlight -s pablo -O ${term} -l --force 2>/dev/null"
     #output multiple lines each should be a single element
     mapfile -t out < <(fzf --query="$1" --multi --select-1 --exit-0 \
                            --header='ctrl-b:buffer, ctrl-s: hsplit, ctrl-v: vsplit' \
@@ -84,7 +84,7 @@ fe() {
         ctrl-v) opt="-O" ;;
         *)      opt="-p" ;;     #default open files in tab pages
     esac
-    [[ -n "${files[*]}" ]] && vim $opt "${files[@]}"
+    [ -n "${files[*]}" ] && vim $opt "${files[@]}"
 }
 #1}}}
 
@@ -95,7 +95,7 @@ fe() {
 # branches browser
 gitbranch() {
     #check whether a git repo before executing command
-    git rev-parse --is-inside-work-tree &> /dev/null || return
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
     local abbrevname branches cmdcheckout cmdlog cmdpreview
     #get human name of current in priority branch > tag > hash
     abbrevname="$(git symbolic-ref -q --short HEAD \
@@ -118,7 +118,7 @@ gitbranch() {
 
 # commits browser
 gitlog() {
-    git rev-parse --is-inside-work-tree &> /dev/null || return
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
     local pos
     [ "$(tput cols)" -ge 200 ] && pos="right" || pos="down"
     local fmt='%C(auto)%h %Cgreen%cd%C(auto)%d %s <%an>'
@@ -139,7 +139,7 @@ gitlog() {
 #add HEAD        get diff between working tree vs index vs HEAD
 # diffs browser
 gitdiff() {
-    git rev-parse --is-inside-work-tree &> /dev/null || return
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
     local cmddiff="git diff --color=always $*"
     difflist=$(git status --short)
     [ -z "$difflist" ] && return
@@ -156,7 +156,7 @@ gitdiff() {
 
 # interactive rebase from a chosen commit sha
 gitrebase() {
-    git rev-parse --is-inside-work-tree &> /dev/null || return
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
     local fmt='%C(auto)%h %Cgreen%ad%C(auto)%d %s <%an>'
     local log=$(git log --color=always --date=short --pretty="$fmt" | head -n 99)
     #declare and assign separately to avoid shallow exit code of 'last' command
@@ -168,7 +168,7 @@ gitrebase() {
 
 # stash list show
 gitstash() {
-    git rev-parse --is-inside-work-tree &> /dev/null || return
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
     local out opt key idx
     stashlist=$(git stash list --color=always --pretty='%C(yellow)%gd %>(14)%Cgreen%ci%Creset %gs')
     [ -z "$stashlist" ] && return
@@ -199,7 +199,7 @@ gitstash() {
 
 #kill tmux session by selecting from list
 tkill() {
-    type tmux &> /dev/null  || return
+    type tmux >/dev/null 2>&1  || return
     local sessions
     #list-session with (only session_name) format
     mapfile -t sessions < <(tmux ls -F '#S' | fzf -m)
@@ -212,17 +212,19 @@ tkill() {
 
 ###############################################################################################
 #key bindings {{{1
-if [[ $- == *i* ]]; then
-    #overwrite default keybind c-r
-    bind '"\er": redraw-current-line'
-    bind '"\C-r": "$(fh)\e\C-e\er"'
+if echo "$-" | grep -q 'i' >/dev/null 2>&1; then
+    if [ -n "$BASH" ]; then
+        #overwrite default keybind c-r
+        bind '"\er": redraw-current-line'
+        bind '"\C-r": "$(fh)\e\C-e\er"'
 
-    #git things
-    #use -x to execute a shell-comand by bash
-    bind -x '"\C-g\C-b": "gitbranch"'
-    bind -x '"\C-g\C-d": "gitdiff"'
-    bind -x '"\C-g\C-l": "gitlog"'
-    bind -x '"\C-g\C-s": "gitstash"'
+        #git things
+        #use -x to execute a shell-comand by bash
+        bind -x '"\C-g\C-b": "gitbranch"'
+        bind -x '"\C-g\C-d": "gitdiff"'
+        bind -x '"\C-g\C-l": "gitlog"'
+        bind -x '"\C-g\C-s": "gitstash"'
+    fi
 fi
 #1}}}
 
