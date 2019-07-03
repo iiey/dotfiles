@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#check for fzf availability
+type -f fzf >/dev/null 2>&1 || return
+
 # Global Setting {{{1
 # Use other trigger instead of default **
 #export FZF_COMPLETION_TRIGGER="'"
@@ -33,13 +36,13 @@ fi
 #show bash_history w/o duplicates and order preserved
 fh() {
     local revshist # return history in reverse order
-    if [[ $OSTYPE == "darwin"* ]]; then
+    if [[ "$OSTYPE" == "darwin"* ]]; then
         revshist="tail -r $HISTFILE"
     else
         revshist="tac $HISTFILE"
     fi
 
-    eval $revshist | awk '!x[$0]++' |
+    eval "$revshist" | awk '!x[$0]++' |
     fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --no-sort --height 10% \
                                       --bind="ctrl-x:execute-silent(eval {})+abort"
 }
@@ -49,28 +52,39 @@ fj() {
     local dir=$(autojump --stat | sed '/___/,$d' | cut -f 2 |   #use only second column
                 sed '/rvm\/copy/d' |                            #ignore rvm_copy
                 fzf --query="$1" --select-1 --tac --no-sort --height 10%)
-    [ -d "$dir" ] && cd "$dir"
+    [ -d "$dir" ] && cd "$dir" || return
 }
 
-#cd directory
-fd() {
-    local dir=$(find ${1:-.} -path '*/\.*' -prune -o -type d -not -path "*/build*/*" -print 2> /dev/null |
-        fzf +m --preview-window=right --preview="tree {} -L 3 -C | head -100") &&
+#goto directory
+fcd() {
+    command -v tree &>/dev/null && local treeview="tree -L 3 -C {} | head -100"
+    local dir=$(find "${1:-.}" -path '*/\.*' -prune -o -type d -not -path "*/build*/*" -print 2> /dev/null |
+        fzf +m --preview-window=right --preview="$treeview") &&
         cd "$dir" && ls -l
 }
 
-#open the selected file with the default editor (prefer vim)
+#fuzzy editing with vim
 fe() {
-    local files pipe_highlight term
+    local out key files pipe_highlight term
     term=$([ "$(tput colors)" -ge 256 ] && echo 'xterm256' || echo 'ansi')
-    command -v highlight &>/dev/null && pipe_highlight="| highlight -s pablo -O ${term} -l --force 2>/dev/null"
-    #for fast processing pipe only 300 headline of file
     #highlight with ansi output format and line number
     #also force output when filetype not recognized, mute error in case not a file
-    IFS=$'\n' files=($(fzf --query="$1" --multi --select-1 --exit-0 \
-                           --preview="head -300 {} ${pipe_highlight}"))
-    #TODO ctrl-t:open files in tabs, ctrl-w: open files in windows
-    [[ -n "$files" ]] && ${EDITOR:-vim} "${files[@]}"
+    command -v highlight &>/dev/null && pipe_highlight="| highlight -s pablo -O ${term} -l --force 2>/dev/null"
+    #output multiple lines each should be a single element
+    mapfile -t out < <(fzf --query="$1" --multi --select-1 --exit-0 \
+                           --header='ctrl-b:buffer, ctrl-s: hsplit, ctrl-v: vsplit' \
+                           --preview="head -300 {} ${pipe_highlight}" \
+                           --expect=ctrl-b,ctrl-s,ctrl-v)
+    #first is expected key (empty if not pressed), from second are selections (-m enable)
+    key="${out[0]}"
+    files=( "${out[@]:1}" )
+    case "$key" in
+        ctrl-b) opt= ;;
+        ctrl-s) opt="-o" ;;
+        ctrl-v) opt="-O" ;;
+        *)      opt="-p" ;;     #default open files in tab pages
+    esac
+    [[ -n "${files[*]}" ]] && vim $opt "${files[@]}"
 }
 #1}}}
 
@@ -83,7 +97,7 @@ gitcheckout() {
     git rev-parse --is-inside-work-tree &> /dev/null || return
     local list response key branch header
     list=$(git branch --all --color -vv; git tag) || return
-    mapfile -t response < <(fzf --query=$1 --prompt='checkout: ' \
+    mapfile -t response < <(fzf --query="$1" --prompt='checkout: ' \
         --ansi --header="$header" --expect=ctrl-x <<< "$list")
     key="${response[0]}"
     branch=$(perl -pe 's/^\*?\s*(remotes\/[^\/]*\/)?([^ ]+).*/\2/' <<< "${response[1]}")
@@ -106,11 +120,12 @@ gitlog() {
 }
 
 #TODO open in vim instead
-#TODO parse first col {1} to check for diff between index and last commit
+#add --staged    get diff between index and HEAD
+#add HEAD        get diff between working tree vs index vs HEAD
 # diffs browser
 gitdiff() {
     git rev-parse --is-inside-work-tree &> /dev/null || return
-    local cmddiff="git diff --color=always "$@""
+    local cmddiff="git diff --color=always $*"
     difflist=$(git status --short)
     [ -z "$difflist" ] && return
     fzf --ansi --no-sort \
@@ -126,24 +141,27 @@ gitdiff() {
 
 # stash list show
 gitstash() {
-    local out key idx
-    stashlist=$(git stash list --pretty='%C(yellow)%gd %>(14)%Cgreen%cr %C(blue)%gs')
+    git rev-parse --is-inside-work-tree &> /dev/null || return
+    local out opt key idx
+    stashlist=$(git stash list --color=always --pretty='%C(yellow)%gd %>(14)%Cgreen%ci%Creset %gs')
     [ -z "$stashlist" ] && return
-    out=($(fzf --ansi --no-sort \
+    #map two lines into a two-elements array
+    mapfile -t out < <(fzf --ansi --no-sort \
         --header='enter:show, ctrl-d:diff, ctrl-o:pop, ctrl-y:apply, ctrl-x:drop' \
         --preview='git stash show --color=always -p $(cut -d" " -f1 <<< {}) | head -'$LINES \
         --preview-window=down:80% --reverse \
         --bind='enter:execute(git stash show --color=always -p $(cut -d" " -f1 <<< {}) | less -r > /dev/tty)' \
         --bind='ctrl-d:execute(git diff --color=always $(cut -d" " -f1 <<< {}) | less -r > /dev/tty)' \
-        --expect=ctrl-o,ctrl-y,ctrl-x <<< "$stashlist"))
-    #fzf returns key (first) result (second) if 'expect' specified (without --print-query)
-    key=${out[0]}
-    idx=${out[1]}
-    [ -n "$idx" ] && case "$key" in
-        ctrl-o) git stash pop $idx ;;
-        ctrl-x) git stash drop $idx ;;
-        ctrl-y) git stash apply $idx ;;
+        --expect=ctrl-o,ctrl-y,ctrl-x <<< "$stashlist")
+    #fzf returns key (first line) result (second) if '--expect' specified (without --print-query)
+    key="${out[0]}"
+    idx="${out[1]%% *}"         #remove everything from the end till space (longest match)
+    case "$key" in
+        ctrl-o) opt="pop" ;;
+        ctrl-x) opt="drop" ;;
+        ctrl-y) opt="apply" ;;
     esac
+    [ -n "$opt" ] && [ -n "$idx" ] && git stash "$opt" "$idx";
 }
 
 #1}}}
@@ -152,12 +170,12 @@ gitstash() {
 ###############################################################################################
 #other commands {{{1
 
-#kill tmux session
+#kill tmux session by selecting from list
 tkill() {
     type tmux &> /dev/null  || return
-    #select from session list with fzf
-    #remove everything after ':' before return session names
-    local sessions=( $(tmux list-session | fzf -m | sed 's/: .*//') )
+    local sessions
+    #list-session with (only session_name) format
+    mapfile -t sessions < <(tmux ls -F '#S' | fzf -m)
     for elem in "${sessions[@]}"; do
         tmux kill-session -t "$elem" && echo "killed session: '$elem'"
     done
