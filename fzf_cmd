@@ -19,8 +19,10 @@ if type rg >/dev/null 2>&1; then
 fi
 
 #show matches in top-down order
-export FZF_DEFAULT_OPTS="--reverse \
-                         --bind='ctrl-h:half-page-down,ctrl-l:half-page-up'"
+export FZF_DEFAULT_OPTS='
+--bind ctrl-h:half-page-down,ctrl-l:half-page-up
+--color hl:81,hl+:45,pointer:150,marker:118
+--reverse'
 
 #working directory with tree preview
 if type tree >/dev/null 2>&1; then
