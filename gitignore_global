@@ -4,14 +4,28 @@
 .kdev4/
 .svn
 *.tags
+.TAGS
 build*/
 doc/tags
 *.kdev4
 *.vscode
 
 ###################
-# # Temporary files
+# Temporary files
 *.kate-swp
 *.swp
 *.swo
 *~
+
+###################
+# Emacs stuff
+#backup
+\#*#
+#ignore everything inside
+emacs.d/*
+#except
+!emacs.d/config.org
+!emacs.d/init.el
+!emacs.d/README*
+!emacs.d/lisp
+!emacs.d/themes
