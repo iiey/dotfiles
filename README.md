@@ -1,4 +1,4 @@
-#Dotfiles
+### Dotfiles
 A set of unix configurations:
 * `.ackrc`
 * `.ag`
