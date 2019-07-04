@@ -1,0 +1,585 @@
+#+TITLE: emacs configuration
+#+AUTHOR: nemo
+#+OPTIONS: toc:t
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/setup/theme-readtheorg.setup
+
+My personal emacs configuration written in ~Org-mode~ and loaded with ~Babel~ (default included
+since Org-mode 7.0). See =~/.emacs.d/init.el= to known how this file is loaded.
+
+* Configure use-package
+
+Use [[https://github.com/jwiegley/use-package][use-package]] to install and configure packages. =init.el= includes the initial setup
+for ~package.el~ and ensures that ~use-package~ is installed.
+
+Makes sure that ~use-package~ install below mentioned packages if it's not already available.
+It means that the whole environment should be automatically setup, if using this configuration
+and open Emacs for the first time.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'use-package-ensure)
+  (setq use-package-always-ensure t)
+#+END_SRC
+
+* UI preferences
+
+Show line numbers and display them /relative/ to current line
+
+#+BEGIN_SRC emacs-lisp
+(global-display-line-numbers-mode 1)
+(setq display-line-numbers-type 'relative)
+#+END_SRC
+
+Highligh current line and paren
+
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode 1)
+(show-paren-mode 1)
+#+END_SRC
+
+Hide gui ~toolbar~ ~menu-bar~ and ~scroll-bar~. Use =M-x name-bar-mode= to toggle
+on/off. Alternative we could use =F10= or =<C-mouse-3>= to access the ~Global Menu~ at any time.
+
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+#+END_SRC
+
+Hide startup screen
+
+#+BEGIN_SRC emacs-lisp
+(setq   inhibit-splash-screen t
+        inhibit-startup-message t)
+#+END_SRC
+
+coding style (use =C/C++= as default style)
+
+#+BEGIN_SRC emacs-lisp
+;TODO add hook style for other languages
+(setq-default c-basic-offset 4
+              tab-width 4
+              indent-tabs-mode nil)
+#+END_SRC
+
+Add margin to top/bottom page when scrolling
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-margin 3)
+#+END_SRC
+
+Split behaviour of function =split-window-sensibly=
+
+#+BEGIN_SRC emacs-lisp
+(setq split-height-threshold  80  ;split to below if only current frame height at least 80
+      split-width-threshold   150 ;split to the right if only current frame width at least 150
+)
+#+END_SRC
+
+Replace default [[https://www.emacswiki.org/emacs/FrameTitle][frame-title]], which is ~user@host~, with buffer name
+
+#+BEGIN_SRC emacs-lisp
+(setq-default frame-title-format '("%b"))
+#+END_SRC
+
+Fullscreen on default. Alternative parameter: =fullwidth=, =fullheight=, =maximized=.
+Use =M-F10= to call =toggle-frame-maximized= and =F11= for =toggle-frame-fullscreen=
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+#+END_SRC
+
+* Mapping
+
+Scroll screen up/down by multiple lines. This is more convenient when looking throught the code.
+A good complement with ~evil-normal-state~ halfpage-up/down ~c-u~ and ~c-d~.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [(control j)]  (lambda () (interactive) (scroll-up   5)))
+(global-set-key [(control k)]  (lambda () (interactive) (scroll-down 5)))
+#+END_SRC
+
+Resize split windows with ~alt~ (e.g.: ~M-~) key:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [(meta down)]  (lambda () (interactive) (enlarge-window 3)))
+(global-set-key [(meta up)]    (lambda () (interactive) (shrink-window 3)))
+(global-set-key [(meta left)]  (lambda () (interactive) (shrink-window-horizontally 3)))
+(global-set-key [(meta right)] (lambda () (interactive) (enlarge-window-horizontally 3)))
+#+END_SRC
+
+Scroll half page up and down with ~alt-u/d~ key. This may not necessary because
+we can do it in with ~c-u/d~ in ~evil-mode~.
+
+#+BEGIN_SRC emacs-lisp
+(autoload 'View-scroll-half-page-forward "view")
+(autoload 'View-scroll-half-page-backward "view")
+(global-set-key (kbd "M-u") 'View-scroll-half-page-backward)
+(global-set-key (kbd "M-d") 'View-scroll-half-page-forward)
+#+END_SRC
+
+
+Bind keys to common used commands and [[Functions]].\\
+Note that all =C-c LETTER= are reserved for ~users~. We use letter ~r~ to reload config
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key [f2] 'neotree-toggle)
+;see section Functions for self defined functions
+(global-set-key [f4] 'create-tags)
+(global-set-key [f9] 'toggle-bars)
+(global-set-key (kbd "C-c r") 'config-reload)
+#+END_SRC
+
+* Modes
+** Essential
+*** Helm
+
+Helm is the successor of ~Anything~. It's a generic framework for quickly accessing
+stuff within Emacs
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+    :config
+    ;enable helm-mode
+    (helm-mode 1)
+
+    ;min-/max-height (in %) can be specified when enable autoresize
+    (helm-autoresize-mode 1)
+    (setq   helm-autoresize-max-height              40  ;limit size of helm window
+            helm-autoresize-min-height              40  ;set fix size when both enabled
+    )
+
+    ;;enable fuzzy helm
+    (setq   helm-mode-fuzzy-match                   t
+            helm-completion-in-region-fuzzy-match   t
+            helm-M-x-fuzzy-match                    t   ;not belong to helm-mode need to set explicitly
+            ;helm-candidate-number-limit             50  ;for faster fuzzy set smaller limit. Default 100
+            ;helm-split-window-in-side-p             t   ; open buffer inside current window, not occupy other
+    )
+)
+#+END_SRC
+
+*** Org-mode
+
+Writing /your life in plan text/. Revisit [[https://orgmode.org/worg/org-tutorials/org4beginners.html#orgcb464ab][org4beginners]] to see usefull tips about ~Org~
+
+#+BEGIN_SRC emacs-lisp
+(use-package org
+    :config
+    ;;highlight syntax in source of code block
+    (setq org-src-fontify-natively t)
+    ;;make tab active native in code block
+    (setq org-src-tab-acts-natively t)
+    ;;open a split when editing code snippet
+    (setq org-src-window-setup 'reorganize-frame)
+    ;;quick insert elisp block
+    ;(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    ;;above code current not work due to a bug in org babel so temporarily use longer template
+    (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+
+    ;;replace asterisk with bullet in outline
+    (use-package org-bullets
+        :hook (org-mode . org-bullets-mode))
+
+    ;;enable export to html with table of content
+    (use-package ox-twbs
+        :init
+        (setq org-publish-project-alist
+            '(("org-notes"
+                :publishing-function org-twbs-publish-to-html
+                :with-sub-superscript nil))))
+)
+#+END_SRC
+
+** Enhanced
+*** Config Lisp
+
+Using [[https://www.emacswiki.org/emacs/ParEdit][ParEdit]], [[https://www.emacswiki.org/emacs/RainbowDelimiters][RainbowDelimiters]] and [[https://github.com/emacsmirror/rainbow-mode][rainbow-mode]] for easy working with lisp and scheme syntax
+
+#+BEGIN_SRC emacs-lisp
+(use-package paredit)               ;add pair parentheses
+(use-package rainbow-mode)          ;colorize strings which represent color
+(use-package rainbow-delimiters)    ;highlight parentheses
+
+;;use hook (same as autocmd in vim) to detect mode
+;;define list lispy
+(setq lispy-mode-hooks
+    '(emacs-lisp-mode-hook
+      lisp-mode-hook
+      scheme-mode-hook)
+)
+;;dolist loop through defined list
+;;enable above features only on lisp-/scheme-mode
+(dolist (hook lispy-mode-hooks)
+    (add-hook hook (lambda ()
+;        (paredit-mode)
+        (rainbow-mode)
+        (rainbow-delimiters-mode)))
+)
+#+END_SRC
+
+*** Evil
+
+There're moment in life when you live in /evil/..
+This package is for some vimer who miss that vim-movements.
+
+#+BEGIN_SRC emacs-lisp
+(use-package evil
+    :init
+    ;;fix scroll up in evil mode, need to put before configure evil
+    (setq evil-want-C-u-scroll t)
+
+    :config
+    (evil-mode 1)
+
+    ;;change default state to emacs
+    ;(setq evil-default-state 'emacs)
+
+    ;;fix tab: not indent in evil mode
+    (setq evil-want-C-i-jump nil)
+
+    ;;fix tab: give back org-mode bad functionality
+    (define-key evil-insert-state-map (kbd "TAB") 'tab-to-tab-stop)
+
+    ;;TODO set back emacs default state in insert-mode
+    (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
+    (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
+
+    ;;make these scrolling take more lines
+    (define-key evil-normal-state-map (kbd "C-e") (lambda () (interactive) (scroll-up   5)))
+    (define-key evil-normal-state-map (kbd "C-y") (lambda () (interactive) (scroll-down 5)))
+    (define-key evil-normal-state-map (kbd "C-y") (lambda () (interactive) (scroll-down 5)))
+
+    ;;want to enter ex-command but sometime forget to press shift key
+    ;;make both keys on the same keycap (ansi keyboard) have same function
+    (define-key evil-motion-state-map (kbd ";") 'evil-ex)
+
+    ;;utilize back/forward buttons of my mx ergo mouse
+    (define-key evil-motion-state-map [mouse-8] 'evil-jump-backward)
+    (define-key evil-motion-state-map [mouse-9] 'evil-jump-to-tag)
+
+    (use-package evil-leader
+        :config
+        (global-evil-leader-mode)
+        ;;default key as vim '/'
+        (evil-leader/set-leader "[")
+        (evil-leader/set-key
+            "f" 'helm-find-files
+            "b" 'helm-buffers-list
+            "i" 'helm-imenu
+            "k" 'kill-buffer
+            "g" 'magit-status
+            "r" 'deadgrep
+            "x" 'helm-M-x))
+
+    (use-package evil-surround
+        :config
+        (global-evil-surround-mode))
+)
+#+END_SRC
+
+There're also moment in life when you don't want to live /evil/..
+
+Evil has a builtin facility to do this in form of a variable called =evil-emacs-state-modes=.
+The value of that variable is a list of mode names. When entering those mode, evil will auto
+switch to Emacs state.
+
+Deactivate /evil/ in certain modes by adding them to this list:
+
+#+BEGIN_SRC emacs-lisp
+(dolist (non-evil-modes '(deadgrep-mode
+                         ))
+    (add-to-list 'evil-emacs-state-modes non-evil-modes)
+)
+#+END_SRC
+
+TODO escape from /evil/ and use pure emacs
+
+*** Magit
+
+[[https://magit.vc/manual/magit/][magit]] is an interface to the version control system ~Git~
+
+#+BEGIN_SRC emacs-lisp
+(use-package magit
+    :config
+    :bind
+    ("C-x g" . magit-status)
+)
+#+END_SRC
+
+** Optional
+*** Which-key
+
+This is a minor mode for Emacs that displays the key bindings
+following your currently entered incomplete command (a prefix) in a popup.
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+    :init
+    (which-key-mode)
+    :config
+    ;show popup at bottom if only not enough space at right side
+    (which-key-setup-side-window-right-bottom)
+)
+#+END_SRC
+
+*** Word
+
+Use [[https://github.com/myrkr/dictionary-el][dictionary-el]] and [[https://github.com/hpdeifel/synosaurus#usage][synosaurus]] to look for words
+
+#+BEGIN_SRC emacs-lisp
+(use-package dictionary)
+(use-package synosaurus)
+#+END_SRC
+
+*** Dimmer
+
+Module provides a minor mode that indicates which buffer is currently active by dimming
+the faces in the other buffers.
+
+#+BEGIN_SRC emacs-lisp
+(use-package dimmer :config (dimmer-mode))
+#+END_SRC
+
+*** Ranger
+
+/Lazy loading/ package [[https://github.com/ralesi/ranger.el#ranger-key-bindings][ranger.el]] as a minor mode of ~Dired~ (directory editor)
+which emulated some ~ranger~'s features.\\
+[[https://github.com/ralesi/ranger.el#selected-file-actions][Use]] =wv= and =ws= to open file in vertical/horizontal split.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ranger :defer t)
+#+END_SRC
+
+*** Neotree
+
+Use [[https://github.com/jaypei/emacs-neotree][neotree]] to display directory on left sidebar
+
+#+BEGIN_SRC emacs-lisp
+(use-package neotree
+    :config
+    ;;fonts files of this package need to be installed into ~/.fonts manually to get it works
+    (use-package all-the-icons
+        :config
+        (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+    )
+)
+#+END_SRC
+
+*** Beacon
+
+Short highlighting at the cursor position when switching window
+
+#+BEGIN_SRC emacs-lisp
+(use-package beacon
+    :custom (beacon-color "#255f66") ;jade color
+    :config (beacon-mode 1)
+)
+#+END_SRC
+
+* Modeline
+
+Display column number on modeline
+
+#+BEGIN_SRC emacs-lisp
+(column-number-mode 1)
+#+END_SRC
+
+** Minion
+
+Use [[https://github.com/tarsius/minions][minions]] to hide all minor modes in mode-line.
+Use keybinding to open menu where these enabled minor-modes could be toggled.
+
+#+BEGIN_SRC emacs-lisp
+(use-package minions
+    :config
+    (setq minions-mode-line-lighter ""
+        minions-mode-line-delimiters '("" . ""))
+    (minions-mode 1)
+    :bind
+    ([S-down-mouse-3] . 'minions-minor-modes-menu))
+#+END_SRC
+
+** Powerline
+
+Activate [[https://github.com/milkypostman/powerline][powerline]] for a lookalike vim statusline
+
+#+BEGIN_SRC emacs-lisp
+;(use-package powerline
+;    :config
+;    (powerline-default-theme)
+;)
+#+END_SRC
+
+** Moody
+
+Activate [[https://github.com/tarsius/moody][moody]] for ribbon-based *modeline*.
+Default turned off because it's 1.5 taller than standard.
+
+#+BEGIN_SRC emacs-lisp
+;(use-package moody
+;    :config
+;    (setq x-underline-at-descent-line t)
+;    (moody-replace-mode-line-buffer-identification)
+;    (moody-replace-vc-mode))
+#+END_SRC
+
+* Theme
+
+Add loading path where custom themes can be found. E.g. =~/.emacs/themes=
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+#+END_SRC
+
+[[Configure use-package][Ensure]] favorite themes are installed
+
+#+BEGIN_SRC emacs-lisp
+(use-package color-theme-sanityinc-tomorrow)
+(use-package nord-theme)
+(use-package solarized-theme)
+(use-package zenburn-theme)
+#+END_SRC
+
+Load default theme
+
+#+BEGIN_SRC emacs-lisp
+(load-theme 'sanityinc-tomorrow-night t)
+#+END_SRC
+
+* Grep
+
+Use [[https://github.com/Wilfred/deadgrep][deadgrep]] to call ~ripgrep~ (at least ~0.8~) from emacs.
+It's context aware so that it only greps inside current project when we are under version control.
+Note that we deactivate [[Evil][Evil]] when entering ~deadgrep-mode~.
+
+* Functions
+** create-ctags
+
+Provide a function to generate ctags in emacs format under version control project
+root directory
+
+- Find root-dir of current version control project
+
+#+BEGIN_SRC emacs-lisp
+;;enable builtin vc package
+(require 'vc)
+
+;;get project root using vc
+(defun get-root-dir ()
+    "Get root directory of current version control project"
+    (let ((backend (vc-deduce-backend)))
+        (and backend
+            (ignore-errors (vc-call-backend backend 'root default-directory)))
+    )
+)
+
+;;add tag file to emacs table
+;;emacs searchs auto for 'TAGS' if tag filename is not given
+(setq tags-table-list (list (expand-file-name ".TAGS" (get-root-dir))))
+#+END_SRC
+
+- Create function to generate hidden etags in root-dir
+
+#+BEGIN_SRC emacs-lisp
+(defun create-tags ()
+    "Create .TAGS file under project root directory."
+    (interactive)
+    (shell-command
+        (format "cd %s && rm .TAGS >/dev/null 2>&1; \
+                 ctags -e -R -f .TAGS . && echo '.TAGS created'" (get-root-dir)))
+)
+#+END_SRC
+
+** file-line
+
+Allow open a file with syntax: =emacs file:line=
+
+#+BEGIN_SRC emacs-lisp
+;TODO: support =file[:line[:col]]=
+(defadvice find-file-noselect (around find-file-noselect-at-line
+                                      (filename &optional nowarn rawfile wildcards)
+                                      activate)
+    "Turn file.ext:num into file.ext and going to the num-th line."
+    (save-match-data
+        (let* ((matched (string-match "^\\(.*\\):\\([0-9]+\\):?$" filename))
+            (line-number (and matched (match-string 2 filename)
+                    (string-to-number (match-string 2 filename))))
+                (filename (if matched (match-string 1 filename) filename))
+                (buffer-name ad-do-it))
+            (when line-number
+                (with-current-buffer buffer-name
+                    (goto-char (point-min))
+                    (forward-line (1- line-number))))
+        )
+    )
+)
+#+END_SRC
+
+** toggle-bar
+
+#+BEGIN_SRC emacs-lisp
+(defun toggle-bars ()
+    "Toggles bars visibility."
+    (interactive)
+    (menu-bar-mode (if menu-bar-mode -1 1))
+    (tool-bar-mode (if tool-bar-mode -1 1))
+)
+#+END_SRC
+
+** reload-config
+
+Define a function to quickly load changes in configuration:
+
+#+BEGIN_SRC emacs-lisp
+(defun config-reload ()
+    "Reloads config.org in emacs-directory at runtime"
+    (interactive)
+    (org-babel-load-file (expand-file-name "config.org" user-emacs-directory))
+)
+#+END_SRC
+
+* Misc
+
+Point to the last place visited, when later reopen same file.
+Default =save-place-file= value is =~/.emacs.d/[emacs-]places=
+
+#+BEGIN_SRC emacs-lisp
+(save-place-mode t)
+#+END_SRC
+
+Disable bell
+
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function 'ignore)
+#+END_SRC
+
+Use fancy lambdas
+
+#+BEGIN_SRC emacs-lisp
+(global-prettify-symbols-mode t)
+#+END_SRC
+
+Wrap long lines visually (~soft-wrap~). This can be enabled by =M-x visual-line-mode=
+
+#+BEGIN_SRC emacs-lisp
+(global-visual-line-mode 1)
+#+END_SRC
+
+Accept answer ~y/n~ instead of ~yes/no~
+
+#+BEGIN_SRC emacs-lisp
+(defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+Disable ~backup~ and ~autosave~. Change =nil= to =t= for reverting the behaviour.
+
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+#+END_SRC
+
+Do not recenter buffer if scroll outside window
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-conservatively 100)
+#+END_SRC
