@@ -35,11 +35,6 @@ export EDITOR=vim
 
 #less option
 export LESS="-RMj.5"
-#use lesspipe to preprocessing input for highlighting code in case term support 256 colors
-#FIXME: not interfere with '~/.lessfilter'
-if [ "$(tput colors)" -ge 256 ] && type highlight &> /dev/null; then
-    export LESSOPEN="| highlight %s -s pablo -O xterm256 --force 2>/dev/null"
-fi
 
 # using zeal for docsets if dasht exists
 if type "dasht" &> /dev/null; then
