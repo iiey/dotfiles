@@ -230,4 +230,4 @@ if echo "$-" | grep -q 'i' >/dev/null 2>&1; then
 fi
 #1}}}
 
-# vim:foldmethod=marker:foldlevel=1
+# vim:foldmethod=marker:foldlevel=1:syntax=bash
