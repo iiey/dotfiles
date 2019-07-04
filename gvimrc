@@ -6,7 +6,8 @@ source $VIMRUNTIME/menu.vim
 " Font selection
 if has('gui_gtk') || has('gui_gnome')
     "set guifont=Monospace\ 10
-    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 10
+    "set guifont=Literation\ Mono\ Powerline\ 10
+    set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
     colorscheme quantum
     let g:airline_theme='quantum'
 elseif has('gui_macvim')
