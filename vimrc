@@ -198,6 +198,7 @@ augroup END
 " COLORSCHEME {{{
 "Open vim with theme instead default
 set background=dark
+let g:airline_theme='minimalist'
 if $KONSOLE_PROFILE_NAME =~? "solarized"
     if $KONSOLE_PROFILE_NAME =~? "light" | set background=light | endif
     "loading time: 6ms
@@ -205,17 +206,15 @@ if $KONSOLE_PROFILE_NAME =~? "solarized"
     let g:airline_theme='solarized'
 elseif $KONSOLE_PROFILE_NAME ==? "tomorrow"
     silent! colorscheme tomorrow-night
-    let g:airline_theme='tomorrow'
 else
     "loading time: 7ms
     silent! colorscheme codedark
-    let g:airline_theme='codedark'
 endif
 "}}}
 
 
 "VIM-AIRLINE {{{
-let g:airline_powerline_fonts=1                     "enable powerline font
+let g:airline_powerline_fonts=0                     "enable/disable powerline
 
 "TABLINE (upper bar)
 let g:airline#extensions#tabline#enabled = 1        "show tabline
@@ -233,7 +232,7 @@ let g:airline#extensions#tabline#close_symbol = 'x'
 
 "enable/disable detection of whitespace errors
 let g:airline#extensions#whitespace#enabled = 0
-"display progress in statusline of airline
+"display progress in statusline
 "let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
 
 "AIRLINE-THEMES EXTENSION
@@ -247,6 +246,8 @@ let g:airline#extensions#whitespace#enabled = 0
 "2. create a snapshot file with :TmuxlineSnapshot [file]
 "3. add it to .tmux.conf: if-shell "test -f [file]" "source [file]"
 let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme as vim when starts vim
+"enable/disable powerline symbols (default 1)
+"let g:tmuxline_powerline_separators = 0
 " }}}
 
 
