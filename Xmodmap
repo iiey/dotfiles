@@ -1,0 +1,10 @@
+!Attention: personal key mapping only, do not use it
+!keycode id may differ from systems to keyboards
+!
+!This works with:
+!ubuntu 12.04
+!80% Layout: SGK-6030-KKCM1-US
+!80% Layout: KBP-V80MTS-Q-DOL
+!
+!make Super_R (keycode 134) be Backtick
+keycode 134 = grave
