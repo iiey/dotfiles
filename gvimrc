@@ -5,16 +5,13 @@ source $VIMRUNTIME/menu.vim
 
 " Font selection
 if has('gui_gtk') || has('gui_gnome')
-    "set guifont=Monospace\ 10
-    "set guifont=Literation\ Mono\ Powerline\ 10
-    set guifont=Ubuntu\ Mono\ derivative\ Powerline\ 12
-    colorscheme quantum
-    let g:airline_theme='quantum'
+    set guifont=Monospace\ 10
 elseif has('gui_macvim')
     set guifont=Sauce\ Code\ Powerline\ Light:h13
-    colorscheme tomorrow-night
-    let g:airline_theme='tomorrow'
 endif
+
+colorscheme tomorrow-night
+let g:airline_theme='tomorrow'
 
 silent highlight default CursorLine
 "highlight Pmenu guibg=lightblue guifg=black
