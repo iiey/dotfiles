@@ -93,8 +93,8 @@ set ssop-=options    " do not store global and local values in a session
 
 "LOCAL VIMRC
 "also try to load local config from this file if existed
-if !empty(glob('~/.vim/local.vimrc'))
-        source ~/.vim/local.vimrc
+if !empty(glob('~/.vim/vimrc.local'))
+        source ~/.vim/vimrc.local
 endif
 " }}}
 
@@ -154,7 +154,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
     Plug 'junegunn/fzf.vim'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'skywind3000/asyncrun.vim'
 
 "no zeal support on mac os because of dash
@@ -165,10 +164,6 @@ endif
 "ultisnip requires vim 7.4
 Plug 'SirVer/ultisnips', v:version >= 704 ? { 'tag': '3.2' } : { 'on' : [] }
     Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
-"Plug 'xavierd/clang_complete', {'for': ['c', 'cpp']}
-
-Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
-Plug 'easymotion/vim-easymotion', {'on': '<Plug>(easymotion-f)'}
 "}}}
 
 "OTHERS (optional) {{{3
@@ -177,7 +172,6 @@ Plug 'iiey/vim-startify'
 Plug 'majutsushi/tagbar'
 Plug 'preservim/nerdtree', {'on': []}
     Plug 'ryanoasis/vim-devicons'
-Plug 'edkolev/tmuxline.vim'
 Plug 'blueyed/vim-diminactive'
 Plug 'peterhoeg/vim-qml'
 "}}}
@@ -382,29 +376,6 @@ let g:termdebug_wide = 1
 "}}}
 
 
-"CLANG_COMPLETE {{{
-"Using omnifunc=ClangComplete because builtin ccomplete don't work correctly
-"<c-x><c-u> to trigger specific completefunc
-
-"path to directory which contains libclang.{dll|so|dylib} (win/linux/macos)
-"let g:clang_library_path='/usr/lib/'
-"or direct path to current actual libclang
-let g:clang_library_path=expand("$HOME")."/lib/libclang.so"
-
-"select first entry of popup menu
-let g:clang_auto_select=1
-"also complete parameters of function
-let g:clang_snippets = 1
-"default engine cannot jump between parameters
-"use ultisnip if it's available
-if v:version >= 704
-    let g:clang_snippets_engine = 'ultisnips'
-endif
-"prevent default key from disable tagjump <c-]>
-let g:clang_jumpto_declaration_key = '<c-w>['
-"}}}
-
-
 "ULTISNIPS {{{
 "using snippets template from: https://github.com/honza/vim-snippets.git
 "note: it will search in runtimepath for dir with names on the list below
@@ -453,20 +424,6 @@ function! UpdateCtags(proDir)
     endif
 endfunction
 command! UpdateCtags call UpdateCtags($proj)
-" }}}
-
-
-"CTRLP {{{
-"ctrlp auto. finds projectRoot based on .svn/.git...
-let g:ctrlp_working_path_mode = 'ra'                    "working dir is nearest acestor of current file
-"note: see ctrlp_user_command and use .agignore instead
-let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/](.git|.svn|build|tmp)$',
-    \ 'file': '\v\.(exe|so|dll|swp|tags|zip)$'}         "exclude file and directories
-"set wildignore+=*/tmp/*,*/build/*,*.so,*.swp,*.zip
-let g:ctrlp_by_filename = 1                             "default searching by filename instead of full path
-let g:ctrlp_map = '[p'
-let g:ctrlp_cmd = 'CtrlPMixed'                          "invoke default command to find in file, buffer and mru
 " }}}
 
 
@@ -547,18 +504,6 @@ let g:NERDTreeFileExtensionHighlightFullName = 1
 " }}}
 
 
-"EASYMOTION {{{
-"uncomment for using <leader> instead of <leader>²
-"map <leader> <Plug>(easymotion-prefix)
-
-"remap only one feature
-nmap <leader>f <Plug>(easymotion-f)
-
-"v matches [v|V] and V matches only [V]
-let g:EasyMotion_smartcase = 1
-"}}}
-
-
 "CPPMAN {{{
 "manual page viewer
 "note: using "$cppman -m true" to call cppman from default man
@@ -613,15 +558,6 @@ endif
 "CPP-ENHANCED-HIGHLIGHT
 let g:cpp_class_scope_highlight = 1
 
-"UNDOTREE
-if has("persistent_undo")               "set undodir to one place
-    set undodir=~/.undodir/
-    set undofile
-endif
-
-let g:undotree_SetFocusWhenToggle = 1   "cursor moved to undo-window when opened
-let g:undotree_WindowLayout = 3         "undo-/diff-window open on the left side
-
 "TAGBAR
 let g:tagbar_autofocus=1                "focus on actual function
 
@@ -657,26 +593,20 @@ endif
 "}}}
 
 
-"GREP - SILVER SEARCH {{{
+"GREP {{{
 "fzf.vim uses FZF_DEFAULT_COMMAND
 "':Ag' uses grepgrp
+
+"SILVER SEARCH
 if executable('ag')
   "use ag over vimgrep
   set grepprg=ag\ --vimgrep
-  "use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag -Q -l --nocolor --hidden -g "" %s'
-
-  "ag is fast that ctrlp doesn't need to cache
-  let g:ctrlp_use_caching = 0
 endif
-"}}}
 
-
-"GREP - RIPGREP {{{
+"RIPGREP
 if executable('rg')
   "use rg over ag
-  let g:ctrlp_user_command = 'rg --files %s'
-  let g:ctrlp_use_caching = 0
+  set grepprg=rg\ --vimgrep
 endif
 "}}}
 
@@ -983,10 +913,9 @@ cnoremap vf vert sf<space>
 "}}}
 
 "FN: {{{2
-nnoremap <silent>   <F2> :ToggleTree<cr>
+nnoremap <silent>   <F2> :call ToggleTree()<cr>
 nnoremap            <F3> :TagbarToggle<cr>
 nnoremap <silent>   <F4> :UpdateCtags<cr>
-nnoremap            <F5> :UndotreeToggle<cr>
 
 nnoremap <silent>   <F10> :call OnQuit()<cr>
 imap                <F10> <c-o><F10>                "switch to Insert-Normal-Mode to exec F10
