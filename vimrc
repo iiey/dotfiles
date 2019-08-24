@@ -45,6 +45,7 @@ if has('linebreak')         "show character when long line's wrapped to fit the 
     let &showbreak='↪ '     "downwards arrow with tip rightwards (U+21B3, UTF-8: E2 86 B3)
 endif
 
+"warning: extremely slow by editing large file with fmd syntax
 if has('folding')           "folding option
     set foldmethod=syntax   "global folding method
     set foldlevel=3         "fold with higher level with be closed (0: always)
@@ -855,9 +856,12 @@ augroup vimrc
     "one line statement without timer function
     "autocmd User AsyncRunStop if g:asyncrun_status=='success'|call asyncrun#quickfix_toggle(8, 0)|endif
 
-    "specify foldmetho
+    "specify foldmethod
     autocmd FileType vim setlocal foldmethod=marker
     autocmd FileType python setlocal foldmethod=indent
+
+    "disable fmd=syntax on large file (causing lagging when editing)
+    autocmd FileType c,cpp,python,sh,xml if line('$') > 4000 | setlocal foldmethod=indent | endif
 augroup END
 " }}}
 
