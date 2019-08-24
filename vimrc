@@ -395,13 +395,14 @@ set tags=./.tags;$HOME/sources              "searching for .tags from current up
 for vcs in ['.git', '.svn', '.hg']
     "searching from current "." upwards ";" to "~/sources"
     "see also filename-modifiers: :p --> full path, :h --> take head remove last component
-    let projRootDir = fnamemodify(finddir(vcs, '.;$HOME/sources'), ':p:h:h')
-    if isdirectory(projRootDir.'/'.vcs)
-        "init env-var for later uses
-        let $proj = projRootDir
+    let g:projRootDir = fnamemodify(finddir(vcs, '.;$HOME/sources'), ':p:h:h')
+    if isdirectory(g:projRootDir . '/' . vcs)
+        "set cwd at root so finder prog like fzf could check all subfiles
+        "exe auto concates it's args with spaces inbetween
+        silent! execute 'cd' g:projRootDir
         break
     else
-        let $proj= ''
+        unlet g:projRootDir
     endif
 endfor
 
@@ -416,7 +417,7 @@ function! UpdateCtags(proDir)
         call system(cmd) | echom "write:" . a:proDir . "/.tags"
     endif
 endfunction
-command! UpdateCtags call UpdateCtags($proj)
+command! UpdateCtags call UpdateCtags(g:projRootDir)
 " }}}
 
 
