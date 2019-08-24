@@ -671,17 +671,15 @@ function! ToggleColor()
     endif
 endfunction
 
-"Toggle cpp header
+"Toggle c header/code
 "@see :h filename-modifiers
-"TODO expand file extension with tab
-function! ToggleCode()
-  if (expand ("%:e") == "cpp")
-    find %:t:r.h
-  else
-    find %:t:r.cpp
-  endif
+"arg: 'e[dit]', 'tabe', '[v]split'
+function! ToggleCode(...) abort
+    if &filetype !~ '^c.*' | return | endif
+    let open = (a:0 == 1) ? a:1 : 'edit'
+    execute open '%:p:r.' .. (expand("%:e") =~ '^c.*' ? 'h' : 'c*')
 endfunction
-nnoremap ,s :call ToggleCode()<cr>
+command! -nargs=1 ToggleCode call ToggleCode('<args>')
 
 "Change colorscheme and airlinetheme
 function! ChangeTheme(color)
@@ -896,6 +894,12 @@ nnoremap [cd :cd %:p:h<cr>:pwd<cr>
 "manual change cword forwards
 "repeat with: <c-[>(goto normal) n(ext match) .(repeat)
 nnoremap c* *<c-o>cgn
+"}}}
+
+"SWITCH HEADER: {{{2
+"sourcecode-toggle
+nnoremap [v :ToggleCode vsplit<cr>
+nnoremap [t :ToggleCode tab drop<cr>
 "}}}
 
 "TAG JUMP: {{{2
