@@ -89,6 +89,12 @@ set ssop-=options    " do not store global and local values in a session
 "file format linux
 "set ff=unix
 "set autochdir // auto. change current working directory
+
+"LOCAL VIMRC
+"also try to load local config from this file if existed
+if !empty(glob('~/.vim/local.vimrc'))
+        source ~/.vim/local.vimrc
+endif
 " }}}
 
 
@@ -110,6 +116,7 @@ endif
 
 
 "VIMPLUG {{{1
+"Install vimplug {{{2
 "auto install plugin manager if not exists
 if empty(glob('~/.vim/autoload/plug.vim'))
     let s:link='https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -125,80 +132,84 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 "}}}
 
-"Load Plugins {{{1
+"Load plugins {{{2
 "specific directory to load
 call plug#begin('~/.vim/bundle')
 
 ""note: plugins are added to &runtimepath in the order they are defined here
-""first load personal stuff: setting, command, mapping
-Plug 'iiey/vimconfig'
 
-"BASIC (essential) {{{2
-Plug 'bitc/vim-bad-whitespace'
+"BASIC (essential) {{{3
+Plug 'ntpeters/vim-better-whitespace'
 Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'kopischke/vim-fetch'
+Plug 'wsdjeg/vim-fetch'
 Plug 'tpope/vim-surround'
+Plug 'iiey/vimcolors'
 "}}}
 
-"EXTENDED (productive) {{{2
-Plug 'skywind3000/asyncrun.vim'
+"ENHANCED (productive) {{{3
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
-    Plug 'junegunn/gv.vim'
+    Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-vinegar'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
     Plug 'junegunn/fzf.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'skywind3000/asyncrun.vim'
 
-Plug 'vim-utils/vim-man'
 "no zeal support on mac os because of dash
 if ! has('mac') || ! has('osx')
     Plug 'KabbAmine/zeavim.vim'
 endif
 
 "ultisnip requires vim 7.4
-Plug 'SirVer/ultisnips', v:version >= 704 ? {} : {'on' : []}
+Plug 'SirVer/ultisnips', v:version >= 704 ? { 'tag': '3.2' } : { 'on' : [] }
     Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
-Plug 'Rip-Rip/clang_complete', {'for': ['c', 'cpp']}
-Plug 'davidhalter/jedi-vim'
+"Plug 'xavierd/clang_complete', {'for': ['c', 'cpp']}
 
 Plug 'mbbill/undotree', {'on': 'UndotreeToggle'}
 Plug 'easymotion/vim-easymotion', {'on': '<Plug>(easymotion-f)'}
 "}}}
 
-"ENHANCED (optional) {{{2
-Plug 'bling/vim-airline' | Plug 'vim-airline/vim-airline-themes'
+"OTHERS (optional) {{{3
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 Plug 'iiey/vim-startify'
 Plug 'majutsushi/tagbar'
-Plug 'scrooloose/nerdtree', {'on': []}
-    Plug 'jistr/vim-nerdtree-tabs'
+Plug 'preservim/nerdtree', {'on': []}
     Plug 'ryanoasis/vim-devicons'
 Plug 'edkolev/tmuxline.vim'
 Plug 'blueyed/vim-diminactive'
+Plug 'peterhoeg/vim-qml'
 "}}}
 
 call plug#end()
 "}}} Load Plugins
 
+"Defer loading {{{2
+""vimplug defers some plugins (lazzy loader)
+"do onetime loading based events
+augroup load_on_move
+    autocmd!
+    autocmd CursorMoved * call plug#load('nerdtree') | autocmd! load_on_move
+augroup END
+"}}} Defer loading
+"}}} VIM PLUG
+
 
 " COLORSCHEME {{{
+"Open vim with theme instead default
 set background=dark
-if $KONSOLE_PROFILE_NAME ==? "solarized"
+if $KONSOLE_PROFILE_NAME =~? "solarized"
+    if $KONSOLE_PROFILE_NAME =~? "light" | set background=light | endif
+    "loading time: 6ms
     silent! colorscheme solarized
     let g:airline_theme='solarized'
+elseif $KONSOLE_PROFILE_NAME ==? "tomorrow"
+    silent! colorscheme tomorrow-night
+    let g:airline_theme='tomorrow'
 else
+    "loading time: 7ms
     silent! colorscheme codedark
-    let g:quantum_black=1
     let g:airline_theme='codedark'
-endif
-
-"DIFFING
-"note: colorscheme must set first before request 'g:colors_name'
-if &diff && exists('g:colors_name') && g:colors_name != 'solarized'
-    highlight DiffAdd    cterm=bold ctermfg=white ctermbg=DarkGreen
-    highlight DiffDelete cterm=bold ctermfg=white ctermbg=DarkGrey
-    highlight DiffChange cterm=bold ctermfg=white ctermbg=DarkBlue
-    highlight DiffText   cterm=bold ctermfg=white ctermbg=DarkRed
 endif
 "}}}
 
@@ -293,6 +304,13 @@ if filereadable("/usr/share/dict/words")
     set complete+=k                     "<c-x><c-k> to trigger this list
 endif
 
+"THESAURUS
+"Add personal synonym files
+if !empty(glob("~/.vim/dict"))
+    set thesaurus+=~/.vim/dict/thesaurus-vim-en
+    set thesaurus+=~/.vim/dict/thesaurus-vim-de
+endif
+
 "OMNI COMPLETION
 set omnifunc=syntaxcomplete#Complete    "open in I-Mode <c-x><c-o>, navigate <c-n/p>, close <c-e>
 
@@ -305,16 +323,31 @@ set completeopt=longest,menuone
 "pumvisible: return non-zero if PopUpMenu visible otherwise false
 inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
             \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+"}}}
 
-"COMMAND-LINE
-"Improve tab completion in command mode
-"if searching for file, tell vim to look downwards recursive (two asterisks)
-"See also help path, file-searching and cpt
+
+"MISCELLANEOUS {{{
+""Improve tab completion in command mode
+""if searching for file, tell vim to look downwards recursive (two asterisks)
+""See also help path, file-searching and cpt
 "set path +=**
-"show candidates in a menu line, iterate with tab and shift-tab
+
+""make vim aware of repo files by adding git root directory to 'path'
+""use systemlist() and get first elem without handling newline in result
+""like system() but results of shell cmd as list (no trailing newline or space)
+"let gitRootDir = get(systemlist("git rev-parse --show-toplevel"), 0)
+""check exit_status of last shell cmd
+"if v:shell_error == 0 && strlen(gitRootDir) != 0
+"    let &path.= gitRootDir . "/**"
+"endif
+
+""show candidates in a menu line, iterate with tab and shift-tab
 "set wildmenu
-"or list all matches with tab (same as ctrl-d)
+""or list all matches with tab (same as ctrl-d)
 "set wildmode=longest,list
+
+"Use verticale split when starting termdebug
+let g:termdebug_wide = 1
 "}}}
 
 
@@ -428,14 +461,28 @@ endfunction
 let NERDTreeIgnore=['build', '\~$']
 "hide first help line
 let NERDTreeMinimalUI = 1
+"do not deactivate netrw (for opening directory)
+let g:NERDTreeHijackNetrw = 0
 
 "NERDTREE_TABS
 let g:nerdtree_tabs_autofind = 1
 let g:nerdtree_tabs_open_on_gui_startup = 0
 
 "NETRW
-let g:NERDTreeHijackNetrw = 0   "do not deactivate netrw (for opening directory)
-let g:netrw_liststyle = 3       "tree style
+":help netrw-quickmap --> to see all shortcuts
+"suppress banner, I to toggle it
+let g:netrw_banner = 0
+"enter to open file in previous window
+"o/v/t open file in new horizontal/vertical split or new tab
+"x open file with default system app
+"p to preview in split. Default 0 is vertical split
+let g:netrw_preview = 1
+"specify action when opening file with <cr>
+"let g:netrw_browse_split = 1
+"tree style, i to cycle modes
+let g:netrw_liststyle = 3
+"define width
+let g:netrw_winsize = 25
 " }}}
 
 
@@ -445,11 +492,14 @@ let g:netrw_liststyle = 3       "tree style
 "loading devicon
 let g:webdevicons_enable = 1
 
-" Force extra padding in NERDTree so that the filetype icons line up vertically
+"force extra padding in NERDTree so that the filetype icons line up vertically
 let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
 
 "padding between symbol and text
-let g:WebDevIconsNerdTreeAfterGlyphPadding = ''
+"let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+
+"disable icon on vim-airline's tabline
+let g:webdevicons_enable_airline_tabline = 0
 
 
 "NERDTREE_HIGHLIGHT
@@ -475,22 +525,51 @@ let g:EasyMotion_smartcase = 1
 "}}}
 
 
+"CPPMAN {{{
+"manual page viewer
+"note: using "$cppman -m true" to call cppman from default man
+"it's handy if vim-man is installed
+if executable('tmux') && executable('cppman')
+    command! -nargs=+ Cppman silent! call system("tmux split-window cppman " . expand(<q-args>))
+    command! -nargs=+ CppMan silent! call system("tmux split-window -h cppman " . expand(<q-args>))
+endif
+"}}}
+
+
 "FZF.VIM {{{
 "define window layout
 let g:fzf_layout = { 'down': '~30%' }
-" [Commands] -- expect expression for directly executing the command
-let g:fzf_commands_expect = 'ctrl-x'
+
+":Buffers -- jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+":Commands -- expect expression for directly executing the command
+let g:fzf_commands_expect = 'alt-enter,ctrl-x'
+
+"change default behaviour jump to existing tab if possible
+let g:fzf_action = {
+    \ 'ctrl-t': 'tab drop',
+    \ 'ctrl-x': 'split',
+    \ 'ctrl-v': 'vsplit' }
 
 if executable('fzf')
     "Files command with preview window
     command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-    "Ripgrep
+    "fzf#vim#grep(command, with_column, [options], [fullscreen])
+    "with_column: 0 -> output of 'command' not include column numbers, otherwise 1
+    "fullscreen: bang<0> evaluates to 0 if no bang (!) right after 'command', otherise 1
+    "git grep
+    command! -bang -nargs=* GGrep
+                \ call fzf#vim#grep(
+                \   'git grep --color=always --line-number '.shellescape(<q-args>), 0,
+                \   fzf#vim#with_preview({ 'dir': systemlist('git rev-parse --show-toplevel')[0] }), <bang>0)
+
+    "ripgrep
     command! -bang -nargs=* -complete=file Rg
                 \ call fzf#vim#grep(
-                \   'rg --column --line-number --no-heading --color=always --ignore-case ' . <q-args>, 1,
-                \   <bang>0 ? fzf#vim#with_preview('up:60%')
-                \           : fzf#vim#with_preview('right:50%:hidden', 'ctrl-w'),
+                \   'rg --column --line-number --no-heading --color=always --smart-case ' . shellescape(<q-args>), 1,
+                \   <bang>0 ? fzf#vim#with_preview('up:70%')
+                \           : fzf#vim#with_preview('right:50%', '?'),
                 \   <bang>0)
 endif
 "}}}
@@ -499,8 +578,6 @@ endif
 "OTHER PLUGINS {{{
 "CPP-ENHANCED-HIGHLIGHT
 let g:cpp_class_scope_highlight = 1
-"python-syntax
-let g:python_highlight_all = 1
 
 "UNDOTREE
 if has("persistent_undo")               "set undodir to one place
@@ -514,21 +591,35 @@ let g:undotree_WindowLayout = 3         "undo-/diff-window open on the left side
 "TAGBAR
 let g:tagbar_autofocus=1                "focus on actual function
 
-"BAD-WHITESPACE
-let g:better_whitespace_filetypes_blacklist=['txt', 'csv', 'ppm']
-"TODO modify plugin to have init-option
-let g:bad_whitespace_default=0
+"BETTER-WHITESPACE
+"show bad whitespace on open, manual enable with :ToggleWhitespace
+let g:better_whitespace_enabled = 0
+
+"disable highlight on file, don't use default list, override it
+let g:better_whitespace_filetypes_blacklist=['markdown', 'qf']
+
+"auto clear on save
+let g:strip_whitespace_on_save = 1
+let g:strip_only_modified_lines = 1
+let g:strip_whitespace_confirm = 1
+
+"ZEAVIM
+"configure default docsets searching based on file types
+let g:zv_file_types = {
+            \   'cpp': 'cpp,opencv,qt' }
 " }}}
 
 
 "MAKE {{{
 "identify build-folder by searching "upwards" for "build" from "." to "~/sources"
 let projBuildDir = fnamemodify(finddir('build', '.;$HOME/sources'), ':p:h')
-if projBuildDir !=""
-    "TODO handle build directory with name other than 'build'
+if projBuildDir =~ "/build"
     let &makeprg='cmake --build ' . shellescape(projBuildDir) . ' --target '
+else
+    unlet projBuildDir
 endif
 "Note: Using "-- -jN" to pass jobs config to make command
+"Note: above is just a personal case which comes into handy, consider remove it later
 "}}}
 
 
@@ -559,17 +650,12 @@ endif
 "ASYNCRUN {{{
 "run shell commands on background and read output in quickfix window (vim8)
 
-"TODO create commands if only asyncrun available => vim/after
+"TODO create commands if only asyncrun available
 "Note plugins are not run, we cannot check if exists(':AsyncRun')
 ":Make runs :make in background with asyncrun
+"and make again determined by makeprg see also SetProjBuildDir()
+"Usage: :Make PROG_NAME -- -jN
 command! -bang -nargs=* -complete=file Make AsyncRun -program=make @ <args>
-":Ag runs :grep in background with asyncrun
-command! -bang -nargs=* -complete=file Ag AsyncRun -program=grep @ <args>
-
-"FIXME search pattern with double quotes not work
-if !exists(':Ag') && (executable('ag') || executable('rg'))
-    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-endif
 
 "helper function for closing quickfix after finishing job
 function! AsyncOnExit()
@@ -671,11 +757,19 @@ endfunction
 inoremap <expr> <c-d> HUDigraphs()
 
 "search phrase with command :Search
-function! GSearch(phrase)
-    let url = "http://www.google.com/search?q=" . a:phrase
+"see :h function-argument
+function! GSearch(...)
+    let url = "http://www.google.com/search?q="
+    let url .= (a:0 > 0) ? join(a:000, '') : expand("<cword>")
     call netrw#BrowseX(url, 0)
 endfunction
 command! -nargs=* Search call GSearch('<args>')
+
+"Set project build directory
+function! SetProjBuildDir(buildDir)
+    let &makeprg='cmake --build ' . shellescape(a:buildDir) . ' --target '
+endfunction
+command! -nargs=1 -complete=dir SetBuildDir call SetProjBuildDir('<args>')
 
 "ON_EXIT
 function! OnQuit()
@@ -765,15 +859,16 @@ nnoremap ; :
 "replacement for next match with focus f
 nnoremap <space> ;
 
-"QUICKFIX:
-nnoremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
-nnoremap <C-n> :cnext<cr>zz
-nnoremap <C-p> :cprevious<cr>zz
-
 "quit all not save
 nnoremap <C-q> :qa!<cr>
 "save all & quit
 nnoremap <C-s> :xa<cr>
+
+"QUICKFIX: {{{2
+nnoremap <silent> <leader>q :call asyncrun#quickfix_toggle(8)<cr>
+nnoremap <C-n> :cnext<cr>zz
+nnoremap <C-p> :cprevious<cr>zz
+"}}}
 
 "WINDOW: {{{2
 "s for split and disable word substitude
@@ -806,51 +901,51 @@ nnoremap * *zz
 nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
-nnoremap <c-]> <c-]>zz
-"search with silversearcher
+nnoremap <expr> ' "'" . nr2char(getchar()) . "zz"
+"search on browser
+nnoremap <silent> [b :call GSearch()<cr>
+"search with git grep
 "<c-r> inserts contain of named register, '=" register expr, <cword> expr of word under cursor. See :h c_ctrl-r
 "use double quote to escape regex character
-" %:p current filename, %:p:h truncate name -> current dir
-nnoremap [s :Ag<space>"<c-r>=expand("<cword>")<cr>"<space>%:p
-nnoremap [S :Ag<space>"<c-r>=expand("<cword>")<cr>"<space>%:p<cr>
+nnoremap [g :GGrep<space><c-r>=expand("<cword>")<cr>
+nnoremap [G :GGrep<space><c-r>=expand("<cword>")<cr><cr>
 "search with ripgrep
-nnoremap [r :Rg<space>"<c-r>=expand("<cword>")<cr>"
-nnoremap [R :Rg<space>"<c-r>=expand("<cword>")<cr>"<cr>
+nnoremap [r :Rg!<space><c-r>=expand("<cword>")<cr><cr>
+nnoremap [R :Rg<space><c-r>=expand("<cword>")<cr><cr>
 "search with fuzzy finder
-nnoremap [f :FZF<cr>
+nnoremap [f :Files<cr>
+
 "change working directory
+" %:p current filename, %:p:h truncate name -> current dir
 nnoremap [cd :cd %:p:h<cr>:pwd<cr>
+
 "manual change cword forwards
 "repeat with: <c-[>(goto normal) n(ext match) .(repeat)
 nnoremap c* *<c-o>cgn
 "}}}
 
-"TABS JUMP: {{{2
-"tabprevious (gT) and tapnext (gt)
-"or ngt for jumping to n.te tab
-noremap <C-S><left> :tabp<cr>
-noremap <C-S><right> :tabn<cr>
-"these interfere shift lines left and right
-noremap < :tabp<cr>
-noremap > :tabn<cr>
-"using (s-)tab and and repeat with dot command to shift instead
-vnoremap <tab> >
-vnoremap <s-tab> <
-"}}}
+"TAG JUMP: {{{2
+"get desired behaviour with simpler keystroke
+nnoremap <c-]> g<c-]>
+vnoremap <c-]> g<c-]>
+"swap tjump g_ctrl-] with above commands
+nnoremap g<c-]> <c-]>
+vnoremap g<c-]> <c-]>
 
 "map vertical help
 cnoremap vh vert botright help<space>
 "map vertical splitfind
 cnoremap vf vert sf<space>
+"}}}
 
 "FN: {{{2
-nnoremap <silent>   <F2> :call ToggleTree()<cr>
+nnoremap <silent>   <F2> :ToggleTree<cr>
 nnoremap            <F3> :TagbarToggle<cr>
 nnoremap <silent>   <F4> :UpdateCtags<cr>
 nnoremap            <F5> :UndotreeToggle<cr>
 
 nnoremap <silent>   <F10> :call OnQuit()<cr>
-imap                <F10> <c-o><F10>                        "if in Insert-Mode switch to Insert-Normal-Mode to execute F10
+imap                <F10> <c-o><F10>                "switch to Insert-Normal-Mode to exec F10
 "}}}
 
 "DEACTIVATION: {{{2
@@ -867,7 +962,4 @@ nnoremap K <NOP>
 nnoremap Q <NOP>
 "}}}
 
-" cppman
-"command! -nargs=+ Cppman silent! call system("tmux split-window cppman " . expand(<q-args>))
-"autocmd FileType cpp nnoremap <silent><buffer> K <Esc>:Cppman <cword><CR>
-" }}} Mapping
+" }}} MAPPING
