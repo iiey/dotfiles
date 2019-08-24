@@ -797,23 +797,19 @@ endfunction
 
 
 " AUTOCMD {{{
-augroup vimplug
-    "prevent calling multiple times by sourcing
+augroup vimplug | au!
     "download new coming plugins
     autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
                         \| PlugInstall --sync | q | endif
 augroup END
 
 augroup vimrc
+    "prevent calling multiple times by sourcing
     autocmd!
-    "update tags on saving
-    "autocmd BufWritePost *.cpp,*.h,*.c silent! UpdateCtags
-    "change directory of current local window
-    "autocmd bufenter * silent! lcd %:p:h
 
     "TODO write function in case more than one left behind windows of these kinds
     "close vim if one left behind window is nerdtree, quickfix or help
-"    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     autocmd bufenter * if (winnr("$") == 1 && getbufvar(winbufnr(1), '&buftype') == 'quickfix') | q | endif
     autocmd bufenter * if (winnr("$") == 1 && getbufvar(winbufnr(1), '&buftype') == 'help') | q | endif
 
