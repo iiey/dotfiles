@@ -248,6 +248,31 @@ let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tmuxline#enabled = 0       "disable autoload same theme as vim when starts vim
 "enable/disable powerline symbols (default 1)
 "let g:tmuxline_powerline_separators = 0
+
+"statusline: shorten most used modes with characters e.g. N instead of NORMAL
+"see also :h vim-modes
+let g:airline_mode_map = {
+    \ '__'      : '-',
+    \ 'c'       : 'C',
+    \ 'cv'      : 'VIM EX',
+    \ 'ce'      : 'EX',
+    \ 'i'       : 'I',
+    \ 'ic'      : 'I-C',
+    \ 'ix'      : 'I-C',
+    \ 'multi'   : 'MULTI',
+    \ 'n'       : 'N',
+    \ 'ni'      : '(INSERT)',
+    \ 'no'      : 'N-OP',
+    \ 'R'       : 'R',
+    \ 'Rv'      : 'R-V',
+    \ 's'       : 'S',
+    \ 'S'       : 'S-L',
+    \ ''      : 'S-B',
+    \ 't'       : 'T',
+    \ 'v'       : 'V',
+    \ 'V'       : 'V-L',
+    \ ''      : 'V-B',
+    \ }
 " }}}
 
 
