@@ -909,11 +909,16 @@ vnoremap <c-]> g<c-]>
 "swap tjump g_ctrl-] with above commands
 nnoremap g<c-]> <c-]>
 vnoremap g<c-]> <c-]>
+"}}}
 
+"COMMANDLINE MODE: {{{2
 "map vertical help
 cnoremap vh vert botright help<space>
 "map vertical splitfind
 cnoremap vf vert sf<space>
+"recall cmd-line history
+cnoremap <c-p> <up>
+cnoremap <c-n> <down>
 "}}}
 
 "FN: {{{2
