@@ -409,10 +409,13 @@ let g:clang_jumpto_declaration_key = '<c-w>['
 "note: it will search in runtimepath for dir with names on the list below
 if v:version >= 704
     let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+    "<tab> slows down normal use-case dramatically
+    let g:UltiSnipsExpandTrigger='<c-l>'
     "<c-tab> reserved by iterm for switching tab
-    let g:UltiSnipsListSnippets='<c-h>'
-    "<c-k> interferes with completion i_ctrl-x
-    let g:UltiSnipsJumpBackwardTrigger='<c-l>'
+    let g:UltiSnipsListSnippets='<c-l>l'
+    "<c-k> interferes with i_ctrl-k
+    let g:UltiSnipsJumpBackwardTrigger='<c-l>p'
+    let g:UltiSnipsJumpForwardTrigger='<c-l>n'
 endif
 " }}}
 
@@ -784,7 +787,9 @@ function! HUDigraphs()
     call getchar()
     return "\<c-k>"
 endfunction
-inoremap <expr> <c-d> HUDigraphs()
+"usage: c-k twice in insert-mode get digraph table, scroll to the end
+"enter to quit, type two chars which presents the symbol
+inoremap <expr> <c-k><c-k> HUDigraphs()
 
 "search phrase with command :Search
 "see :h function-argument
@@ -917,6 +922,14 @@ nnoremap <C-y> 5<C-y>
 "this is convenient and more comfortable
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
+
+"MOVEMENT IN INSER-MODE:
+"override default i_ctrl-a and i_ctrl-e
+inoremap <c-a> <home>
+inoremap <c-e> <end>
+"don't need funtion i_ctrl-b and i_ctrl-f
+inoremap <c-b> <left>
+inoremap <c-f> <right>
 "}}}
 
 "SEARCHING: {{{2
@@ -925,8 +938,9 @@ nnoremap n nzz
 nnoremap N Nzz
 nnoremap * *zz
 nnoremap # #zz
-nnoremap g* g*zz
-nnoremap g# g#zz
+nnoremap g; g;zz
+nnoremap g, g,zz
+"append zz to '<char> when jumping to mark triggered
 nnoremap <expr> ' "'" . nr2char(getchar()) . "zz"
 "search on browser
 nnoremap <silent> [b :call GSearch()<cr>
