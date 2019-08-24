@@ -46,7 +46,7 @@ fh() {
 
     eval "$revshist" | awk '!x[$0]++' |
     fzf --prompt='(history search): ' --query="$*" --cycle --exact --select-1 --no-sort --height 10% \
-                                      --bind="ctrl-x:execute-silent(eval {})+abort"
+                                      --bind="ctrl-o:execute-silent(eval {})+abort"
 }
 
 #jump to bookmark of autojump
