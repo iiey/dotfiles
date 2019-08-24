@@ -848,6 +848,9 @@ nnoremap <C-y> 5<C-y>
 "this is convenient and more comfortable
 nnoremap <C-j> 5<C-e>
 nnoremap <C-k> 5<C-y>
+"move codeblock  with indent
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
 
 "MOVEMENT IN INSER-MODE:
 "override default i_ctrl-a and i_ctrl-e
