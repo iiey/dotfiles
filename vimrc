@@ -68,12 +68,6 @@ endif
 "loading time 1ms
 filetype plugin indent on   "smartindent based filetype, set cindent for c/c++
 
-"SYNTAX & FILETYPE
-"loading time 20ms(vim74), 35ms(vim80)
-syntax on                   "enable syntax highlighting
-filetype on                 "enable filetype detecting
-filetype plugin indent on   "smartindent based filetype, set cindent for c/c++
-
 "CODING STYLE
 set tabstop=4
 set softtabstop=4           "using <BS> like <Tab>
