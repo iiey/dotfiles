@@ -3,15 +3,15 @@ conky.config = {
     --create a window
     own_window = true,
     own_window_type = 'normal',
+    own_window_class = 'conky',
 
     --transparent background
     --note: this works if only desktop effects's active
     --kde5: check system setttings > hardware > display and monitor > compositor
-    own_window_transparent = false,
+    own_window_transparent = true,
     own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
     own_window_argb_visual = true,
     own_window_argb_value = 0,
-    own_window_class = 'Conky',
 
     default_color = 'white',
     default_outline_color = 'white',

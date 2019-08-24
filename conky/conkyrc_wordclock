@@ -1,19 +1,19 @@
 conky.config = {
     --create window and transparency
-    background = false,
     own_window = true,
     own_window_type = 'normal',
-    own_window_class = 'Conky',
+    own_window_class = 'conky',
     own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
     own_window_argb_visual = true,
     own_window_argb_value = 0,
+    own_window_transparent = true,
 
     --alignment mm
     alignment = 'bottom_left',
     xinerama_head = 1,
     gap_x = 5,
     --575
-    gap_y = 10,
+    gap_y = 20,
     --310
 
     --font
