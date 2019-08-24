@@ -70,11 +70,6 @@ alias gv='gvim --remote-silent $(fzf)'
 #echo ${PWD#*build} delete all from right of match
 alias ..='test -d ${PWD%build*}${PWD#*build} && cd ${PWD%build*}${PWD#*build}'
 
-#ranger (exit but stay in ranger current directory)
-if type ranger &> /dev/null; then
-    alias ranger='ranger --choosedir=$HOME/.rangerdir; LASTDIR=`cat $HOME/.rangerdir`; cd "$LASTDIR"'
-fi
-
 #silver search
 if type ag &> /dev/null; then
     alias ag="ag --noheading --nobreak -S -p $HOME/.ignore \
@@ -167,6 +162,19 @@ mc-color() {
         mc_color="$1"
         mc
     fi
+}
+#}}}2
+
+#change cwd to last visited one after exiting
+ranger() {
+#{{{2
+    local tmp dir
+    tmp="$(mktemp -t "ranger_cd.XXXXXXXXXX")"
+    command ranger --choosedir="$tmp" -- "${@:-$PWD}"
+    if dir="$(cat -- "$tmp")" && [ -n "$dir" ] && [ "$dir" != "$PWD" ]; then
+        cd -- "$dir" || exit
+    fi
+    command rm -f -- "$tmp"
 }
 #}}}2
 
