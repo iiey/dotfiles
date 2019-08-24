@@ -235,10 +235,14 @@ let g:airline#extensions#whitespace#enabled = 0
 "display progress in statusline
 "let g:airline_section_error = airline#section#create_right(['%{g:asyncrun_status}'])
 
+"show file encoding on statusline if only it's other than utf-8 unix
+"mostly edited files are utf-8 so skip this info
+let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+
 "AIRLINE-THEMES EXTENSION
 "theme name must match one of files under airline-themes/autoload/airline/themes
 "change theme in vim with command :AirlineTheme [theme]
-"let g:airline_theme='solarized'
+"let g:airline_theme='tomorrow'
 
 "TMUXLINE EXTENSION
 "1. set a a colortheme and a preset with :Tmuxline [theme] [preset]
