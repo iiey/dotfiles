@@ -150,6 +150,12 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
     Plug 'junegunn/fzf.vim'
 Plug 'skywind3000/asyncrun.vim'
 
+"lsp
+if v:version > 800 || has('nvim-0.3.0')
+    Plug 'dense-analysis/ale'                           "use for lsp features
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}     "use intellisense engine without lsp
+endif
+
 "no zeal support on mac os because of dash
 if ! has('mac') || ! has('osx')
     Plug 'KabbAmine/zeavim.vim'
@@ -310,6 +316,52 @@ if !empty(glob("~/.vim/bundle/*startify"))
     highlight StartifySlash   ctermfg=240
     highlight StartifyVar     ctermfg=250
 endif
+"}}}
+
+
+"LSP {{{
+"ALE - asynchronous lint engine
+"put options out of autocmd so it set before plugin loaded
+let g:ale_linters = {'cpp': ['clangd'], 'python': ['pyls'], 'bash': ['bash-language-server']}
+"linter not work well with c++ (external libs)
+let g:ale_enabled = 0
+let g:ale_completion_enabled = 1
+"do not overwhelm with trivial
+let g:ale_completion_max_suggestions = 20
+"do not interrupt, delay or swallow words while typing
+"could manually trigger with c-x_c-o (see maplsp)
+let g:ale_completion_delay = 900
+"COC - intellisense for vim
+"see :h coc-nvim
+"configuration coc-settings.json in ~/.vim or ~/.config/nvim
+"could manually trigger 'intellisense' with c-space (see maplsp)
+
+"create map for ale and coc
+function! MapLSP()
+    if get(g:, 'loaded_ale', 0)
+        "<plug> mapping not work with 'nore'
+        imap <buffer> <leader>ac <Plug>(ale_complete)
+        nmap <buffer> <leader>ar <Plug>(ale_find_references)
+        nmap <buffer> <leader>ad <Plug>(ale_go_to_definition)
+        nmap <buffer> <leader>ah <Plug>(ale_hover)
+        nmap <buffer> <leader>at <Plug>(ale_toggle)
+
+        "use to trigger manually with c-x_c-o
+        if executable('clangd') || executable('pyls')
+            setlocal omnifunc=ale#completion#OmniFunc
+        endif
+    endif
+
+    if get(g:, 'did_coc_loaded', 0)
+        inoremap <buffer> <silent> <expr> <c-space>  coc#refresh()  "work in gui
+        inoremap <buffer> <silent> <expr> <nul>      coc#refresh()  "workaround in terminal
+    endif
+endfunction
+
+augroup lsp | autocmd!
+    "<buffer> mapping so it enabled only for certain filetypes
+    autocmd FileType c,cpp,python,sh call MapLSP()
+augroup END
 "}}}
 
 
