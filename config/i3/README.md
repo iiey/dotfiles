@@ -22,18 +22,27 @@ ln -sfn ~/.local/bin/i3-workspace-names-daemon ~/bin/i3-workspace-names-daemon
     * `scrot` take screenshot
 
 ### Config
-* Symlink/Copy configuration file to default config filepath
+* Symlink i3 directory or individual files to default config filepaths
 ```sh
-ln -sfn config/i3/config ~/.config/i3/config
-ln -sfn config/i3status/config ~/.config/i3status/config
-mkdir ~/.config/compton && cp -a config/compton/compton.conf ~/.config/compton/compton.conf
-mkdir ~/.config/dunst && cp -a ~/config/dunst/dunstrc ~/.config/dunst/dunstrc
+#make sure $PWD ist current git project root directory
+ln -sfn $PWD/config/i3/config ~/.config/i3/config
+ln -sfn $PWD/config/i3/autostart.sh ~/.config/i3/autostart.sh
+ln -sfn $PWD/config/i3status/config ~/.config/i3status/config
+mkdir ~/.config/{compton,dunst} && {
+    ln -sfn $PWD/config/compton/compton.conf ~/.config/compton/compton.conf
+    ln -sfn $PWD/onfig/dunst/dunstrc ~/.config/dunst/dunstrc
+}
 ```
-* Put `i3exit` (for lock, logout, reboot, shutdown)  script to *PATH* to able for calling it from i3
+
+* **Autostart**
+    * By start of session our i3 config looks for and loads executable scripts under `~/.config/autostart`
+and `~/.config/i3/autostart`. So just create scripts there to auto run daemons or personal stuffs
+    * Script example [display.sh](autostart/display.sh): *arrange monitors* and *setup wallpapers* for my dual monitors
+* Put `i3vol` (volume adjustment) and `i3exit` (for lock, logout, reboot, shutdown) to *$PATH* to able for calling it from i3
 ```sh
+cp -a config/i3/i3vol ~/bin/
 cp -a config/i3/i3exit ~/bin/
 ```
-* Set wallpapers with approriate filepaths
 * Set approriate screenshot destination if neccessary
 * Problems with KDE
     * No icons for some applications respectively incorrect colorscheme e.g. dolphin
