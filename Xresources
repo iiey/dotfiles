@@ -63,8 +63,9 @@
 !##### XTERM
 !##########################################################
 XTerm*termName: xterm-256color
-XTerm*faceName: monospace
-XTerm*faceSize: 10
+XTerm*faceName: SauceCodePro Nerd Font Mono:style:light:size=10
+!XTerm*faceName: monospace
+!XTerm*faceSize: 10
 !make <alt> behave as on other terminal instead of sending 8bit input chars
 XTerm.vt100.metaSendsEscape: true
 
@@ -72,10 +73,11 @@ XTerm.vt100.metaSendsEscape: true
 !##########################################################
 !##### URXVT
 !##########################################################
-URxvt*font: xft:monospace:size=10
+URxvt*font: xft:SauceCodePro Nerd Font Mono:style=light:size=10, \
+            xft=monospace:size=10
 URxvt*scrollBar: false
 !reduce spacing between characters by one pixels
-URxvt*letterSpace: -1
+!URxvt*letterSpace: -1
 !disable printing the terminal contents when pressing PrintScreen
 URxvt*print-pipe: "cat > /dev/null"
 
