@@ -1,20 +1,18 @@
 #!/bin/bash
 #script is used to ajust volume of sink(s)
-#it checks for currently RUNNING sinks and adjust them all based on input parameter
+#it checks for available sinks and adjust them all based on input parameter
 #put it into $PATH so i3config could use
 
 #arg: <+/-><vol>% or toggle
 [ "$#" -eq 1 ] && vol=$1 || return
 
+#choose command
 set_sink=$([ "$vol" == "toggle" ] && echo "set-sink-mute" || echo "set-sink-volume")
 
-#store indices in an array in case of multiple running sinks
-sink_idx=( $(pactl list short sinks | grep RUNNING | cut -f1) )
-#fallback to default if nothing running
-[ -z "${sink_idx[*]}" ] && sink_idx='@DEFAULT_SINK@'
+#store indices in an array in case of multiple sinks available
+sink_idx=( $(pactl list short sinks | cut -f1) )
 
-#attempt changing volume of sink(s)
+#attempt changing volume of sinks
 for idx in ${sink_idx[@]}; do
-    echo "pactl $set_sink $idx $vol"
     pactl $set_sink $idx $vol
 done

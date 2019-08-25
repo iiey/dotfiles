@@ -38,9 +38,9 @@ bindsym --release Shift+Print exec scrot 'screenshot_%Y%m%d_%H%M%S.jpg' -e 'mv -
 bindsym --release Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.jpg' -e 'mv -f $f ~/Pictures/'
 
 ##change volume
-bindsym XF86AudioRaiseVolume exec amixer -q -D pulse set Master 5%+
-bindsym XF86AudioLowerVolume exec amixer -q -D pulse set Master 5%-
-bindsym XF86AudioMute exec amixer -D pulse set Master toggle
+bindsym XF86AudioRaiseVolume exec i3vol +5%
+bindsym XF86AudioLowerVolume exec i3vol -5%
+bindsym XF86AudioMute exec i3vol toggle
 
 
 ##### DMENU
