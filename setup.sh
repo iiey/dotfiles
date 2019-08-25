@@ -3,6 +3,7 @@
 _current=$(pwd -P)
 _tmuxcolors="$HOME/.config/tmux"
     _dotfiles=( "inputrc"
+                "Xresources"
                 "myrc"
                 "vimrc"
                 "gvimrc"
