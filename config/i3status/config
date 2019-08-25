@@ -1,0 +1,26 @@
+general {
+        output_format = "i3bar"
+        colors = false
+        markup = pango
+        interval = 5
+        color_good = '#2f343f'
+        color_degraded = '#ebcb8b'
+        color_bad = '#ba5e57'
+}
+
+order += "volume master"
+order += "tztime local"
+
+volume master {
+        format = "vol %volume"
+        format_muted = "muted "
+        device = "default"
+        mixer = "Master"
+        mixer_idx = 0
+}
+
+tztime local {
+        format = "%time"
+        format_time = "%a %-d %b %H:%M"
+}
+
