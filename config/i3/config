@@ -12,6 +12,8 @@ font pango:monospace 8
 ######################################################################
 #AUTOSTART
 ######################################################################
+##### run executable scripts in dirs ~/.config/{,i3/}autostart/
+exec --no-startup-id bash ~/.config/i3/autostart.sh
 # following programs need to be installed before using
 ##### clipit: clipboard manager
 exec --no-startup-id clipit
@@ -23,9 +25,6 @@ exec --no-startup-id compton -b
 exec --no-startup-id dunst
 ##### i3-workspace-names-daemon: assign programm icon (font-awesome) to workspace
 exec_always --no-startup-id exec i3-workspace-names-daemon -u
-##### feh: display background wallpaper
-exec --no-startup-id feh --bg-fill ~/Pictures/wallpaper/planet.jpg \
-                                   ~/Pictures/wallpaper/nebula.jpg
 
 
 ######################################################################
@@ -251,13 +250,6 @@ bar {
 ######################################################################
 ##### MISC
 ######################################################################
-
-##### KEYBOARD LAYOUT
-#race condition: other auto. command can override this and it may sometime not work on startup
-#in that case try to reload i3 config
-##### set keyboard layout and toggle key
-exec_always setxkbmap -layout eu,de -option 'grp:alt_space_toggle'
-
 
 ##### WINDOW RULES
 # assign <criteria> [→] [workspace] <workspace>
