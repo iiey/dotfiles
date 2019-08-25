@@ -1,6 +1,6 @@
 general {
-        output_format = "i3bar"
-        colors = false
+        output_format = i3bar
+        colors = true
         markup = pango
         interval = 5
         color_good = '#2f343f'
@@ -8,12 +8,40 @@ general {
         color_bad = '#ba5e57'
 }
 
+#order += "cpu_usage"
+#order += "disk /"
+#order += "battery all"
 order += "volume master"
 order += "tztime local"
 
+#cpu_usage {
+#        format = " cpu  %usage "
+#}
+#
+#disk "/" {
+#    prefix_type = decimal
+#    format = " ⛁ %percentage_used (U:%used, F:%free) "
+#}
+#
+#battery all {
+#        format = " %status %percentage %remaining "
+#        format_down = "No battery"
+#        last_full_capacity = true
+#        integer_battery_capacity = true
+#        status_chr = "  "
+#        status_bat = " BAT "
+#        status_unk = "  "
+#        status_full = "  "
+#        path = "/sys/class/power_supply/BAT%d/uevent"
+#        low_threshold = 15
+#        threshold_type = time
+#}
+
 volume master {
-        format = "vol %volume"
-        format_muted = "muted "
+        #format = "vol %volume"
+        #format_muted = "muted "
+        format = "  %volume "
+        format_muted = "  muted "
         device = "default"
         mixer = "Master"
         mixer_idx = 0
@@ -21,6 +49,6 @@ volume master {
 
 tztime local {
         format = "%time"
-        format_time = "%a %-d %b %H:%M"
+        format_time = "  %a %-d %b  %H:%M "
 }
 
