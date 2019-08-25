@@ -74,6 +74,9 @@ bindsym $mod+minus scratchpad show
 bindsym $mod+b split h
 # split in vertical orientation
 bindsym $mod+v split v
+#show orientation line for next window if there more than one
+#warning: smart not available on version < 4.13
+hide_edge_borders smart
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
