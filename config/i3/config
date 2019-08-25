@@ -202,14 +202,38 @@ bindsym $mod+o mode "$mode_launcher"
 
 
 ######################################################################
+##### COLORSCHEME
+######################################################################
+# color defines for zenburn styled i3
+set $bg     #2c2c2e
+set $fg     #9f9f9f
+set $hi     #efef8f
+set $ac     #a0afa0
+set $tx     #040404
+set $ia     #8f8f8f
+set $be     #8faf9f
+set $yw     #ccdc90
+set $gn     #88b090
+set $rd     #e89393
+
+# set window color          border      background      text
+client.focused              $ac         $ac             $tx
+client.unfocused            $bg         $bg             $ia
+client.focused_inactive     $bg         $bg             $ac
+client.urgent               $rd         $rd             $tx
+######################################################################
 ##### I3BAR
 ######################################################################
 bar {
         colors {
-            # <colorclass>      <border> <background> <text>
-            urgent_workspace    #2f343f #ebcb8b #2f343f
-            focused_workspace   #333333 #5f676a #ffffff
-            active_workspace    #333333 #222222 #888888
+            background          $bg
+            statusline          $fg
+            separator           $hi
+            # <colorclass>      <border>    <background>    <text>
+            focused_workspace   $gn         $bg             $ac
+            active_workspace    $gn         $ac             $tx
+            inactive_workspace  $bg         $bg             $ia
+            urgent_workspace    $yw         $bg             $ac
         }
 
         #comment out to have status bar at the bottom
