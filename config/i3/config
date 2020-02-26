@@ -266,6 +266,6 @@ assign [class=Code|QtCreator|kdevelop|vlc|zoom] number 3
 for_window [class=Code|QtCreator|kdevelop|vlc] layout tabbed
 
 #others
-for_window [class="^(Animate|Display|feh|Pavucontrol|Speedcrunch)$"] floating enable
+for_window [class="^(Animate|Display|feh|Pavucontrol|Speedcrunch|Vncviewer|Zeal)$"] floating enable
 for_window [class=konsole|libreoffice*|gimp*|vlc] focus
 for_window [class=Code|Firefox|Thunderbird|QtCreator|kdevelop|zoom] focus
