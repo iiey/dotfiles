@@ -13,9 +13,5 @@ vendor/
 *.gemtags*
 *.tsv
 *.tmp*
-*.js
-*.css
-*.scss
 *.old
-*.html
 *.plist
