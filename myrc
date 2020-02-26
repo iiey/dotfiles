@@ -56,6 +56,7 @@ alias 4.='cd ../../../..'
 alias l='ls -aCF'
 alias la='ls -laAh'     #long list all
 alias ll='ls -lFh'      #long list without .
+alias lo='ls -lFhtr'    #List by modified time in reverse order
 
 # vim abbreviations
 #original
