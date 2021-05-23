@@ -18,6 +18,11 @@ if type rg >/dev/null 2>&1; then
     export FZF_DEFAULT_COMMAND='rg --files --hidden'
 fi
 
+#refer fd over rg
+if type rg >/dev/null 2>&1; then
+    export FZF_DEFAULT_COMMAND='fd --type file --hidden'
+fi
+
 #show matches in top-down order
 export FZF_DEFAULT_OPTS='
 --bind ctrl-h:half-page-down,ctrl-l:half-page-up
