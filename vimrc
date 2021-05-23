@@ -211,7 +211,7 @@ endif
 
 "VIM-AIRLINE {{{
 let g:airline_powerline_fonts=0                     "enable/disable powerline
-
+let g:airline_symbols_ascii = 1                     "do not use fancy symbol
 "TABLINE (upper bar)
 let g:airline#extensions#tabline#enabled = 1        "show tabline
 let g:airline#extensions#tabline#fnamemod = ':t'    "show just the filename
