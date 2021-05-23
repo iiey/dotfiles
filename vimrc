@@ -956,6 +956,7 @@ nnoremap [r :Rg!<space><c-r>=expand("<cword>")<cr><cr>
 nnoremap [R :Rg<space><c-r>=expand("<cword>")<cr><cr>
 "search with fuzzy finder
 nnoremap [f :Files<cr>
+nnoremap [w :Windows<cr>
 
 "change working directory
 " %:p current filename, %:p:h truncate name -> current dir
