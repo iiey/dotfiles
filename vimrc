@@ -983,6 +983,14 @@ nnoremap g<c-]> <c-]>
 vnoremap g<c-]> <c-]>
 "}}}
 
+"UNDO BREAKPOINT: {{{2
+"add undo stoppoint (ctrl-g_u) at specific symbols
+inoremap , ,<c-g>u
+inoremap . .<c-g>u
+inoremap ; ;<c-g>u
+inoremap : :<c-g>u
+"}}}
+
 "COMMANDLINE MODE: {{{2
 "map vertical help
 cnoremap vh vert botright help<space>
