@@ -11,6 +11,8 @@
 #indicated files are highlight based on LS_COLORS
 set colored-stats on
 
+#disable bell
+set bell-style none
 
 ##modify default behaviour of completion functions (TAB after ambiguous words)
 #set completion-ignore-case off
