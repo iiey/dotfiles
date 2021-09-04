@@ -446,6 +446,7 @@ let g:termdebug_wide = 1
 "using snippets template from: https://github.com/honza/vim-snippets.git
 "note: it will search in runtimepath for dir with names on the list below
 if v:version >= 704
+    let g:UltiSnipsNoPythonWarning = 1
     let g:UltiSnipsSnippetDirectories=["UltiSnips"]
     "<tab> slows down normal use-case dramatically
     let g:UltiSnipsExpandTrigger='<c-l>'
