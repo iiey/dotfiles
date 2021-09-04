@@ -8,6 +8,8 @@ if has('gui_gtk') || has('gui_gnome')
     set guifont=Monospace\ 10
 elseif has('gui_macvim')
     set guifont=Sauce\ Code\ Powerline\ Light:h13
+elseif has('win32')
+    set guifont=MesloLGS\ NF:h11
 endif
 
 colorscheme tomorrow-night
