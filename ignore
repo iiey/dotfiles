@@ -2,10 +2,6 @@
 build*/
 log/
 logs/
-images/
-javascripts/
-stylesheets/
-vendor/
 .git/
 .svn/
 .vscode/
