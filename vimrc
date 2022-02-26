@@ -171,11 +171,10 @@ Plug 'SirVer/ultisnips', v:version >= 704 ? { 'tag': '3.2' } : { 'on' : [] }
 "OTHERS (optional) {{{3
 Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 Plug 'iiey/vim-startify'
-Plug 'majutsushi/tagbar'
+Plug 'preservim/tagbar'
 Plug 'preservim/nerdtree', {'on': []}
     Plug 'ryanoasis/vim-devicons'
 Plug 'blueyed/vim-diminactive'
-Plug 'peterhoeg/vim-qml'
 "}}}
 
 call plug#end()
@@ -347,7 +346,7 @@ let g:ale_set_highlights = 0
 let g:ale_enabled = 0
 let g:ale_completion_enabled = 1
 "do not overwhelm with trivial
-let g:ale_completion_max_suggestions = 20
+let g:ale_completion_max_suggestions = 10
 "do not interrupt, delay or swallow words while typing
 "could manually trigger with c-x_c-o (see maplsp)
 let g:ale_completion_delay = 900
