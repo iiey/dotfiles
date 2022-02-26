@@ -864,6 +864,18 @@ augroup vimrc
 
     "disable fmd=syntax on large file (causing lagging when editing)
     autocmd FileType c,cpp,python,sh,xml if line('$') > 4000 | setlocal foldmethod=indent | endif
+
+    " WSL yank support
+    let s:clip = '/mnt/c/Windows/System32/clip.exe'  " modify path according to mount point
+    if executable(s:clip)
+        augroup WSLYank
+        autocmd!
+        autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+        augroup END
+    endif
+" }}}
+
+
 augroup END
 " }}}
 
