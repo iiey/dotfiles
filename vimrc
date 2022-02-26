@@ -838,6 +838,13 @@ augroup vimrc
     "prevent calling multiple times by sourcing
     autocmd!
 
+    "normal: hydrid relative line, insert: absolute line
+    augroup numbertoggle
+        autocmd!
+        autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set nu rnu | endif
+        autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu  | endif
+    augroup END
+
     "TODO write function in case more than one left behind windows of these kinds
     "close vim if one left behind window is nerdtree, quickfix or help
     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
