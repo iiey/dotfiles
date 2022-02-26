@@ -1,5 +1,6 @@
 /tmp/
-build*/
+build/
+build_*/
 log/
 logs/
 .git/

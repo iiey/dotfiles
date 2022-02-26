@@ -5,7 +5,9 @@
 .svn
 *.tags
 .TAGS
-build*/
+build/
+_build*/
+build_*/
 doc/tags
 *.kdev4
 *.vscode
