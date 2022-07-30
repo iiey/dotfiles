@@ -11,6 +11,7 @@ build_*/
 doc/tags
 *.kdev4
 *.vscode
+**/.git
 
 ###################
 # Temporary files
