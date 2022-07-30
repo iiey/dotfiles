@@ -483,7 +483,7 @@ function! UpdateCtags(proDir)
     "generate ctags only for projects
     if empty(a:proDir) | echom "project directory empty!" | return | endif
     "execute 'ctags' at projDir to take advantage of --tag-relative=yes
-    let cmd = 'cd ' . a:proDir . '&&' . 'ctags -R -f ./.tags .'
+    let cmd = 'cd ' . a:proDir . ' && ' . 'ctags -R -f ./.tags .'
     if exists(":AsyncRun")
         execute "AsyncRun " . cmd
     else
