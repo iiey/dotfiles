@@ -860,6 +860,7 @@ augroup vimrc
     " WSL yank support
     let s:clip = '/mnt/c/Windows/System32/clip.exe'  " modify path according to mount point
     if executable(s:clip)
+        "set clipboard=exclude:.*
         augroup WSLYank
         autocmd!
         autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
