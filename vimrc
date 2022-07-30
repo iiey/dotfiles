@@ -195,15 +195,7 @@ augroup END
 "Open vim with theme instead default
 let g:airline_theme='minimalist'
 if !exists('g:colors_name')
-    if $KONSOLE_PROFILE_NAME =~? "solarized"
-        set background=dark
-        if $KONSOLE_PROFILE_NAME =~? "light" | set background=light | endif
-        "loading time: 6ms
-        silent! colorscheme solarized
-        let g:airline_theme='solarized'
-    else
-        silent! colorscheme tomorrow-night
-    endif
+    silent colorscheme tomorrow-night
 endif
 "}}}
 
