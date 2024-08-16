@@ -43,6 +43,9 @@ fi
 
 #using ccache instead of gcc
 [[ $PATH != *"/usr/lib/ccache"* ]] && [[ -d /usr/lib/ccache ]] && export PATH=/usr/lib/ccache/:${PATH}
+
+# add local bin
+[[ $PATH != *"$HOME/.local/bin"* ]] && [[ -d $HOME/.local/bin ]] && export PATH=${PATH}:$HOME/.local/bin
 #}}}1
 
 
