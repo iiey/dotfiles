@@ -21,6 +21,16 @@ doc/tags
 *~
 
 ###################
+# python
+.venv
+.venv_*
+__pycache__/
+.eggs/
+*.pyo
+*.pyc
+*.egg-info
+
+###################
 # Emacs stuff
 #backup
 \#*#
