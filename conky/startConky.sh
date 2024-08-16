@@ -2,7 +2,7 @@
 
 # set an initial value
 FORCE=false
-CONKY_DIR=$HOME/sources/dotfiles/conky
+CONKY_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
 # read the options, exit if parsing error
 # 'p' or 'path' has required arg
@@ -23,7 +23,7 @@ while true ; do
     esac
 done
 
-if $FORCE; then killall conky; fi
+if $FORCE; then killall conky >/dev/null 2>&1; fi
 
 if [ "$(pgrep -c conky)" -gt 1 ]; then
     echo "conky's already running"
