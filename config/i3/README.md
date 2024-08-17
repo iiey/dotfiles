@@ -1,6 +1,17 @@
-### Install
+## Install
+### Using script
+```sh
+# install
+./install-i3.sh
+# uninstall
+./install-i3.sh -u
+```
+
+### Manual
+
 * Use default *Ubuntu* package:
 ```sh
+sudo apt update
 sudo apt install i3
 #others utils
 sudo apt install clipit compton dunst feh scrot fonts-font-awesome
@@ -21,17 +32,17 @@ ln -sfn ~/.local/bin/i3-workspace-names-daemon ~/bin/i3-workspace-names-daemon
     * `font-awesome` various icons for programs, tools
     * `scrot` take screenshot
 
-### Config
+## Config
 * Symlink i3 directory or individual files to default config filepaths
 ```sh
-#make sure $PWD ist current git project root directory
-ln -sfn $PWD/config/i3/config ~/.config/i3/config
-ln -sfn $PWD/config/i3/autostart.sh ~/.config/i3/autostart.sh
-ln -sfn $PWD/config/i3status/config ~/.config/i3status/config
-mkdir ~/.config/{compton,dunst} && {
-    ln -sfn $PWD/config/compton/compton.conf ~/.config/compton/compton.conf
-    ln -sfn $PWD/onfig/dunst/dunstrc ~/.config/dunst/dunstrc
-}
+#make sure command running inside this repository
+PROJ_DIR=$(git rev-parse --show-toplevel)
+mkdir -p ~/.config/{i3,i3status,compton,dunst}
+ln -sfn $PROJ_DIR/config/i3/config ~/.config/i3/config
+ln -sfn $PROJ_DIR/config/i3/autostart.sh ~/.config/i3/autostart.sh
+ln -sfn $PROJ_DIR/config/i3status/config ~/.config/i3status/config
+ln -sfn $PROJ_DIR/config/compton/compton.conf ~/.config/compton/compton.conf
+ln -sfn $PROJ_DIR/onfig/dunst/dunstrc ~/.config/dunst/dunstrc
 ```
 
 * **Autostart**
@@ -40,8 +51,8 @@ and `~/.config/i3/autostart`. So just create scripts there to auto run daemons o
     * Script example [display.sh](autostart/display.sh): *arrange monitors* and *setup wallpapers* for my dual monitors
 * Put `i3vol` (volume adjustment) and `i3exit` (for lock, logout, reboot, shutdown) to *$PATH* to able for calling it from i3
 ```sh
-cp -a config/i3/i3vol ~/bin/
-cp -a config/i3/i3exit ~/bin/
+cp -a config/i3/i3vol ~/.local/bin/
+cp -a config/i3/i3exit ~/.local/bin/
 ```
 * Set approriate screenshot destination if neccessary
 * Problems with KDE
