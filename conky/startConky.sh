@@ -25,12 +25,10 @@ done
 
 if $FORCE; then killall conky >/dev/null 2>&1; fi
 
-if [ "$(pgrep -c conky)" -gt 1 ]; then
+if pgrep conky >/dev/null; then
     echo "conky's already running"
 else
-    #in case one still alive
-    killall conky >/dev/null 2>&1
     conky --config="$CONKY_DIR"/conkyrc_default --daemonize --quiet &&
-    conky --config="$CONKY_DIR"/conkyrc_wordclock --daemonize --quiet &&
+    #conky --config="$CONKY_DIR"/conkyrc_wordclock --daemonize --quiet &&
     echo "conkys started"
 fi
