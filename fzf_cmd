@@ -1,7 +1,7 @@
 #!/bin/env sh
 
 #check for fzf availability
-type -f fzf >/dev/null 2>&1 || return
+command -v fzf >/dev/null 2>&1 || return
 
 # Global Setting {{{1
 # Use other trigger instead of default **
