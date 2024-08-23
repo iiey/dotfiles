@@ -48,7 +48,5 @@ volume master {
 }
 
 tztime local {
-        format = "%time"
-        format_time = "  %a %-d %b  %H:%M "
+        format = "  %a %-d %b  %H:%M "
 }
-
