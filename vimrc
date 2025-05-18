@@ -163,9 +163,10 @@ if ! has('mac') || ! has('osx')
     Plug 'KabbAmine/zeavim.vim'
 endif
 
-"ultisnip requires vim 7.4
-Plug 'SirVer/ultisnips', v:version >= 704 ? { 'tag': '3.2' } : { 'on' : [] }
-    Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
+""ultisnip requires vim 7.4
+"Plug 'SirVer/ultisnips', v:version >= 704 ? { 'tag': '3.2' } : { 'on' : [] }
+"    Plug 'honza/vim-snippets', v:version >= 704 ? {} : {'on' : []}
+
 "}}}
 
 "OTHERS (optional) {{{3
