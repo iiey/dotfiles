@@ -32,9 +32,8 @@ function show_usage() {
   echo -e "Usage: $0 [argument] \n"
   echo "Arguments:"
   echo "--help (-h): display this help"
-  echo "--install (-i): choose which configuration should be used"
+  echo "--config (-c): choose which configuration should be used"
   echo -e "--update (-u): update dotfiles \n"
-  exit 0;
 }
 
 #Back up existing configuration and link new one to dotfiles
@@ -68,24 +67,24 @@ function sync_themes() {
 }
 
 
-#TODO setup.sh [package] just install specific stuff we need
+#TODO setup.sh [package] just setup specific stuff we need
 #Parse parameter
 [ $# -eq 0 ] && show_usage && exit 0
 for param in "$@"; do
   shift
   case "$param" in
     "--help")       set -- "$@" "-h" ;;
-    "--install")    set -- "$@" "-i" ;;
-    "--update")     set -- "$@" "-n" ;;
+    "--config")     set -- "$@" "-c" ;;
+    "--update")     set -- "$@" "-u" ;;
     *)              set -- "$@" "$param"
   esac
 done
 
 OPTIND=1
-while getopts "hiu" opt; do
+while getopts "hcu" opt; do
   case "$opt" in
   h) show_usage; exit 0 ;;
-  i) install=true ;;
+  c) config=true ;;
   u) update=true ;;
   ?) show_usage; exit 1 ;;
   esac
@@ -94,9 +93,9 @@ done
 shift "$((OPTIND - 1))"
 
 
-#Install
-if [ $install ]; then
-    echo "*** Installing dotfiles..."
+#Config
+if [ "$config" ]; then
+    echo "*** Configuring dotfiles..."
     for dotfile in "${_dotfiles[@]}"; do
         read -r -n 1 -p "Would you like to setup $dotfile? [y/N/q]: " resp; echo
         case $resp in
@@ -121,7 +120,7 @@ if [ $install ]; then
 fi
 
 #Update
-if [ $update ]; then
+if [ "$update" ]; then
     read -r -n 1 -p "Update dotfiles? [Y/n]: " resp; echo
     case $resp in
         [yY]|"")
