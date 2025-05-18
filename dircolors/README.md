@@ -8,10 +8,10 @@ Default using [solarized theme](https://github.com/seebi/dircolors-solarized) `d
 
 ##### Create symlink
 
-Create symlink file to `~/.dir_colors` in home directory:
+Create symlink file to `~/.dircolors` in home directory:
 
 ```sh
-ln -sr "dir_colors/dircolors.ansi-universal" "~/.dir_colors"
+ln -sfn dircolors/dircolors.ansi-universal ~/.dircolors
 ```
 
 #### Activation
