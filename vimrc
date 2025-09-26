@@ -151,7 +151,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'skywind3000/asyncrun.vim'
 
 "lsp
-if v:version > 800 || has('nvim-0.5.0')
+if v:version > 900 || has('nvim-0.8.0')
     Plug 'dense-analysis/ale'                           "linter and fixer
     if executable('node')
         Plug 'neoclide/coc.nvim', {'branch': 'release'} "completion
