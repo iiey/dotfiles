@@ -9,7 +9,8 @@
     st = status --short --branch
     tg = log --tags --simplify-by-decoration --date=format:'%Y-%m-%d %H:%M' --pretty='format:%cd %d'
     rbi = "!f() { git rebase -i HEAD~$1; }; f"
-    fetch-prune = "!git fetch --prune && git branch -vv | awk '/: gone]/{print $1}' | grep -v '^*' | xargs -r git branch -d"
+    fetch-prune = "!git fetch --prune && git branch -vv | awk '/: gone]/ && $1 != \"*\" && $1 != \"+\" {print $1}' | xargs -r git branch -d"
+    large-files = "!git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | sed -n 's/^blob //p' | sort --numeric-sort --key=2 | tail -20 | numfmt --to=iec --field=2"
 [color]
     ui = auto
 [core]
