@@ -183,6 +183,19 @@ ranger() {
 }
 #}}}2
 
+#change cwd when exiting yazi
+# q: exit at cwd, Q: exit at original working dir
+yazi() {
+#{{{2
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    command yazi "$@" --cwd-file="$tmp"
+    printf '\e[?12h\e[5 q'   # enable blink + set blinking bar (tmux fix)
+    IFS= read -r -d '' cwd < "$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+    command rm -f -- "$tmp"
+}
+#}}}2
+
 #switch term colorscheme
 term-color() {
 #{{{2
@@ -227,6 +240,17 @@ fi
 #    complete -W "$(tldr 2>/dev/null --list)" tldr
 #fi
 #}}}1
+
+
+#KEYBINDING {{{1
+if echo "$-" | grep -q 'i' >/dev/null 2>&1; then
+    if [ -n "$BASH" ]; then
+        #use -x to execute a shell-comand by bash
+        bind -x '"\C-f\C-y": "yazi"'
+        bind -x '"\C-f\C-r": "ranger"'
+    fi
+fi
+#1}}}
 
 
 ###SOURCING {{{1
